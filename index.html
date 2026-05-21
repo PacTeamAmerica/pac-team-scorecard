@@ -192,7 +192,7 @@ function Bdg({label}){
   return h('span',{className:'bdg',style:{background:s.bg,color:s.cl}},label);
 }
 
-function UploadCard({state,err,onFile}){
+function UploadCard({state,err,onFile,onClear}){
   const ref=useRef();
   return h('div',{className:`dz${state?' loaded':''}`,
     onClick:()=>ref.current.click(),onDragOver:e=>e.preventDefault(),
@@ -201,14 +201,20 @@ function UploadCard({state,err,onFile}){
       onChange:e=>{const f=e.target.files?.[0];if(f)onFile(f);e.target.value=''}}),
     h('div',{style:{display:'flex',alignItems:'center',gap:12}},
       h('div',{style:{width:36,height:36,borderRadius:8,background:state?'#1D9E75':'#ddd',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:18,color:'#fff',fontWeight:300}},state?'✓':'↑'),
-      h('div',{style:{minWidth:0}},
+      h('div',{style:{minWidth:0,flex:1}},
         h('div',{style:{fontSize:13,fontWeight:600,color:'#111',marginBottom:2}},
           h('span',{className:'po'},'Podio'),'Active Projects Export',
           h('span',{style:{fontSize:9,padding:'1px 6px',borderRadius:3,background:'#E3F2FD',color:'#1565c0',fontWeight:600,marginLeft:8}},'Upload weekly')
         ),
         state
-          ?h('div',{style:{fontSize:11,color:'#1D9E75'}},'\u2713 '+state.name+' · '+state.date+' · pipeline loaded')
-          :h('div',{style:{fontSize:11,color:'#aaa'}},'Drag & drop or click to browse  ·  Podio .Projects export (In Progress / On Hold / Opportunity)  ·  .xlsx'),
+          ?h('div',{style:{display:'flex',alignItems:'center',gap:10,marginTop:2}},
+              h('span',{style:{fontSize:11,color:'#1D9E75'}},'\u2713 '+state.name+' \u00b7 '+state.date+' \u00b7 pipeline loaded \u00b7 saved in browser'),
+              h('button',{
+                style:{fontSize:10,padding:'2px 8px',border:'1px solid #e0e0e0',borderRadius:3,background:'#fff',color:'#888',cursor:'pointer',flexShrink:0,marginLeft:4},
+                onClick:e=>{e.stopPropagation();onClear();}
+              },'clear')
+            )
+          :h('div',{style:{fontSize:11,color:'#aaa'}},'Drag & drop or click  ·  Podio .Projects export (In Progress / On Hold / Opportunity)  ·  .xlsx  ·  \ud83d\udcbe remembered across page refreshes'),
         err&&h('div',{style:{fontSize:11,color:'#c62828',marginTop:3}},'⚠ '+err)
       )
     )
@@ -342,14 +348,21 @@ function MonthlySection(){
   );
 }
 
+// ── LOCALSTORAGE HELPERS ──────────────────────────────────────────
+const LS_PODIO='pt_sc_podio_v1';
+const LS_TARGETS='pt_sc_targets_v1';
+const lsGet=k=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+const lsClear=k=>{try{localStorage.removeItem(k);}catch(e){}};
+
 // ── APP ───────────────────────────────────────────────────────────
 function App(){
-  const[podio,setPodio]=useState(null);
-  const[targets,setTargets]=useState([]);
+  const[podio,setPodio]=useState(()=>lsGet(LS_PODIO));
+  const[targets,setTargets]=useState(()=>lsGet(LS_TARGETS)||[]);
   const[secs,setSecs]=useState({k:true,g:true,t:false,c:true});
   const[err,setErr]=useState(null);
 
-  const saveT=u=>setTargets(u);
+  const saveT=u=>{setTargets(u);lsSet(LS_TARGETS,u);};
 
   const handleFile=useCallback((file)=>{
     const reader=new FileReader();
@@ -358,7 +371,9 @@ function App(){
         const buf=new Uint8Array(e.target.result);
         const ts=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
         const parsed=parsePodio(buf);
-        setPodio({...parsed,name:file.name,date:ts});
+        const data={...parsed,name:file.name,date:ts};
+        setPodio(data);
+        lsSet(LS_PODIO,data);
         setErr(null);
       }catch(e){
         if(e.message&&!e.message.includes('storage'))setErr(e.message);
@@ -367,6 +382,7 @@ function App(){
     reader.readAsArrayBuffer(file);
   },[]);
 
+  const clearPodio=useCallback(()=>{setPodio(null);lsClear(LS_PODIO);},[]);
   const tog=k=>setSecs(s=>({...s,[k]:!s[k]}));
   const keyT=KEY.reduce((s,co)=>{const ns=NS_LIVE[co]||{};return s+(ns.inv||0)+(ns.backlog||0)+(ns.awaitInv||0)+(podio?.pipe?.[co]?.wtd||0);},0);
   const grwT=GROWTH.reduce((s,co)=>{const ns=NS_LIVE[co]||{};return s+(ns.inv||0)+(ns.backlog||0)+(ns.awaitInv||0)+(podio?.pipe?.[co]?.wtd||0);},0);
@@ -383,7 +399,7 @@ function App(){
       h('span',{style:{fontSize:12,color:'#555'}},'·  Invoiced YTD  ·  Confirmed Backlog  ·  Awaiting Invoice — all from live SuiteQL'),
       h('span',{style:{fontSize:12,color:'#888'}},'·  Upload Podio export below to refresh pipeline  ·  Ask Claude to re-query NS monthly')
     ),
-    h(UploadCard,{state:podio,err,onFile:handleFile}),
+    h(UploadCard,{state:podio,err,onFile:handleFile,onClear:clearPodio}),
     h('div',{className:'tiles'},
       ...[
         {dot:'#1D9E75',l:'Key accounts',v:fmtS(keyT),s:KEY.length+' holding groups  ·  > $800K'},
