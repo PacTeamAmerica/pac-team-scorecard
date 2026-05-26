@@ -113,9 +113,9 @@ const BDGCLR={
   DEFEND:{bg:'#E8F5E9',cl:'#2e7d32'},SCALE:{bg:'#E3F2FD',cl:'#1565c0'},
   BUILD:{bg:'#EDE7F6',cl:'#4527a0'},FIX:{bg:'#FFF8E1',cl:'#f57f17'},
 };
-const ANNUALIZE=365/140;
-const NS_DATE='May 20, 2026';
-const YTD_LABEL='Jan 1\u2013May 20, 2026';
+const ANNUALIZE=365/146;
+const NS_DATE='May 26, 2026';
+const YTD_LABEL='Jan 1\u2013May 26, 2026';
 
 // ── NETSUITE DATA — queried May 20, 2026 ─────────────────────────
 // Invoiced YTD: fiscal YTD Jan 1–May 20, 2026
@@ -123,19 +123,19 @@ const YTD_LABEL='Jan 1\u2013May 20, 2026';
 //   Backlog = status D/F (confirmed, not yet shipped)
 //   Awaiting Invoice = status B/E (shipped, not yet billed)
 const NS_LIVE={
-  'Citizen Watch Co.':               {inv:4976284,  backlog:1187755, awaitInv:3438371},
-  'Seiko Holdings Group':            {inv:335422,   backlog:140328,  awaitInv:590384},
-  'The Swatch Group':                {inv:354300,   backlog:0,       awaitInv:440880},
+  'Citizen Watch Co.':               {inv:4980302,  backlog:1187755, awaitInv:3438185},
+  'Seiko Holdings Group':            {inv:338289,   backlog:140328,  awaitInv:590134},
+  'The Swatch Group':                {inv:354300,   backlog:0,       awaitInv:441042},
   'Tapestry':                        {inv:36672,    backlog:0,       awaitInv:0},
   'Thelios':                         {inv:168075,   backlog:31416,   awaitInv:55146},
-  'Timex Group':                     {inv:257580,   backlog:1732,    awaitInv:27280},
+  'Timex Group':                     {inv:257580,   backlog:1732,    awaitInv:58381},
   'A. Jaffe':                        {inv:152739,   backlog:0,       awaitInv:196781},
   'Tiffany & Co.':                   {inv:57499,    backlog:860,     awaitInv:384664},
   'The Jewelry Group':               {inv:233300,   backlog:13800,   awaitInv:132142},
-  'Bedrock Manufacturing (Shinola)': {inv:65603,    backlog:0,       awaitInv:93433},
+  'Bedrock Manufacturing (Shinola)': {inv:65603,    backlog:0,       awaitInv:104120},
   'HexaClad':                        {inv:0,        backlog:0,       awaitInv:0},
   'Kate Spade':                      {inv:0,        backlog:0,       awaitInv:0},
-  'Luxottica':                       {inv:12971,    backlog:0,       awaitInv:36243},
+  'Luxottica':                       {inv:12971,    backlog:0,       awaitInv:36242},
   'Pandora':                         {inv:0,        backlog:0,       awaitInv:0},
   'Marcolin':                        {inv:0,        backlog:0,       awaitInv:0},
 };
@@ -146,7 +146,7 @@ const MONTHLY=[
   {month:'February', clients:20, invoiced:1222166, partial:false},
   {month:'March',    clients:21, invoiced:1309440, partial:false},
   {month:'April',    clients:27, invoiced:2416534, partial:false},
-  {month:'May',      clients:21, invoiced:884711,  partial:true},
+  {month:'May',      clients:21, invoiced:891596,  partial:true},
 ];
 const YTD_UNIQUE=50;
 const TRAILING_12M=66;
@@ -445,7 +445,7 @@ function App(){
     ),
     h('div',{className:'footer'},
       'PAC TEAM GROUP  ·  Commercial Scorecard  ·  FY2026  ·  NetSuite data queried '+NS_DATE+'  ·  ',
-      'To refresh: ask Claude to re-query NetSuite and generate a new HTML file, then replace this file in SharePoint'
+      'To refresh: ask Claude to re-query NetSuite and generate a new HTML file, then replace this file in GitHub'
     )
   );
 }
