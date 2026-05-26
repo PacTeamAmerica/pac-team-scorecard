@@ -214,7 +214,7 @@ function UploadCard({state,err,onFile,onClear}){
                 onClick:e=>{e.stopPropagation();onClear();}
               },'clear')
             )
-          :h('div',{style:{fontSize:11,color:'#aaa'}},'Drag & drop or click  ·  Podio .Projects export (In Progress / On Hold / Opportunity)  ·  .xlsx  ·  \ud83d\udcbe remembered across page refreshes'),
+          :h('div',{style:{fontSize:11,color:'#aaa'}},'Pipeline baked in from '+BAKED_PODIO.date+'  ·  Upload a newer Podio export to override  ·  .xlsx'),
         err&&h('div',{style:{fontSize:11,color:'#c62828',marginTop:3}},'⚠ '+err)
       )
     )
@@ -341,8 +341,8 @@ function MonthlySection(){
       )
     ),
     h('div',{className:'sn'},
-      'Unique clients per month = distinct billing entities invoiced that month  ·  YTD unique (',YTD_UNIQUE,') = distinct entities invoiced at least once Jan\u2013May 20  ·  ',
-      'Monthly counts do not add to ',YTD_UNIQUE,' — same client can appear in multiple months  ·  May is partial through May 20  ·  ',
+      'Unique clients per month = distinct billing entities invoiced that month  ·  YTD unique (',YTD_UNIQUE,') = distinct entities invoiced at least once Jan\u2013May 26  ·  ',
+      'Monthly counts do not add to ',YTD_UNIQUE,' \u2014 same client can appear in multiple months  ·  May is partial through May 26  ·  ',
       'Trailing 12M count (',TRAILING_12M,') is the CEO scorecard definition metric'
     )
   );
@@ -355,9 +355,35 @@ const lsGet=k=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;
 const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const lsClear=k=>{try{localStorage.removeItem(k);}catch(e){}};
 
+// ── PODIO PIPELINE — baked in from May 26, 2026 export ───────────
+// Source: Projects_-_Active_Client_Count export, In Progress / On Hold / Opportunity
+// Weighted per CEO formula: >=80% = 1.0x, 50-79% = 0.5x, <50% = excluded
+const BAKED_PODIO={
+  name:'Projects_-_Active_Client_Count_May26_2026.xlsx',
+  date:'May 26, 2026',
+  cc:18,
+  pipe:{
+    'Citizen Watch Co.':          {wtd:3017360, n:40, c:30},
+    'Seiko Holdings Group':       {wtd:552112,  n:30, c:27},
+    'The Swatch Group':           {wtd:432140,  n:28, c:16},
+    'Tapestry':                   {wtd:200000,  n:2,  c:1},
+    'Thelios':                    {wtd:181846,  n:7,  c:7},
+    'Timex Group':                {wtd:21117,   n:4,  c:4},
+    'A. Jaffe':                   {wtd:100000,  n:1,  c:1},
+    'Tiffany & Co.':              {wtd:57500,   n:5,  c:3},
+    'The Jewelry Group':          {wtd:11000,   n:6,  c:2},
+    'Bedrock Manufacturing (Shinola)':{wtd:85200,n:6, c:4},
+    'Kate Spade':                 {wtd:0,       n:2,  c:0},
+  }
+};;
+
 // ── APP ───────────────────────────────────────────────────────────
 function App(){
-  const[podio,setPodio]=useState(()=>lsGet(LS_PODIO));
+  const[podio,setPodio]=useState(()=>{
+    const saved=lsGet(LS_PODIO);
+    if(saved&&saved.date&&saved.date!==BAKED_PODIO.date)return saved;
+    return BAKED_PODIO;
+  });
   const[targets,setTargets]=useState(()=>lsGet(LS_TARGETS)||[]);
   const[secs,setSecs]=useState({k:true,g:true,t:false,c:true});
   const[err,setErr]=useState(null);
@@ -382,7 +408,7 @@ function App(){
     reader.readAsArrayBuffer(file);
   },[]);
 
-  const clearPodio=useCallback(()=>{setPodio(null);lsClear(LS_PODIO);},[]);
+  const clearPodio=useCallback(()=>{setPodio(BAKED_PODIO);lsClear(LS_PODIO);},[]);
   const tog=k=>setSecs(s=>({...s,[k]:!s[k]}));
   const keyT=KEY.reduce((s,co)=>{const ns=NS_LIVE[co]||{};return s+(ns.inv||0)+(ns.backlog||0)+(ns.awaitInv||0)+(podio?.pipe?.[co]?.wtd||0);},0);
   const grwT=GROWTH.reduce((s,co)=>{const ns=NS_LIVE[co]||{};return s+(ns.inv||0)+(ns.backlog||0)+(ns.awaitInv||0)+(podio?.pipe?.[co]?.wtd||0);},0);
