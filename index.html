@@ -114,9 +114,9 @@ const BDGCLR={
   DEFEND:{bg:'#E8F5E9',cl:'#2e7d32'},SCALE:{bg:'#E3F2FD',cl:'#1565c0'},
   BUILD:{bg:'#EDE7F6',cl:'#4527a0'},FIX:{bg:'#FFF8E1',cl:'#f57f17'},
 };
-const ANNUALIZE=365/159;
-const NS_DATE='Jun 8, 2026';
-const YTD_LABEL='Jan 1\u2013Jun 8, 2026';
+const ANNUALIZE=365/167;
+const NS_DATE='Jun 16, 2026';
+const YTD_LABEL='Jan 1\u2013Jun 16, 2026';
 
 // ── NETSUITE DATA — queried May 20, 2026 ─────────────────────────
 // Invoiced YTD: fiscal YTD Jan 1–May 20, 2026
@@ -124,22 +124,22 @@ const YTD_LABEL='Jan 1\u2013Jun 8, 2026';
 //   Backlog = status D/F (confirmed, not yet shipped)
 //   Awaiting Invoice = status B/E (shipped, not yet billed)
 const NS_LIVE={
-  'Citizen Watch Co.':               {inv:5408268,  backlog:863986,  awaitInv:3282731},
-  'Seiko Holdings Group':            {inv:338769,   backlog:140328,  awaitInv:462166},
-  'The Swatch Group':                {inv:370390,   backlog:0,       awaitInv:430023},
+  'Citizen Watch Co.':               {inv:5439189,  backlog:863986,  awaitInv:3405158},
+  'Seiko Holdings Group':            {inv:338769,   backlog:140328,  awaitInv:466135},
+  'The Swatch Group':                {inv:370390,   backlog:0,       awaitInv:430323},
   'Tapestry':                        {inv:36672,    backlog:0,       awaitInv:222335},
   'Thelios':                         {inv:168075,   backlog:31416,   awaitInv:55146},
   'Timex Group':                     {inv:257580,   backlog:250,     awaitInv:187651},
   'A. Jaffe':                        {inv:152739,   backlog:0,       awaitInv:196781},
-  'Tiffany & Co.':                   {inv:58399,    backlog:860,     awaitInv:403137},
-  'The Jewelry Group':               {inv:238300,   backlog:0,       awaitInv:142218},
+  'Tiffany & Co.':                   {inv:58399,    backlog:860,     awaitInv:413362},
+  'The Jewelry Group':               {inv:238300,   backlog:0,       awaitInv:150996},
   'Bedrock Manufacturing (Shinola)': {inv:135017,   backlog:0,       awaitInv:70498},
   'HexaClad':                        {inv:138505,   backlog:0,       awaitInv:277009},
   'Kate Spade':                      {inv:0,        backlog:0,       awaitInv:0},
   'Luxottica':                       {inv:15711,    backlog:16226,   awaitInv:17516},
   'Pandora':                         {inv:0,        backlog:0,       awaitInv:0},
   'Marcolin':                        {inv:0,        backlog:0,       awaitInv:0},
-  'Van Cleef & Arpels':              {inv:40000,    backlog:0,       awaitInv:1823},
+  'Van Cleef & Arpels':              {inv:40000,    backlog:0,       awaitInv:2713},
 };
 
 // Month-by-month active client count from SuiteQL
@@ -149,9 +149,9 @@ const MONTHLY=[
   {month:'March',    clients:21, invoiced:1309440, partial:false},
   {month:'April',    clients:27, invoiced:2416534, partial:false},
   {month:'May',      clients:29, invoiced:1518791, partial:false},
-  {month:'June',     clients:10, invoiced:115249,  partial:true},
+  {month:'June',     clients:14, invoiced:197655,  partial:true},
 ];
-const YTD_UNIQUE=52;
+const YTD_UNIQUE=53;
 const TRAILING_12M=66;
 
 // ── PODIO MAPPING ─────────────────────────────────────────────────
@@ -358,8 +358,8 @@ function MonthlySection(){
       )
     ),
     h('div',{className:'sn'},
-      'Unique clients per month = distinct billing entities invoiced that month  ·  YTD unique (',YTD_UNIQUE,') = distinct entities invoiced at least once Jan\u2013Jun 8  ·  ',
-      'Monthly counts do not add to ',YTD_UNIQUE,' \u2014 same client can appear in multiple months  ·  June is partial through Jun 8  ·  ',
+      'Unique clients per month = distinct billing entities invoiced that month  ·  YTD unique (',YTD_UNIQUE,') = distinct entities invoiced at least once Jan\u2013Jun 16  ·  ',
+      'Monthly counts do not add to ',YTD_UNIQUE,' \u2014 same client can appear in multiple months  ·  June is partial through Jun 16  ·  ',
       'Trailing 12M count (',TRAILING_12M,') is the CEO scorecard definition metric'
     )
   );
@@ -376,25 +376,25 @@ const lsClear=k=>{try{localStorage.removeItem(k);}catch(e){}};
 // Source: Projects_-_Active_Client_Count export, In Progress / On Hold / Opportunity
 // Weighted per CEO formula: >=80% = 1.0x, 50-79% = 0.5x, <50% = excluded
 const BAKED_PODIO={
-  name:'Projects_-_All_Project_Jun08_2026.xlsx',
-  date:'Jun 8, 2026',
-  cc:60,
+  name:'Projects_-_All_Projects_Jun16_2026.xlsx',
+  date:'Jun 16, 2026',
+  cc:59,
   pipe:{
-    'Citizen Watch Co.':          {wtd:6974534, n:52, c:31},
-    'Seiko Holdings Group':       {wtd:678196,  n:52, c:40},
-    'The Swatch Group':           {wtd:466590,  n:27, c:14},
+    'Citizen Watch Co.':          {wtd:6996271, n:53, c:31},
+    'Seiko Holdings Group':       {wtd:752696,  n:51, c:42},
+    'The Swatch Group':           {wtd:463640,  n:27, c:15},
     'Tapestry':                   {wtd:200000,  n:1,  c:1},
-    'Thelios':                    {wtd:190596,  n:10, c:9},
+    'Thelios':                    {wtd:168096,  n:9,  c:8},
     'Timex Group':                {wtd:196292,  n:11, c:10},
-    'A. Jaffe':                   {wtd:100000,  n:1,  c:1},
+    'A. Jaffe':                   {wtd:0,       n:0,  c:0},
     'Tiffany & Co.':              {wtd:60000,   n:7,  c:4},
-    'The Jewelry Group':          {wtd:17500,   n:10, c:4},
+    'The Jewelry Group':          {wtd:17500,   n:8,  c:4},
     'Bedrock Manufacturing (Shinola)':{wtd:130200,n:7,c:5},
     'HexaClad':                   {wtd:277000,  n:2,  c:1},
     'Kate Spade':                 {wtd:0,       n:1,  c:0},
-    'Luxottica':                  {wtd:5500,    n:3,  c:1},
+    'Luxottica':                  {wtd:5500,    n:1,  c:1},
     'Pandora':                    {wtd:0,       n:1,  c:0},
-    'Van Cleef & Arpels':         {wtd:334500,  n:19, c:18},
+    'Van Cleef & Arpels':         {wtd:343000,  n:20, c:19},
   }
 };;
 
