@@ -1,529 +1,806 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PAC TEAM · Commercial Scorecard · FY2026</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAC TEAM Commercial Scorecard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f8f8;color:#111;padding:24px;min-height:100vh}
-  input{font-family:inherit}
-  h1{font-size:20px;font-weight:600;color:#111;margin-bottom:4px}
-  .meta{font-size:12px;color:#888;margin-bottom:20px;line-height:1.6}
-  .rbar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:#E1F5EE;border-radius:8px;margin-bottom:16px;flex-wrap:wrap;border:1px solid #b2dfdb}
-  .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#1D9E75;margin-right:5px;vertical-align:middle}
-  /* Upload */
-  .dz{border:1.5px dashed #ccc;border-radius:8px;padding:12px 16px;cursor:pointer;background:#fff;transition:border-color .15s;margin-bottom:16px}
-  .dz:hover{border-color:#1D9E75}.dz.loaded{border-style:solid;border-color:#1D9E75;background:#f6fdf9}
-  /* Tiles */
-  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-  .tile{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-  .tile-lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-  .tile-val{font-size:20px;font-weight:600;color:#111}
-  .tile-sub{font-size:10px;color:#aaa;margin-top:3px}
-  /* Sections */
-  .sec{background:#fff;border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-  .sh{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:#fafafa;cursor:pointer;user-select:none;border-bottom:1px solid #f0f0f0}
-  .sh:hover{background:#f4f4f4}
-  /* Table */
-  .thead{display:grid;padding:5px 16px;background:#fafafa;border-bottom:1px solid #f0f0f0}
-  .thead span{font-size:10px;color:#999;font-weight:500}
-  .thead span:not(:first-child){text-align:right}
-  .ar{display:grid;padding:9px 16px;border-bottom:1px solid #f5f5f5;align-items:center;background:#fff}
-  .ar:last-of-type{border-bottom:none}.ar:hover{background:#fafafa}
-  .cl{display:flex;flex-direction:column;align-items:flex-end}
-  .clb{font-size:9px;color:#aaa;margin-bottom:2px}
-  .cv{font-size:12px;padding:4px 8px;background:#f5f5f5;border-radius:4px;color:#111}
-  .cv.live{background:#E8F5E9;color:#1b5e20;font-weight:500}
-  .cv.mu{color:#bbb}
-  .cs{font-size:13px;font-weight:600;text-align:right;color:#111}
-  /* Badges */
-  .ns{font-size:9px;padding:1px 4px;border-radius:3px;font-weight:600;background:#E3F2FD;color:#1565c0;margin-right:3px}
-  .po{font-size:9px;padding:1px 4px;border-radius:3px;font-weight:600;background:#E8F5E9;color:#2e7d32;margin-right:3px}
-  .lt{font-size:9px;padding:1px 4px;border-radius:3px;font-weight:600;background:#E8F5E9;color:#2e7d32;margin-left:3px}
-  .aib{font-size:9px;padding:1px 5px;border-radius:3px;background:#FFF8E1;color:#f57f17;font-weight:500;margin-top:2px;white-space:nowrap}
-  .run{font-size:9px;padding:1px 5px;border-radius:3px;background:#f5f5f5;color:#777;margin-top:2px;white-space:nowrap}
-  .pbg{font-size:9px;padding:1px 5px;border-radius:3px;background:#E8F5E9;color:#2e7d32;font-weight:500;margin-top:2px}
-  .pbg0{background:#f5f5f5;color:#bbb}
-  .xb{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;margin-top:2px;white-space:nowrap}
-  .xb-p{background:#EDE7F6;color:#4527a0}.xb-b{background:#E3F2FD;color:#1565c0}.xb-g{background:#E8F5E9;color:#2e7d32}
-  .bdg{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;white-space:nowrap}
-  /* Monthly */
-  .mo-wrap{padding:14px 16px 4px}
-  .mo-stats{display:flex;gap:24px;margin-bottom:14px;flex-wrap:wrap}
-  .mo-stat-val{font-size:18px;font-weight:600;color:#111}
-  .mo-stat-lbl{font-size:10px;color:#999;margin-top:2px}
-  .mo-tbl{width:100%;border-collapse:collapse;margin-bottom:4px}
-  .mo-tbl th{font-size:10px;color:#999;font-weight:500;padding:5px 8px;border-bottom:1px solid #eee;text-align:right}
-  .mo-tbl th:first-child{text-align:left}
-  .mo-tbl td{font-size:12px;padding:7px 8px;border-bottom:1px solid #f5f5f5;text-align:right;vertical-align:middle}
-  .mo-tbl td:first-child{text-align:left;font-weight:500}
-  .mo-tbl tr:last-child td{border-bottom:none;font-weight:600;border-top:1px solid #ddd;padding-top:8px}
-  .mo-tbl tr:hover td{background:#fafafa}
-  .bar-wrap{width:80px;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
-  .bar-fill{height:100%;border-radius:3px;background:#bbb}
-  .bar-fill.hi{background:#1D9E75}
-  .partial-tag{font-size:9px;padding:1px 4px;border-radius:3px;background:#FFF3E0;color:#e65100;font-weight:500;margin-left:5px}
-  /* Target inputs */
-  .ti{font-size:12px;padding:5px 8px;border:1px solid #e0e0e0;border-radius:4px;background:#fff;color:#111;width:100%}
-  .ni{font-size:11px;text-align:right;padding:4px 6px;border:1px solid #e0e0e0;border-radius:4px;background:#fff;color:#111;width:100%}
-  .ni:focus,.ti:focus{outline:none;border-color:#BA7517}
-  .addbt{width:100%;padding:9px;cursor:pointer;background:none;border:none;border-top:1px solid #f0f0f0;font-size:12px;color:#888;display:flex;align-items:center;justify-content:center;gap:5px}
-  .addbt:hover{background:#fafafa}
-  .db{background:none;border:1px solid #e0e0e0;border-radius:4px;cursor:pointer;color:#bbb;font-size:11px;padding:2px 6px}
-  .db:hover{color:#c62828;border-color:#ef9a9a}
-  .sn{padding:8px 16px;font-size:10px;color:#aaa;border-top:1px solid #f5f5f5;line-height:1.7;background:#fafafa}
-  .em{padding:16px;font-size:12px;color:#bbb;text-align:center}
-  /* Footer */
-  .footer{margin-top:24px;padding:12px 0;font-size:10px;color:#bbb;text-align:center;border-top:1px solid #eee}
-  @media(max-width:700px){
-    .tiles{grid-template-columns:1fr 1fr}
-    .mo-stats{gap:14px}
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a18;min-height:100vh;padding:24px}
+h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
+.sub{font-size:12px;color:#888;margin-top:4px}
+
+/* Upload panel */
+.upload-panel{background:#fff;border-radius:12px;border:1px solid #e5e3dc;padding:24px;margin-bottom:20px}
+.upload-panel h2{font-size:14px;font-weight:600;margin-bottom:16px;color:#444}
+.upload-zones{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.zone{border:1.5px dashed #d0cec6;border-radius:8px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .15s;position:relative;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.zone:hover,.zone.drag{border-color:#1D9E75;background:#f0faf6}
+.zone.loaded{border-style:solid;border-color:#1D9E75;background:#f0faf6}
+.zone.pending{border-color:#d0cec6;background:#fafaf8;cursor:default}
+.zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.zone-icon{font-size:22px;color:#aaa}
+.zone.loaded .zone-icon{color:#1D9E75}
+.zone-label{font-size:12px;font-weight:600;color:#555}
+.zone-sub{font-size:10px;color:#aaa;line-height:1.4}
+.zone.loaded .zone-sub{color:#1D9E75}
+.zone-badge{font-size:10px;padding:2px 6px;border-radius:4px;background:#e1f5ee;color:#0f6e56;font-weight:500;margin-top:2px}
+.zone.pending input[type=file]{pointer-events:none}
+
+/* Summary bar */
+.summary-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.sum-tag{font-size:11px;padding:4px 10px;border-radius:20px;background:#fff;border:1px solid #e5e3dc;color:#666}
+.sum-tag strong{color:#1a1a18}
+
+/* Tiles */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.tile{background:#fff;border-radius:10px;border:1px solid #e5e3dc;padding:14px 16px}
+.tile-lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.tile-val{font-size:20px;font-weight:600;color:#1a1a18}
+.tile-sub{font-size:10px;color:#aaa;margin-top:3px}
+.tile.t1{border-top:3px solid #1D9E75}
+.tile.t2{border-top:3px solid #534AB7}
+.tile.t3{border-top:3px solid #BA7517}
+.tile.t4{border-top:3px solid #888780}
+
+/* Section */
+.sec{background:#fff;border-radius:12px;border:1px solid #e5e3dc;overflow:hidden;margin-bottom:12px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:#faf9f6;cursor:pointer;user-select:none;border-bottom:1px solid #e5e3dc}
+.sec-l{display:flex;align-items:center;gap:8px}
+.sec-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sec-name{font-size:13px;font-weight:600;color:#1a1a18}
+.sec-def{font-size:11px;color:#aaa}
+.sec-r{display:flex;align-items:center;gap:12px}
+.sec-tot{font-size:13px;font-weight:600}
+.sec-chev{font-size:12px;color:#aaa;transition:transform .15s}
+.sec-chev.open{transform:rotate(180deg)}
+
+/* Table header */
+.thead{display:grid;padding:5px 16px;border-bottom:1px solid #f0ede6;background:#faf9f6}
+.thead span{font-size:10px;color:#aaa;font-weight:500;text-transform:uppercase;letter-spacing:.3px}
+.thead span:not(:first-child){text-align:right}
+
+/* Account row */
+.arow{display:grid;padding:9px 16px;border-bottom:1px solid #f5f3ee;align-items:center;transition:background .1s}
+.arow:hover{background:#faf9f6}
+.arow:last-child{border-bottom:none}
+.aname{font-size:13px;font-weight:600;color:#1a1a18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abrands{font-size:10px;color:#aaa;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abadges{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
+.bdg{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
+.bdefend{background:#e1f5ee;color:#0f6e56}
+.bscale{background:#e6f1fb;color:#185fa5}
+.bbuild{background:#eeedfe;color:#534ab7}
+.bfix{background:#faeeda;color:#854f0b}
+.bfire{background:#fcebeb;color:#a32d2d}
+.acell{display:flex;flex-direction:column;align-items:flex-end}
+.acell-lbl{font-size:9px;color:#aaa;margin-bottom:2px;display:flex;align-items:center;gap:3px}
+.stag{font-size:8px;padding:1px 4px;border-radius:3px;font-weight:600}
+.ns-tag{background:#e6f1fb;color:#185fa5}
+.po-tag{background:#e1f5ee;color:#0f6e56}
+.fb-tag{background:#faeeda;color:#854f0b}
+.aval{font-size:12px;color:#1a1a18;padding:3px 7px;background:#f5f3ee;border-radius:4px;text-align:right}
+.aval-score{font-size:13px;font-weight:700;color:#1a1a18}
+.ainp{width:100%;font-size:12px;text-align:right;padding:3px 7px;border:1px solid #e0ddd6;border-radius:4px;background:#fff;color:#1a1a18}
+.ainp:focus{outline:none;border-color:#1D9E75;background:#f0faf6}
+.pipe-badge{font-size:9px;padding:1px 5px;border-radius:3px;background:#e1f5ee;color:#0f6e56;font-weight:500;margin-top:2px;white-space:nowrap}
+.pipe-na{background:#f0ede6;color:#aaa}
+
+/* Add/del buttons */
+.add-btn{width:100%;padding:9px;cursor:pointer;background:none;border:none;border-top:1px solid #f0ede6;font-size:12px;color:#aaa;display:flex;align-items:center;justify-content:center;gap:5px}
+.add-btn:hover{background:#faf9f6;color:#555}
+.del-btn{background:none;border:1px solid #e5e3dc;border-radius:4px;cursor:pointer;color:#ccc;font-size:12px;padding:2px 5px;line-height:1}
+.del-btn:hover{color:#c0392b;border-color:#f5c6c6}
+
+/* Other accounts */
+.other-row{display:flex;justify-content:space-between;align-items:center;padding:6px 16px;border-top:1px solid #f5f3ee;font-size:11px}
+.other-row:first-child{border-top:none}
+.other-name{color:#555}
+.other-amt{color:#1a1a18;font-weight:500}
+
+/* Count section */
+.cnt-body{padding:14px 16px}
+.cnt-row{display:flex;align-items:center;gap:10px}
+.cnt-lbl{font-size:13px;color:#555}
+.cnt-inp{width:90px;font-size:14px;font-weight:600;text-align:right;padding:5px 8px;border:1px solid #e5e3dc;border-radius:6px;background:#fff;color:#1a1a18}
+.cnt-note{font-size:11px;color:#aaa;margin-top:6px;line-height:1.5}
+
+/* Empty state */
+.empty-msg{padding:20px;text-align:center;font-size:12px;color:#aaa}
+
+/* Fallback note */
+.fallback-note{font-size:10px;color:#ba7517;background:#fdf6e8;border:1px solid #f5dfa0;border-radius:6px;padding:8px 12px;margin:8px 16px;line-height:1.5}
+.sec-note{font-size:10px;color:#aaa;padding:8px 16px;border-top:1px solid #f0ede6;line-height:1.5}
+
+/* Other accounts collapsible */
+.other-sec{border-top:1px solid #f0ede6}
+.other-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;cursor:pointer;font-size:11px;color:#888;user-select:none}
+.other-hdr:hover{background:#faf9f6}
+
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 </style>
 </head>
 <body>
-<div id="root"></div>
+
+<div style="max-width:960px;margin:0 auto">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+    <div>
+      <h1>PAC TEAM &nbsp;·&nbsp; Commercial Scorecard</h1>
+      <div class="sub">Upload Podio and NetSuite files each Monday to refresh all metrics</div>
+    </div>
+    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Invoiced YTD: NetSuite net invoiced, Jan 1–Jun 24 2026 · Open orders: 6/24 · Pipeline: Podio 6/24</div>
+  </div>
+
+  <div id="root"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
 <script>
-const {useState,useEffect,useCallback,useRef,Fragment}=React;
-const h=React.createElement;
+const {useState,useCallback,useMemo,useRef} = React;
+const h = React.createElement;
 
-// ── CONFIG ────────────────────────────────────────────────────────
-const KEY=['Citizen Watch Co.','Seiko Holdings Group','The Swatch Group'];
-const GROWTH=['Tapestry','Thelios','Timex Group','A. Jaffe','Tiffany & Co.','The Jewelry Group',
-              'Bedrock Manufacturing (Shinola)','HexaClad','Kate Spade','Luxottica','Pandora','Marcolin',
-              'Van Cleef & Arpels'];
-const BRANDS={
-  'Citizen Watch Co.':'Citizen (all regions) · Caravelle · Alpina · Accutron · Bulova · Frederique Constant',
-  'Seiko Holdings Group':'Grand Seiko · Seiko (Japan, Korea, Americas)',
-  'The Swatch Group':'Harry Winston','Tapestry':'Coach · Kate Spade',
-  'Bedrock Manufacturing (Shinola)':'Shinola',
-  'Kate Spade':'Sub-brand of Tapestry  ·  no separate NetSuite entity',
-  'Van Cleef & Arpels':'Primarily PTNext division  ·  Richemont Group','A. Jaffe':'Events business',
-};
-const ASSESS={
-  'Citizen Watch Co.':'DEFEND','Seiko Holdings Group':'BUILD','The Swatch Group':'DEFEND',
-  'Tapestry':'BUILD','Thelios':'FIX','Timex Group':'FIX','A. Jaffe':'BUILD',
-  'Tiffany & Co.':'SCALE','The Jewelry Group':'FIX','Bedrock Manufacturing (Shinola)':'FIX',
-  'HexaClad':'—','Kate Spade':'—','Luxottica':'—','Pandora':'—','Marcolin':'—','Van Cleef & Arpels':'—',
-};
-const BDGCLR={
-  DEFEND:{bg:'#E8F5E9',cl:'#2e7d32'},SCALE:{bg:'#E3F2FD',cl:'#1565c0'},
-  BUILD:{bg:'#EDE7F6',cl:'#4527a0'},FIX:{bg:'#FFF8E1',cl:'#f57f17'},
-};
-const ANNUALIZE=365/173;
-const NS_DATE='Jun 22, 2026';
-const YTD_LABEL='Jan 1\u2013Jun 16, 2026';
-
-// ── NETSUITE DATA — queried May 20, 2026 ─────────────────────────
-// Invoiced YTD: fiscal YTD Jan 1–May 20, 2026
-// Open orders: amountUnbilled (remaining balance only — no double counting)
-//   Backlog = status D/F (confirmed, not yet shipped)
-//   Awaiting Invoice = status B/E (shipped, not yet billed)
-const NS_LIVE={
-  'Citizen Watch Co.':               {inv:5471503,  backlog:863986,  awaitInv:3455863},
-  'Seiko Holdings Group':            {inv:346034,   backlog:140328,  awaitInv:452819},
-  'The Swatch Group':                {inv:370390,   backlog:0,       awaitInv:430811},
-  'Tapestry':                        {inv:36672,    backlog:0,       awaitInv:222335},
-  'Thelios':                         {inv:168075,   backlog:31416,   awaitInv:55146},
-  'Timex Group':                     {inv:257620,   backlog:250,     awaitInv:187611},
-  'A. Jaffe':                        {inv:152739,   backlog:0,       awaitInv:162541},
-  'Tiffany & Co.':                   {inv:58399,    backlog:860,     awaitInv:413362},
-  'The Jewelry Group':               {inv:240665,   backlog:0,       awaitInv:148631},
-  'Bedrock Manufacturing (Shinola)': {inv:171658,   backlog:16063,   awaitInv:47248},
-  'HexaClad':                        {inv:138505,   backlog:0,       awaitInv:277009},
-  'Kate Spade':                      {inv:0,        backlog:0,       awaitInv:0},
-  'Luxottica':                       {inv:15711,    backlog:16226,   awaitInv:17516},
-  'Pandora':                         {inv:0,        backlog:0,       awaitInv:0},
-  'Marcolin':                        {inv:0,        backlog:0,       awaitInv:0},
-  'Van Cleef & Arpels':              {inv:40000,    backlog:0,       awaitInv:2713},
-};
-
-// Month-by-month active client count from SuiteQL
-const MONTHLY=[
-  {month:'January',  clients:25, invoiced:1688922, partial:false},
-  {month:'February', clients:20, invoiced:1222166, partial:false},
-  {month:'March',    clients:21, invoiced:1309440, partial:false},
-  {month:'April',    clients:27, invoiced:2416534, partial:false},
-  {month:'May',      clients:29, invoiced:1518791, partial:false},
-  {month:'June',     clients:19, invoiced:304419,  partial:true},
+// ── HOLDING COMPANY DEFINITIONS ──────────────────────────────────────────────
+const KEY_DEFS = [
+  {id:'citizen', name:'Citizen Watch Co.',    brands:'Citizen · Bulova · Caravelle · Accutron · Frederique Constant (all regions)', amA:'DEFEND', jA:'SCALE',  inv:4653502},
+  {id:'seiko',   name:'Seiko Holdings Group', brands:'Grand Seiko · Seiko',                                                         amA:'BUILD',  jA:'BUILD',  inv:322810},
+  {id:'swatch',  name:'The Swatch Group',     brands:'Harry Winston',                                                               amA:'DEFEND', jA:'SCALE',  inv:313523},
+  {id:'tapestry',name:'Tapestry',             brands:'Coach · Kate Spade',                                                          amA:'BUILD',  jA:'SCALE',  inv:36672},
 ];
-const YTD_UNIQUE=53;
-const YTD_GOAL=50;
-const TRAILING_12M=66;
-const TRAILING_GOAL=66;
+const GROWTH_DEFS = [
+  {id:'jewelry', name:'The Jewelry Group',        brands:'',        amA:'FIX',   jA:'SCALE', inv:246586},
+  {id:'thelios', name:'Thelios',                  brands:'LVMH',    amA:'FIX',   jA:'—',     inv:162516},
+  {id:'diamond', name:'Diamond Dream Jewelry',    brands:'',        amA:'—',     jA:'SCALE', inv:0},
+  {id:'timex',   name:'Timex Group',              brands:'',        amA:'FIX',   jA:'SCALE', inv:255222},
+  {id:'tiffany', name:'Tiffany & Co.',            brands:'LVMH',    amA:'SCALE', jA:'SCALE', inv:42943},
+  {id:'jaffe',   name:'A. Jaffe (Paramount)',      brands:'',        amA:'—',     jA:'SCALE', inv:0},
+  {id:'bedrock', name:'Bedrock Manufacturing',    brands:'Shinola', amA:'FIX',   jA:'SCALE', inv:52162},
+];
+const ALL_DEFS = [...KEY_DEFS, ...GROWTH_DEFS];
+const KNOWN_IDS = new Set(ALL_DEFS.map(d=>d.id));
 
-// ── PODIO MAPPING ─────────────────────────────────────────────────
-const PODIO_MAP={
-  'Citizen Watch of America':'Citizen Watch Co.','Citizen Watch Company of Canada':'Citizen Watch Co.',
-  'Citizen Watch United Kingdom':'Citizen Watch Co.','Bulova':'Citizen Watch Co.',
-  'Caravelle':'Citizen Watch Co.','ACCUTRON':'Citizen Watch Co.','Accutron':'Citizen Watch Co.',
-  'Frederique Constant':'Citizen Watch Co.','Alpina':'Citizen Watch Co.',
-  'Grand Seiko':'Seiko Holdings Group','SWC - Grand Seiko':'Seiko Holdings Group',
-  'SWC - Seiko':'Seiko Holdings Group','Seiko':'Seiko Holdings Group',
-  'Harry Winston':'The Swatch Group','Tapestry/Coach':'Tapestry','Coach':'Tapestry',
-  'Kate Spade':'Kate Spade','Th\u00e9lios':'Thelios','Thelios':'Thelios',
-  'Timex':'Timex Group','Timex Group':'Timex Group','TIFFANY & Co.':'Tiffany & Co.',
-  'Shinola':'Bedrock Manufacturing (Shinola)','A.Jaffe':'A. Jaffe','A. Jaffe':'A. Jaffe',
-  'HexaClad':'HexaClad','Luxottica':'Luxottica','Pandora':'Pandora','Marcolin':'Marcolin',
-};
-const wt=p=>+p>=80?1:+p>=50?0.5:0;
-const mapP=c=>PODIO_MAP[(c||'').trim()]||(c||'').trim();
-const parsePodio=buf=>{
-  const wb=XLSX.read(buf,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];
-  const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-  const active=new Set(['In Progress','On Hold','Opportunity']);const pipe={};const cls=new Set();
-  for(const r of rows){
-    if(!active.has(r['Status']))continue;
-    const cl=(r['Client']||'').trim();const est=parseFloat(r['Estimate value - amount'])||0;const prob=parseFloat(r['Probability'])||0;
-    if(!cl||est<=0)continue;cls.add(cl);const co=mapP(cl);const w=wt(prob);
-    if(!pipe[co])pipe[co]={wtd:0,n:0,c:0};pipe[co].wtd+=est*w;pipe[co].n++;if(w>0)pipe[co].c++;
+// ── BUILT-IN PODIO PIPELINE SEED ─────────────────────────────────────────────
+// Weighted pipeline by holding company from the .Projects export (6/24/2026).
+// Active statuses (In Progress / On Hold / Opportunity); weight = prob>=80?1.0
+// : prob>=50?0.5 : 0. Re-uploading the same Podio file reproduces these values.
+// Source: Projects_-_PowerBI_Export (10).xlsx.
+const PODIO_SEED = {"byId":{"citizen":{"projects":60,"wtd":7094885,"contributing":33},"_other":{"projects":144,"wtd":1879820,"contributing":66},"swatch":{"projects":29,"wtd":563790,"contributing":17},"seiko":{"projects":63,"wtd":764946,"contributing":41},"timex":{"projects":16,"wtd":198542,"contributing":12},"thelios":{"projects":12,"wtd":166596,"contributing":7},"tiffany":{"projects":7,"wtd":60000,"contributing":4},"jewelry":{"projects":9,"wtd":17500,"contributing":4},"tapestry":{"projects":3,"wtd":200000,"contributing":1},"bedrock":{"projects":6,"wtd":131688,"contributing":6},"diamond":{"projects":3,"wtd":245737,"contributing":1}},"totalActive":352};
+
+// ── BUILT-IN NETSUITE OPEN-ORDER SEED ────────────────────────────────────────
+// Open sales orders on an UNBILLED basis as of 6/18/2026, mapped to holding
+// companies. Totals reconcile to the Revenue Forecast V2 "Sales Orders" line
+// ($8,396,022.35 across 263 open orders). A fresh NetSuite Open Orders upload
+// overrides these values. Source: 2026_0618_Revenue_Forecast_V2.xlsx.
+const NS_SEED = {"byId": {"thelios": {"orders": 4, "total": 86562.0}, "_other": {"orders": 59, "total": 1750488.85}, "diamond": {"orders": 2, "total": 183060.88}, "seiko": {"orders": 14, "total": 731964.51}, "citizen": {"orders": 32, "total": 4001004.15}, "timex": {"orders": 10, "total": 187861.03}, "tiffany": {"orders": 110, "total": 410059.0}, "bedrock": {"orders": 8, "total": 63311.04}, "jewelry": {"orders": 12, "total": 148631.39}, "jaffe": {"orders": 2, "total": 162541.0}, "swatch": {"orders": 14, "total": 430125.87}, "tapestry": {"orders": 2, "total": 222335.0}}, "otherOrders": {"Tudor Watch, U.S.A.": 265796.0, "MADALUX": 2860.0, "BENARD DESIGN": 55795.9, "Right Time Watches & Jewelry": 150.0, "Nuna": 254969.0, "MOVADO GROUP INC.": 116436.0, "Victorinox Swiss Army": 163304.0, "Copper Hill Development, Inc.": 200.0, "BEN BRIDGE JEWELER": 130962.81, "Luxottica": 33742.5, "MIKIMOTO America Co., Ltd.": 8901.0, "Renna Jewels": 6663.0, "Monica Rich Kosann (MRK)": 159883.0, "CROWNRING": 811.6, "J'EVAR": 21481.21, "CASIO": 146045.0, "Marla Aaron Jewelry": 1060.0, "Ralph Lauren": 8482.0, "Obrists Interior America": 8847.6, "HEXACLAD": 277009.2, "The North Face": 84142.83, "Davaco, LP": 2056.0, "Van Cleef & Arpels America": 890.2}, "totalOrders": 269, "reportDate": "As of 6/24/2026"};
+
+// ── MAPPING FUNCTIONS ─────────────────────────────────────────────────────────
+function podioClientToId(client) {
+  if (!client) return null;
+  const s = client.toString().toLowerCase();
+  if (/citizen|bulova|caravelle|accutron|frederique|alpina/.test(s)) return 'citizen';
+  if (/seiko|grand seiko|swc/.test(s)) return 'seiko';
+  if (/harry winston/.test(s)) return 'swatch';
+  if (/tapestry|kate spade/.test(s)) return 'tapestry';
+  if (/coach/.test(s) && !/coaching/.test(s)) return 'tapestry';
+  if (/jewelry group/.test(s)) return 'jewelry';
+  if (/th[eé]lios/.test(s)) return 'thelios';
+  if (/timex/.test(s)) return 'timex';
+  if (/tiffany/.test(s)) return 'tiffany';
+  if (/shinola/.test(s)) return 'bedrock';
+  if (/jaffe/.test(s)) return 'jaffe';
+  if (/diamond dream/.test(s)) return 'diamond';
+  return null;
+}
+
+function nsCustomerToId(customer) {
+  if (!customer) return null;
+  const s = customer.toString().toUpperCase();
+  if (s.includes('TIFFANY')) return 'tiffany';
+  if (s.includes('THELIOS')||s.includes('THÉLIOS')) return 'thelios';
+  if (/CITIZEN|BULOVA|FREDERIQUE|CARAVELLE|ACCUTRON/.test(s)) return 'citizen';
+  if (/SEIKO|GSA/.test(s)) return 'seiko';
+  if (s.includes('HARRY WINSTON')) return 'swatch';
+  if (/TAPESTRY|KATE SPADE/.test(s)) return 'tapestry';
+  if (/\bCOACH\b/.test(s)) return 'tapestry';
+  if (s.includes('TIMEX')) return 'timex';
+  if (s.includes('JEWELRY GROUP')) return 'jewelry';
+  if (s.includes('SHINOLA')) return 'bedrock';
+  if (/A\.JAFFE|A\. JAFFE|\bJAFFE\b/.test(s)) return 'jaffe';
+  if (s.includes('DIAMOND DREAM')) return 'diamond';
+  return null;
+}
+
+function nsCustomerLabel(customer) {
+  if (!customer) return customer;
+  // Strip leading numeric codes and " : " hierarchy
+  const s = customer.toString();
+  const parts = s.split(' : ');
+  const last = parts[parts.length-1].replace(/^\d+\s+/, '').trim();
+  return last || s.replace(/^\d+\s+/, '').trim();
+}
+
+function probWeight(p) {
+  const n = parseFloat(p)||0;
+  return n>=80?1.0:n>=50?0.5:0;
+}
+
+// ── PARSERS ───────────────────────────────────────────────────────────────────
+function readXLSX(file, cb) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, raw:true, defval:''});
+      cb(null, rows);
+    } catch(err){ cb(err.message); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parsePodio(rows) {
+  if (!rows||rows.length<2) return {error:'Empty file'};
+  const headers = rows[0].map(h=>(h||'').toString().trim());
+  const ci = {
+    status: headers.indexOf('Status'),
+    client: headers.indexOf('Client'),
+    est:    headers.findIndex(h=>h.includes('Estimate value - amount')),
+    prob:   headers.indexOf('Probability'),
+  };
+  if (ci.client===-1||ci.status===-1) return {error:'Missing Client or Status column — make sure this is the Podio Active Client Count export'};
+
+  const byId = {};
+  const otherClients = {};
+  const ACTIVE = new Set(['In Progress','On Hold','Opportunity']);
+
+  rows.slice(1).forEach(row => {
+    const status = (row[ci.status]||'').toString().trim();
+    if (!ACTIVE.has(status)) return;
+    const client = (row[ci.client]||'').toString().trim();
+    const est = parseFloat(row[ci.est])||0;
+    const prob = parseFloat(row[ci.prob])||0;
+    const wtd = est * probWeight(prob);
+    const id = podioClientToId(client);
+
+    const bucket = id || '_other';
+    if (!byId[bucket]) byId[bucket] = {projects:0,totalEst:0,wtd:0,contributing:0};
+    byId[bucket].projects++;
+    byId[bucket].totalEst += est;
+    byId[bucket].wtd += wtd;
+    if (probWeight(prob)>0) byId[bucket].contributing++;
+
+    if (!id && client) {
+      otherClients[client] = (otherClients[client]||0) + wtd;
+    }
+  });
+
+  const activeRows = rows.slice(1).filter(r=>ACTIVE.has((r[ci.status]||'').toString().trim()));
+  return {byId, otherClients, totalActive:activeRows.length};
+}
+
+function parseNSOrders(rows) {
+  if (!rows||rows.length<5) return {error:'Empty file'};
+
+  // Find header row containing "Account"
+  let headerIdx = -1;
+  let reportDate = '';
+  for (let i=0;i<rows.length;i++) {
+    const row = rows[i];
+    const first = (row[0]||'').toString();
+    if (first.startsWith('As of')) reportDate = first;
+    if (row.some(c=>(c||'').toString().trim()==='Account')) { headerIdx=i; break; }
   }
-  return{pipe,cc:cls.size};
+  if (headerIdx===-1) return {error:'Could not find header row — make sure this is the NetSuite Custom Open Sales Orders export'};
+
+  const byId = {};
+  const otherOrders = {};
+  let totalOrders = 0;
+
+  // Data starts at headerIdx+2 (skip "Sales Orders" section label)
+  rows.slice(headerIdx+2).forEach(row => {
+    const first = (row[0]||'').toString().trim();
+    if (!first || first.startsWith('Total')) return;
+
+    const customer = (row[2]||'').toString().trim();
+    const amt = parseFloat(row[4])||0;
+    if (!customer || amt<=0) return;
+
+    const id = nsCustomerToId(customer);
+    const bucket = id||'_other';
+    if (!byId[bucket]) byId[bucket] = {orders:0,total:0};
+    byId[bucket].orders++;
+    byId[bucket].total += amt;
+    totalOrders++;
+
+    if (!id && customer) {
+      const label = nsCustomerLabel(customer);
+      otherOrders[label] = (otherOrders[label]||0) + amt;
+    }
+  });
+
+  return {byId, otherOrders, totalOrders, reportDate};
+}
+
+// Parse the "Custom Income Stmt Detail with Job Details" export → net invoiced
+// (Invoices less Credit Memos, all revenue accounts) by holding company.
+// Columns are located by header name so the parser tolerates layout shifts.
+function parseInvoiced(rows) {
+  if (!rows||rows.length<5) return {error:'Empty file'};
+  let hi=-1, ti=-1, ni=-1, ai=-1, di=-1, period='';
+  for (let i=0;i<rows.length;i++){
+    const r=rows[i];
+    const first=(r[0]||'').toString();
+    if (/^From .+ to .+/.test(first.trim())) period=first.trim();
+    const find=label=>r.findIndex(c=>(c||'').toString().trim()===label);
+    if (r.some(c=>(c||'').toString().trim()==='Type') && r.some(c=>(c||'').toString().trim()==='Amount')){
+      hi=i; ti=find('Type'); ai=find('Amount'); di=find('Date');
+      // 'Name' is the customer/entity column; first exact 'Name' after Type
+      ni=r.findIndex((c,idx)=>idx>ti && (c||'').toString().trim()==='Name');
+      break;
+    }
+  }
+  if (hi===-1||ti===-1||ai===-1) return {error:'Could not find Type/Amount header — make sure this is the NetSuite Custom Income Stmt Detail export'};
+
+  const byId={}; const other={}; let invCount=0, net=0;
+  rows.slice(hi+1).forEach(r=>{
+    const type=(r[ti]||'').toString().trim();
+    if (type!=='Invoice' && type!=='Credit Memo') return;
+    const name=((ni>=0?r[ni]:'')||r[11]||'').toString().trim();
+    const amt=parseFloat(r[ai]);
+    if (!isFinite(amt)) return;
+    net+=amt; invCount++;
+    const id=nsCustomerToId(name);
+    const bucket=id||'_other';
+    byId[bucket]=(byId[bucket]||0)+amt;
+    if (!id && name) { const l=nsCustomerLabel(name); other[l]=(other[l]||0)+amt; }
+  });
+  return {byId, other, net, invCount, period};
+}
+
+// ── FORMATTING ────────────────────────────────────────────────────────────────
+const fmtFull = v => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(+v||0);
+const fmtShort = v => {
+  const n = Math.abs(+v||0);
+  if (!n) return '$0';
+  if (n>=1e6) return '$'+(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';
+  if (n>=1e3) return '$'+(n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
+  return '$'+Math.round(n).toLocaleString();
 };
+const uid = () => Math.random().toString(36).slice(2,7);
 
-// ── FORMATTERS ────────────────────────────────────────────────────
-const fmt=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(+v||0);
-const fmtS=v=>{const n=Math.abs(+v||0);if(!n)return '$0';if(n>=1e6)return '$'+(n/1e6).toFixed(1)+'M';if(n>=1e3)return '$'+(n/1e3).toFixed(0)+'K';return '$'+Math.round(n).toLocaleString();};
-const uid=()=>Math.random().toString(36).slice(2,7);
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
 
-// ── COMPONENTS ────────────────────────────────────────────────────
-function Bdg({label}){
-  if(!label||label==='—')return null;
-  const s=BDGCLR[label]||{bg:'#f5f5f5',cl:'#777'};
-  return h('span',{className:'bdg',style:{background:s.bg,color:s.cl}},label);
-}
+function FileZone({label, sub, fileLabel, tag, onFile, loaded, info, pending}) {
+  const [drag, setDrag] = useState(false);
+  const inputRef = useRef();
 
-function UploadCard({state,err,onFile,onClear}){
-  const ref=useRef();
-  return h('div',{className:`dz${state?' loaded':''}`,
-    onClick:()=>ref.current.click(),onDragOver:e=>e.preventDefault(),
-    onDrop:e=>{e.preventDefault();const f=e.dataTransfer.files?.[0];if(f)onFile(f);}},
-    h('input',{ref,type:'file',accept:'.xlsx,.xls',style:{display:'none'},
-      onChange:e=>{const f=e.target.files?.[0];if(f)onFile(f);e.target.value=''}}),
-    h('div',{style:{display:'flex',alignItems:'center',gap:12}},
-      h('div',{style:{width:36,height:36,borderRadius:8,background:state?'#1D9E75':'#ddd',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:18,color:'#fff',fontWeight:300}},state?'✓':'↑'),
-      h('div',{style:{minWidth:0,flex:1}},
-        h('div',{style:{fontSize:13,fontWeight:600,color:'#111',marginBottom:2}},
-          h('span',{className:'po'},'Podio'),'Active Projects Export',
-          h('span',{style:{fontSize:9,padding:'1px 6px',borderRadius:3,background:'#E3F2FD',color:'#1565c0',fontWeight:600,marginLeft:8}},'Upload weekly')
-        ),
-        state
-          ?h('div',{style:{display:'flex',alignItems:'center',gap:10,marginTop:2}},
-              h('span',{style:{fontSize:11,color:'#1D9E75'}},'\u2713 '+state.name+' \u00b7 '+state.date+' \u00b7 pipeline loaded \u00b7 saved in browser'),
-              h('button',{
-                style:{fontSize:10,padding:'2px 8px',border:'1px solid #e0e0e0',borderRadius:3,background:'#fff',color:'#888',cursor:'pointer',flexShrink:0,marginLeft:4},
-                onClick:e=>{e.stopPropagation();onClear();}
-              },'clear')
-            )
-          :h('div',{style:{fontSize:11,color:'#aaa'}},'Pipeline baked in from '+BAKED_PODIO.date+'  ·  Upload a newer Podio export to override  ·  .xlsx'),
-        err&&h('div',{style:{fontSize:11,color:'#c62828',marginTop:3}},'⚠ '+err)
-      )
-    )
-  );
-}
+  const handleFile = f => {
+    if (!f) return;
+    readXLSX(f, (err, rows) => {
+      if (err) { alert('Could not read file: '+err); return; }
+      onFile(f.name, rows);
+    });
+  };
 
-function Sec({title,def,dot,total,open,onToggle,children}){
-  return h('div',{className:'sec'},
-    h('div',{className:'sh',onClick:onToggle},
-      h('div',{style:{display:'flex',alignItems:'center',gap:8}},
-        h('div',{style:{width:8,height:8,borderRadius:'50%',background:dot,flexShrink:0}}),
-        h('span',{style:{fontSize:14,fontWeight:600,color:'#111'}},' '+title),
-        h('span',{style:{fontSize:11,color:'#aaa',marginLeft:4}},def)
-      ),
-      h('div',{style:{display:'flex',alignItems:'center',gap:10}},
-        h('span',{style:{fontSize:14,fontWeight:600,color:'#111'}},fmt(total)),
-        h('span',{style:{fontSize:13,display:'inline-block',transition:'transform .15s',transform:open?'rotate(180deg)':'none',color:'#aaa'}},'⌄')
-      )
-    ),
-    open&&h('div',null,children)
-  );
-}
+  if (pending) {
+    return h('div',{className:'zone pending'},
+      h('i',{className:'ti ti-upload zone-icon'}),
+      h('div',{className:'zone-label'},label),
+      h('div',{className:'zone-sub'},'Coming soon — upload when ready'),
+    );
+  }
 
-function Thead({cols,labels}){
-  return h('div',{className:'thead',style:{display:'grid',gridTemplateColumns:cols,gap:4}},
-    ...labels.map((l,i)=>h('span',{key:i,style:{textAlign:i>0?'right':'left'}},l))
-  );
-}
-
-const KCOLS='minmax(0,1.4fr) 108px 98px 98px 114px 78px';
-const TCOLS='minmax(0,2fr) 110px 110px 78px 26px';
-
-function ARow({co,podio}){
-  const ns=NS_LIVE[co]||{inv:0,backlog:0,awaitInv:0};
-  const pw=podio?.pipe?.[co]?.wtd||0;const pi=podio?.pipe?.[co]||null;
-  const score=ns.inv+ns.backlog+ns.awaitInv+pw;
-  const ann=Math.round(ns.inv*ANNUALIZE);
-  const am=ASSESS[co];
-  const isVCA=co==='Van Cleef & Arpels';
-  return h('div',{className:'ar',style:{gridTemplateColumns:KCOLS}},
-    h('div',{style:{minWidth:0}},
-      h('div',{style:{fontSize:13,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',color:'#111'}},co),
-      BRANDS[co]&&h('div',{style:{fontSize:10,color:'#aaa',marginTop:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}},BRANDS[co]),
-      h('div',{style:{display:'flex',gap:3,marginTop:3,alignItems:'center',flexWrap:'wrap'}},
-        am&&h(Fragment,null,h('span',{style:{fontSize:9,color:'#aaa'}},'AM:'),h(Bdg,{label:am})),
-        co==='HexaClad'&&h('span',{className:'xb xb-p'},'reactivated May 2026'),
-        (co==='Pandora'||co==='Marcolin'||co==='Luxottica')&&h('span',{className:'xb xb-p'},'new · May 2026'),
-        co==='Kate Spade'&&h('span',{className:'xb xb-b'},'no NS entity'),
-        co==='A. Jaffe'&&h('span',{className:'xb xb-g'},'events business'),
-        isVCA&&h('span',{style:{fontSize:9,padding:'1px 6px',borderRadius:3,fontWeight:700,background:'#E8EAF6',color:'#283593',whiteSpace:'nowrap',border:'1px solid #9FA8DA'}},'PTNext')
-      )
-    ),
-    h('div',{className:'cl'},
-      h('div',{className:'clb'},h('span',{className:'ns'},'NS'),'invoiced YTD',h('span',{className:'lt'},'live')),
-      h('div',{className:'cv live'},fmt(ns.inv)),
-      ns.inv>0&&h('span',{className:'run'},'~'+fmtS(ann)+' ann.')
-    ),
-    h('div',{className:'cl'},
-      h('div',{className:'clb'},h('span',{className:'ns'},'NS'),'backlog',h('span',{className:'lt'},'live')),
-      h('div',{className:'cv live'},fmt(ns.backlog))
-    ),
-    h('div',{className:'cl'},
-      h('div',{className:'clb'},h('span',{className:'ns'},'NS'),'awaiting inv.',h('span',{className:'lt'},'live')),
-      h('div',{className:'cv live'},fmt(ns.awaitInv)),
-      ns.awaitInv>0&&h('span',{className:'aib'},'shipped · unbilled')
-    ),
-    h('div',{className:'cl'},
-      h('div',{className:'clb'},h('span',{className:'po'},'Podio'),'wtd pipeline'),
-      h('div',{className:'cv'+(podio?'':' mu')},podio?fmt(pw):'— upload file'),
-      podio&&h('span',{className:'pbg'+(!pi||!pi.n?' pbg0':'')},(!pi||!pi.n)?'no projects':`${pi.c}/${pi.n} projects`)
-    ),
-    h('div',{style:{textAlign:'right'}},
-      h('div',{style:{fontSize:9,color:'#aaa',marginBottom:3}},'score'),
-      h('div',{className:'cs'},fmtS(score))
-    )
-  );
-}
-
-const VERDICT_STYLE={
-  'PURSUE NOW':{bg:'#E1F5EE',cl:'#0a4a30',border:'#1D9E75'},
-  'PURSUE':    {bg:'#EDE7F6',cl:'#4527a0',border:'#7E57C2'},
-  'WATCH':     {bg:'#FFF8E1',cl:'#E65100',border:'#FFA726'},
-};
-function TRow({t,onChange,onDel}){
-  const sc=(+t.won||0)+(+t.pipe||0);
-  const vs=VERDICT_STYLE[t.verdict]||{bg:'#f5f5f5',cl:'#555',border:'#ccc'};
-  return h('div',{className:'ar',style:{gridTemplateColumns:TCOLS}},
-    h('div',{style:{minWidth:0}},
-      h('div',{style:{fontSize:13,fontWeight:600,color:'#111',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}},t.name||'—'),
-      h('div',{style:{display:'flex',gap:6,marginTop:3,alignItems:'center'}},
-        t.verdict&&h('span',{style:{fontSize:9,padding:'1px 6px',borderRadius:3,fontWeight:700,background:vs.bg,color:vs.cl,border:'1px solid '+vs.border,whiteSpace:'nowrap'}},t.verdict),
-        t.revenue&&h('span',{style:{fontSize:10,color:'#888'}},t.revenue)
-      )
-    ),
-    h('div',{className:'cl'},h('div',{className:'clb'},h('span',{className:'ns'},'NS'),'new biz won'),h('input',{type:'number',className:'ni',value:t.won||'',placeholder:'0',onChange:e=>onChange('won',e.target.value)})),
-    h('div',{className:'cl'},h('div',{className:'clb'},h('span',{className:'po'},'Podio'),'wtd pipeline'),h('input',{type:'number',className:'ni',value:t.pipe||'',placeholder:'0',onChange:e=>onChange('pipe',e.target.value)})),
-    h('div',{style:{textAlign:'right'}},h('div',{style:{fontSize:9,color:'#aaa',marginBottom:3}},'score'),h('div',{className:'cs'},fmtS(sc))),
-    h('button',{className:'db',onClick:onDel},'×')
-  );
-}
-
-function MonthlySection(){
-  const maxC=Math.max(...MONTHLY.map(m=>m.clients));
-  const totalInv=MONTHLY.reduce((s,m)=>s+m.invoiced,0);
-  return h('div',null,
-    h('div',{className:'mo-wrap'},
-      h('div',{className:'mo-stats'},
-        h('div',null,
-          h('div',{className:'mo-stat-val',style:{color:YTD_UNIQUE<=YTD_GOAL?'#1D9E75':'#A32D2D'}},YTD_UNIQUE,h('span',{className:'lt',style:{marginLeft:5,verticalAlign:'middle'}},'live')),
-          h('div',{className:'mo-stat-lbl'},'unique clients FY2026 YTD'),
-          h('div',{style:{fontSize:9,marginTop:3,fontWeight:600,color:YTD_UNIQUE<=YTD_GOAL?'#1D9E75':'#A32D2D'}},
-            'goal ≤ '+YTD_GOAL+'  ·  '+(YTD_UNIQUE<=YTD_GOAL?'on goal':+(YTD_UNIQUE-YTD_GOAL)+' over goal'))
-        ),
-        h('div',null,h('div',{className:'mo-stat-val'},fmt(totalInv)),h('div',{className:'mo-stat-lbl'},'total invoiced FY2026 YTD')),
-        h('div',null,h('div',{className:'mo-stat-val'},'~'+fmtS(Math.round(totalInv*ANNUALIZE))),h('div',{className:'mo-stat-lbl'},'annualized run rate')),
-        h('div',null,
-          h('div',{className:'mo-stat-val',style:{color:TRAILING_12M<=TRAILING_GOAL?'#1D9E75':'#A32D2D'}},TRAILING_12M),
-          h('div',{className:'mo-stat-lbl'},'trailing 12M'),
-          h('div',{style:{fontSize:9,marginTop:3,fontWeight:600,color:TRAILING_12M<=TRAILING_GOAL?'#1D9E75':'#A32D2D'}},
-            'goal ≤ '+TRAILING_GOAL+'  ·  '+(TRAILING_12M<=TRAILING_GOAL?'at ceiling':'over goal')),
-          h('div',{style:{fontSize:9,marginTop:1,color:'#888'}},'target ≤ 55 by Dec 2027')
+  return h('div',{
+    className:`zone ${loaded?'loaded':''} ${drag?'drag':''}`,
+    onDragOver:e=>{e.preventDefault();setDrag(true)},
+    onDragLeave:()=>setDrag(false),
+    onDrop:e=>{e.preventDefault();setDrag(false);const f=e.dataTransfer.files[0];if(f)handleFile(f);}
+  },
+    h('input',{type:'file',accept:'.xlsx,.xls',ref:inputRef,onChange:e=>handleFile(e.target.files[0])}),
+    h('i',{className:`ti ${loaded?'ti-circle-check':'ti-upload'} zone-icon`}),
+    h('div',{className:'zone-label'},label),
+    loaded
+      ? h(React.Fragment,null,
+          h('div',{className:'zone-sub',style:{fontWeight:500}},fileLabel),
+          h('div',{className:'zone-badge'},info)
         )
+      : h('div',{className:'zone-sub'},sub),
+    h('div',{style:{marginTop:4}},
+      h('span',{className:`stag ${tag==='NS'?'ns-tag':'po-tag'}`},tag)
+    )
+  );
+}
+
+function Badge({label}) {
+  if (!label||label==='—') return null;
+  const cls = label==='DEFEND'?'bdefend':label==='SCALE'?'bscale':label==='BUILD'?'bbuild':
+              label.startsWith('FIX')?'bfix':'bfire';
+  return h('span',{className:`bdg ${cls}`},label);
+}
+
+function AccountRow({acc, isT, onChange, onDel, cols, invFallback}) {
+  const score = isT ? (+acc.won||0)+(+acc.pipe||0)
+                    : (+acc.inv||0)+(+acc.ord||0)+(+acc.pipe||0);
+  return h('div',{className:'arow',style:{gridTemplateColumns:cols}},
+    h('div',{style:{minWidth:0}},
+      h('div',{className:'aname',title:acc.name}, acc.name),
+      acc.brands && h('div',{className:'abrands'}, acc.brands),
+      !isT && h('div',{className:'abadges'},
+        h('span',{style:{fontSize:9,color:'#aaa'}},'AM:'), h(Badge,{label:acc.amA}),
+        h('span',{style:{fontSize:9,color:'#aaa',marginLeft:3}},'J:'), h(Badge,{label:acc.jA})
+      )
+    ),
+    !isT && h('div',{className:'acell'},
+      h('div',{className:'acell-lbl'},
+        h('span',{className:'stag fb-tag'}, invFallback?'Portfolio':'NS'), ' invoiced YTD'
       ),
-      h('table',{className:'mo-tbl'},
-        h('thead',null,h('tr',null,
-          h('th',{style:{textAlign:'left'}},'Month'),
-          h('th',null,'Unique clients'),
-          h('th',null,'Invoiced'),
-          h('th',{style:{textAlign:'left',paddingLeft:16}},'Volume')
-        )),
-        h('tbody',null,
-          ...MONTHLY.map(m=>h('tr',{key:m.month},
-            h('td',{style:{textAlign:'left'}},m.month,m.partial&&h('span',{className:'partial-tag'},'partial')),
-            h('td',null,h('span',{style:{fontWeight:m.clients===maxC?700:400,color:m.clients===maxC?'#1D9E75':'#111'}},m.clients)),
-            h('td',null,fmt(m.invoiced)),
-            h('td',{style:{textAlign:'left',paddingLeft:16}},
-              h('div',{className:'bar-wrap'},
-                h('div',{className:'bar-fill'+(m.clients===maxC?' hi':''),style:{width:(m.clients/maxC*100)+'%'}})
-              )
-            )
-          )),
-          h('tr',null,
-            h('td',{style:{textAlign:'left'}},'YTD Total'),
-            h('td',null,YTD_UNIQUE,' unique'),
-            h('td',null,fmt(totalInv)),
-            h('td',null)
+      h('input',{type:'number',className:'ainp',value:acc.inv,placeholder:'0',
+        onChange:e=>onChange(acc.id,'inv',e.target.value)})
+    ),
+    !isT
+      ? h('div',{className:'acell'},
+          h('div',{className:'acell-lbl'},h('span',{className:'stag ns-tag'},'NS'),' open orders'),
+          h('input',{type:'number',className:'ainp',value:acc.ord,placeholder:'0',
+            onChange:e=>onChange(acc.id,'ord',e.target.value)})
+        )
+      : h('div',{className:'acell'},
+          h('div',{className:'acell-lbl'},h('span',{className:'stag ns-tag'},'NS'),' new biz won'),
+          h('input',{type:'number',className:'ainp',value:acc.won||'',placeholder:'0',
+            onChange:e=>onChange(acc.id,'won',e.target.value)})
+        ),
+    h('div',{className:'acell'},
+      h('div',{className:'acell-lbl'},h('span',{className:'stag po-tag'},'Podio'),' wtd pipeline'),
+      h('input',{type:'number',className:'ainp',value:acc.pipe,placeholder:'0',
+        onChange:e=>onChange(acc.id,'pipe',e.target.value)}),
+      acc.pipeN>0
+        ? h('span',{className:'pipe-badge'},acc.pipeContrib,'/',acc.pipeN,' projects')
+        : h('span',{className:'pipe-badge pipe-na'},'no pipeline')
+    ),
+    h('div',{className:'acell'},
+      h('div',{className:'acell-lbl'},'account score'),
+      h('div',{className:'aval-score'},fmtShort(score))
+    ),
+    h('button',{className:'del-btn',style:{justifySelf:'center'},onClick:()=>onDel(acc.id),title:'Remove'},'×')
+  );
+}
+
+function OtherAccounts({nsOtherOrders, podioOtherClients}) {
+  const [open, setOpen] = useState(false);
+  const combined = {};
+  Object.entries(nsOtherOrders||{}).forEach(([k,v])=>{
+    if (!combined[k]) combined[k]={ord:0,pipe:0};
+    combined[k].ord += v;
+  });
+  Object.entries(podioOtherClients||{}).forEach(([k,v])=>{
+    if (!combined[k]) combined[k]={ord:0,pipe:0};
+    combined[k].pipe += v;
+  });
+  const entries = Object.entries(combined).filter(([,v])=>v.ord>1000||v.pipe>1000)
+    .sort((a,b)=>(b[1].ord+b[1].pipe)-(a[1].ord+a[1].pipe));
+  if (!entries.length) return null;
+  const totalOrd = entries.reduce((s,[,v])=>s+v.ord,0);
+  const totalPipe = entries.reduce((s,[,v])=>s+v.pipe,0);
+
+  return h('div',{className:'sec',style:{marginBottom:12}},
+    h('div',{className:'sec-hdr',onClick:()=>setOpen(o=>!o)},
+      h('div',{className:'sec-l'},
+        h('div',{className:'sec-dot',style:{background:'#d0cec6'}}),
+        h('span',{className:'sec-name'},'Other active accounts'),
+        h('span',{className:'sec-def'},'in files but outside tracked scorecard')
+      ),
+      h('div',{className:'sec-r'},
+        h('span',{style:{fontSize:11,color:'#aaa'}}, entries.length+' accounts  ·  ',
+          fmtShort(totalOrd+totalPipe),' total'),
+        h('span',{className:`sec-chev ${open?'open':''}`},'▼')
+      )
+    ),
+    open && h('div',null,
+      entries.map(([name,vals])=>
+        h('div',{key:name,className:'other-row'},
+          h('span',{className:'other-name'},name),
+          h('div',{style:{display:'flex',gap:12}},
+            vals.ord>0 && h('span',{style:{fontSize:11,color:'#185fa5'}},
+              h('span',{className:'stag ns-tag',style:{marginRight:3}},'NS'),
+              fmtShort(vals.ord)),
+            vals.pipe>0 && h('span',{style:{fontSize:11,color:'#0f6e56'}},
+              h('span',{className:'stag po-tag',style:{marginRight:3}},'Podio'),
+              fmtShort(vals.pipe))
           )
         )
+      ),
+      h('div',{style:{fontSize:10,color:'#aaa',padding:'8px 16px',borderTop:'1px solid #f5f3ee'}},
+        'These accounts appear in your uploaded files but are not assigned to a scorecard tier. ',
+        'To track them, add them to a section above using "+ add account".'
+      )
+    )
+  );
+}
+
+function Section({title,def,dot,total,open,onToggle,children,onAdd,note,colHead,cols}) {
+  return h('div',{className:'sec'},
+    h('div',{className:'sec-hdr',onClick:onToggle},
+      h('div',{className:'sec-l'},
+        h('div',{className:'sec-dot',style:{background:dot}}),
+        h('span',{className:'sec-name'},title),
+        h('span',{className:'sec-def'},def)
+      ),
+      h('div',{className:'sec-r'},
+        h('span',{className:'sec-tot'},fmtFull(total)),
+        h('span',{className:`sec-chev ${open?'open':''}`},'▼')
       )
     ),
-    h('div',{className:'sn'},
-      'Unique clients per month = distinct billing entities invoiced that month  ·  YTD unique (',YTD_UNIQUE,') = distinct entities invoiced at least once Jan\u2013Jun 16  ·  ',
-      'Monthly counts do not add to ',YTD_UNIQUE,' \u2014 same client can appear in multiple months  ·  June is partial through Jun 22  ·  ',
-      'Fewer is better — revenue concentrating in strategic accounts  ·  YTD goal ≤ '+YTD_GOAL+' (currently '+YTD_UNIQUE+', '+(YTD_UNIQUE>YTD_GOAL?(YTD_UNIQUE-YTD_GOAL)+' over':'on goal')+')  ·  Trailing 12M goal ≤ '+TRAILING_GOAL+' (currently '+TRAILING_12M+')  ·  Target ≤ 55 trailing 12M by Dec 31, 2027'
+    open && h(React.Fragment,null,
+      h('div',{className:'thead',style:{gridTemplateColumns:cols,display:'grid',gap:6,padding:'5px 16px'}},
+        colHead.map((l,i)=>h('span',{key:i},l))
+      ),
+      children,
+      h('button',{className:'add-btn',onClick:onAdd},
+        h('i',{className:'ti ti-plus',style:{fontSize:12}}), ' add account'
+      ),
+      h('div',{className:'sec-note'},note)
     )
   );
 }
 
-// ── LOCALSTORAGE HELPERS ──────────────────────────────────────────
-const LS_PODIO='pt_sc_podio_v1';
-const LS_TARGETS='pt_sc_targets_v3';
-const lsGet=k=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}};
-const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
-const lsClear=k=>{try{localStorage.removeItem(k);}catch(e){}};
+// ── APP ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [podioMeta, setPodioMeta] = useState({name:'Built-in · .Projects (6/24/2026)', totalActive:PODIO_SEED.totalActive});
+  const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (6/24/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
+  const [podioData, setPodioData] = useState(PODIO_SEED);
+  const [nsData, setNsData] = useState(NS_SEED);
+  const [invMeta, setInvMeta] = useState({name:'Built-in · Net invoiced (6/24/2026)', period:'Jan 1–Jun 24 2026', net:6608761});
 
-// ── PODIO PIPELINE — baked in from May 26, 2026 export ───────────
-// Source: Projects_-_Active_Client_Count export, In Progress / On Hold / Opportunity
-// Weighted per CEO formula: >=80% = 1.0x, 50-79% = 0.5x, <50% = excluded
-const BAKED_PODIO={
-  name:'Projects_-_Last_view_used_Jun22_2026.xlsx',
-  date:'Jun 22, 2026',
-  cc:58,
-  pipe:{
-    'Citizen Watch Co.':          {wtd:7171868, n:55, c:33},
-    'Seiko Holdings Group':       {wtd:765696,  n:50, c:41},
-    'The Swatch Group':           {wtd:513640,  n:28, c:16},
-    'Tapestry':                   {wtd:200000,  n:1,  c:1},
-    'Thelios':                    {wtd:166596,  n:8,  c:7},
-    'Timex Group':                {wtd:196292,  n:11, c:10},
-    'A. Jaffe':                   {wtd:0,       n:0,  c:0},
-    'Tiffany & Co.':              {wtd:60000,   n:7,  c:4},
-    'The Jewelry Group':          {wtd:17500,   n:8,  c:4},
-    'Bedrock Manufacturing (Shinola)':{wtd:130201,n:6,c:6},
-    'HexaClad':                   {wtd:277000,  n:2,  c:1},
-    'Kate Spade':                 {wtd:0,       n:1,  c:0},
-    'Luxottica':                  {wtd:5500,    n:1,  c:1},
-    'Pandora':                    {wtd:0,       n:1,  c:0},
-    'Van Cleef & Arpels':         {wtd:341500,  n:19, c:18},
-  }
-};;
-
-// ── APP ───────────────────────────────────────────────────────────
-function App(){
-  const[podio,setPodio]=useState(()=>{
-    const saved=lsGet(LS_PODIO);
-    if(saved&&saved.date&&saved.date!==BAKED_PODIO.date)return saved;
-    return BAKED_PODIO;
-  });
-  const DEFAULT_TARGETS=[
-  {id:'t1', name:'Helzberg',                      verdict:'PURSUE NOW', revenue:'$550M',   won:'', pipe:''},
-  {id:'t2', name:'Brilliant Earth',               verdict:'PURSUE NOW', revenue:'$437M',   won:'', pipe:''},
-  {id:'t3', name:'Signet (Kay / Zales / Jared)',  verdict:'PURSUE NOW', revenue:'~$6.7B',  won:'', pipe:''},
-  {id:'t4', name:'David Yurman',                  verdict:'PURSUE',     revenue:'$1.7B',   won:'', pipe:''},
-  {id:'t5', name:"L'Oréal Luxe",             verdict:'WATCH',      revenue:'$16.8B',  won:'', pipe:''},
-  {id:'t6', name:'Capri Holdings (MK / Jimmy Choo)',verdict:'WATCH',    revenue:'~$3.4B',  won:'', pipe:''},
-  {id:'t7', name:'Fossil Group',                  verdict:'WATCH',      revenue:'$995M',   won:'', pipe:''},
-  {id:'t8', name:'Estée Lauder',             verdict:'WATCH',      revenue:'~$14.3B', won:'', pipe:''},
-  {id:'t9', name:'Kendra Scott',                  verdict:'WATCH',      revenue:'~$400M',  won:'', pipe:''},
-];
-const[targets,setTargets]=useState(()=>{
-    const saved=lsGet(LS_TARGETS);
-    return(saved&&saved.length>0)?saved:DEFAULT_TARGETS;
-  });
-  const[secs,setSecs]=useState({k:true,g:true,t:true,c:true});
-  const[err,setErr]=useState(null);
-
-  const saveT=u=>{setTargets(u);lsSet(LS_TARGETS,u);};
-
-  const handleFile=useCallback((file)=>{
-    const reader=new FileReader();
-    reader.onload=e=>{
-      try{
-        const buf=new Uint8Array(e.target.result);
-        const ts=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-        const parsed=parsePodio(buf);
-        const data={...parsed,name:file.name,date:ts};
-        setPodio(data);
-        lsSet(LS_PODIO,data);
-        setErr(null);
-      }catch(e){
-        if(e.message&&!e.message.includes('storage'))setErr(e.message);
-      }
+  // Account state initialized from definitions
+  const initAccounts = defs => defs.map(d => {
+    const p = PODIO_SEED.byId[d.id];
+    return {
+      id:d.id, name:d.name, brands:d.brands||'', amA:d.amA||'—', jA:d.jA||'—',
+      inv:String(d.inv||0), ord:String(Math.round(NS_SEED.byId[d.id]?.total||0)),
+      pipe:String(Math.round(p?.wtd||0)), pipeN:p?.projects||0, pipeContrib:p?.contributing||0,
     };
-    reader.readAsArrayBuffer(file);
-  },[]);
+  });
 
-  const clearPodio=useCallback(()=>{setPodio(BAKED_PODIO);lsClear(LS_PODIO);},[]);
-  const tog=k=>setSecs(s=>({...s,[k]:!s[k]}));
-  const keyT=KEY.reduce((s,co)=>{const ns=NS_LIVE[co]||{};return s+(ns.inv||0)+(ns.backlog||0)+(ns.awaitInv||0)+(podio?.pipe?.[co]?.wtd||0);},0);
-  const grwT=GROWTH.reduce((s,co)=>{const ns=NS_LIVE[co]||{};return s+(ns.inv||0)+(ns.backlog||0)+(ns.awaitInv||0)+(podio?.pipe?.[co]?.wtd||0);},0);
-  const tgtT=targets.reduce((s,t)=>s+(+t.won||0)+(+t.pipe||0),0);
+  const [keyAccts, setKeyAccts] = useState(()=>initAccounts(KEY_DEFS));
+  const [grwAccts, setGrwAccts] = useState(()=>initAccounts(GROWTH_DEFS));
+  const [tgtAccts, setTgtAccts] = useState([]);
+  const [activeCount, setActiveCount] = useState('47');
+  const [open, setOpen] = useState({k:true,g:true,t:false,c:false,o:false});
+  const [invFallback, setInvFallback] = useState(false);
 
-  return h('div',{style:{maxWidth:1100,margin:'0 auto'}},
-    h('h1',null,h('span',{className:'live-dot'}),'PAC TEAM  ·  Commercial Scorecard  ·  FY 2026'),
-    h('div',{className:'meta'},
-      'Invoiced YTD: '+YTD_LABEL+'  ·  Open orders: amountUnbilled (no double counting)  ·  Pipeline: \u226580% = 1.0\u00d7  ·  50\u201379% = 0.5\u00d7  ·  <50% = excluded'
+  const tog = k => setOpen(o=>({...o,[k]:!o[k]}));
+
+  // Apply parsed Podio data to account state
+  const applyPodio = useCallback((parsed) => {
+    const applyTo = setter => setter(prev => prev.map(acc => {
+      const d = parsed.byId[acc.id];
+      return {...acc, pipe:String(Math.round(d?.wtd||0)), pipeN:d?.projects||0, pipeContrib:d?.contributing||0};
+    }));
+    applyTo(setKeyAccts);
+    applyTo(setGrwAccts);
+  }, []);
+
+  // Apply parsed NS Orders data to account state
+  const applyNSOrders = useCallback((parsed) => {
+    const applyTo = setter => setter(prev => prev.map(acc => {
+      const d = parsed.byId[acc.id];
+      return {...acc, ord:String(Math.round(d?.total||0))};
+    }));
+    applyTo(setKeyAccts);
+    applyTo(setGrwAccts);
+  }, []);
+
+  const handlePodioFile = (name, rows) => {
+    const parsed = parsePodio(rows);
+    if (parsed.error) { alert('Podio parse error: '+parsed.error); return; }
+    setPodioMeta({name, totalActive:parsed.totalActive});
+    setPodioData(parsed);
+    applyPodio(parsed);
+  };
+
+  const handleNSFile = (name, rows) => {
+    const parsed = parseNSOrders(rows);
+    if (parsed.error) { alert('NetSuite parse error: '+parsed.error); return; }
+    setNsMeta({name, totalOrders:parsed.totalOrders, reportDate:parsed.reportDate});
+    setNsData(parsed);
+    applyNSOrders(parsed);
+    document.getElementById('last-updated').textContent =
+      parsed.reportDate ? 'Report: '+parsed.reportDate : '';
+  };
+
+  const applyInvoiced = useCallback((parsed) => {
+    const applyTo = setter => setter(prev => prev.map(acc => {
+      const v = parsed.byId[acc.id];
+      return v===undefined ? acc : {...acc, inv:String(Math.round(v))};
+    }));
+    applyTo(setKeyAccts);
+    applyTo(setGrwAccts);
+    setInvFallback(false);
+  }, []);
+
+  const handleInvoicedFile = (name, rows) => {
+    const parsed = parseInvoiced(rows);
+    if (parsed.error) { alert('Invoiced parse error: '+parsed.error); return; }
+    setInvMeta({name, period:parsed.period, net:parsed.net});
+    applyInvoiced(parsed);
+  };
+
+  const ch = setter => (id,f,v) => setter(p=>p.map(a=>a.id===id?{...a,[f]:v}:a));
+  const dl = setter => id => setter(p=>p.filter(a=>a.id!==id));
+  const mkBlankAcct = () => ({id:uid(),name:'',brands:'',amA:'—',jA:'—',inv:'0',ord:'0',pipe:'0',pipeN:0,pipeContrib:0});
+  const mkBlankTgt = () => ({id:uid(),name:'',won:'0',pipe:'0',pipeN:0,pipeContrib:0});
+
+  const keyScore = keyAccts.reduce((s,a)=>s+(+a.inv||0)+(+a.ord||0)+(+a.pipe||0),0);
+  const grwScore = grwAccts.reduce((s,a)=>s+(+a.inv||0)+(+a.ord||0)+(+a.pipe||0),0);
+  const tgtScore = tgtAccts.reduce((s,a)=>s+(+a.won||0)+(+a.pipe||0),0);
+  const cc = parseInt(activeCount)||0;
+
+  const kCols = 'minmax(0,1.6fr) 120px 120px 140px 95px 28px';
+  const tCols = 'minmax(0,2fr) 120px 140px 95px 28px';
+  const kHead = ['holding company  /  brands','invoiced YTD','open orders','wtd pipeline','score',''];
+  const tHead = ['account','new biz won','wtd pipeline','score',''];
+
+  const filesLoaded = podioMeta||nsMeta;
+
+  return h(React.Fragment,null,
+
+    // ── Upload Panel ──
+    h('div',{className:'upload-panel'},
+      h('h2',null,'Data Sources  —  upload each Monday to refresh'),
+      h('div',{className:'upload-zones'},
+        h(FileZone,{
+          label:'Podio Pipeline', tag:'Podio',
+          sub:'Export: .Projects → Active Client Count view (XLSX)',
+          loaded:!!podioMeta,
+          fileLabel:podioMeta?.name,
+          info:podioMeta ? `${podioMeta.totalActive} active projects parsed` : '',
+          onFile:handlePodioFile,
+        }),
+        h(FileZone,{
+          label:'NetSuite Open Orders', tag:'NS',
+          sub:'Report: Custom Open Sales Orders 3 (XLS or XLSX)',
+          loaded:!!nsMeta,
+          fileLabel:nsMeta?.name,
+          info:nsMeta ? `${nsMeta.totalOrders} open orders · ${nsMeta.reportDate}` : '',
+          onFile:handleNSFile,
+        }),
+        h(FileZone,{
+          label:'NetSuite Invoiced Revenue', tag:'NS',
+          sub:'Report: Custom Income Stmt Detail w/ Job Details (XLS or XLSX)',
+          loaded:!!invMeta,
+          fileLabel:invMeta?.name,
+          info:invMeta ? `${fmtShort(invMeta.net)} net invoiced · ${invMeta.period}` : '',
+          onFile:handleInvoicedFile,
+        })
+      )
     ),
-    h('div',{className:'rbar'},
-      h('span',{className:'live-dot'}),
-      h('span',{style:{fontSize:12,fontWeight:600,color:'#1b5e20'}},'NetSuite data queried live — '+NS_DATE),
-      h('span',{style:{fontSize:12,color:'#555'}},'·  Invoiced YTD  ·  Confirmed Backlog  ·  Awaiting Invoice — all from live SuiteQL'),
-      h('span',{style:{fontSize:12,color:'#888'}},'·  Upload Podio export below to refresh pipeline  ·  Ask Claude to re-query NS monthly')
+
+    // ── Summary bar ──
+    filesLoaded && h('div',{className:'summary-bar'},
+      podioMeta && h('span',{className:'sum-tag'},
+        h('strong',null,'Podio: '), podioMeta.totalActive,' active projects'
+      ),
+      nsMeta && h('span',{className:'sum-tag'},
+        h('strong',null,'Open Orders: '),
+        fmtShort(Object.values(nsData?.byId||{}).reduce((s,v)=>s+v.total,0)),
+        ' across ',nsMeta.totalOrders,' SOs'
+      ),
+      invMeta && h('span',{className:'sum-tag'},
+        h('strong',null,'Invoiced YTD: '), fmtShort(invMeta.net),' · ',invMeta.period
+      ),
+      invFallback && h('span',{className:'sum-tag',style:{borderColor:'#f5dfa0',color:'#854f0b'}},
+        '⚠ Invoiced YTD = portfolio data (Apr 2025–Mar 2026) — upload NS export to replace'
+      )
     ),
-    h(UploadCard,{state:podio,err,onFile:handleFile,onClear:clearPodio}),
+
+    // ── Score tiles ──
     h('div',{className:'tiles'},
-      ...[
-        {dot:'#1D9E75',l:'Key accounts',v:fmtS(keyT),s:KEY.length+' holding groups  ·  > $800K'},
-        {dot:'#534AB7',l:'Strategic growth',v:fmtS(grwT),s:GROWTH.length+' accounts'},
-        {dot:'#BA7517',l:'Strategic targets',v:targets.length?fmtS(tgtT):'—',s:targets.length?targets.length+' prospects':'Add below'},
-        {dot:'#888780',l:'Active client count',v:String(TRAILING_12M),s:'goal ≤ 66 T12M  ·  goal ≤ 50 YTD  ·  target ≤ 55 by Dec 2027'},
-      ].map(({dot,l,v,s})=>h('div',{key:l,className:'tile',style:{borderTop:'3px solid '+dot}},
-        h('div',{className:'tile-lbl'},l),
-        h('div',{className:'tile-val'},v),
-        h('div',{className:'tile-sub'},s)
-      ))
+      h('div',{className:'tile t1'},
+        h('div',{className:'tile-lbl'},'key accounts'),
+        h('div',{className:'tile-val'},fmtShort(keyScore)),
+        h('div',{className:'tile-sub'},keyAccts.length,' holding groups')
+      ),
+      h('div',{className:'tile t2'},
+        h('div',{className:'tile-lbl'},'strategic growth'),
+        h('div',{className:'tile-val'},fmtShort(grwScore)),
+        h('div',{className:'tile-sub'},grwAccts.length,' accounts')
+      ),
+      h('div',{className:'tile t3'},
+        h('div',{className:'tile-lbl'},'strategic targets'),
+        h('div',{className:'tile-val'},tgtAccts.length?fmtShort(tgtScore):'—'),
+        h('div',{className:'tile-sub'},tgtAccts.length?tgtAccts.length+' prospects':'Add from Podio .CRM')
+      ),
+      h('div',{className:'tile t4'},
+        h('div',{className:'tile-lbl'},'active client count'),
+        h('div',{className:'tile-val'},cc||'—'),
+        h('div',{className:'tile-sub'},'invoiced, trailing 12 mo')
+      )
     ),
-    h(Sec,{title:'Existing key accounts',def:'> $800K  ·  3 holding groups',dot:'#1D9E75',total:keyT,open:secs.k,onToggle:()=>tog('k')},
-      h(Thead,{cols:KCOLS,labels:['holding company  /  brands','invoiced YTD  ·  ann.','backlog','awaiting inv.','wtd pipeline','score']}),
-      ...KEY.map(co=>h(ARow,{key:co,co,podio})),
-      h('div',{className:'sn'},'Invoiced YTD = '+YTD_LABEL+'  ·  Open orders = amountUnbilled only  ·  Tiers based on trailing 12M classification  ·  Score = Invoiced + Backlog + Awaiting Invoice + Wtd Pipeline')
+
+    // ── Key Accounts ──
+    h(Section,{
+      title:'Existing key accounts', def:'> $800K invoiced annually',
+      dot:'#1D9E75', total:keyScore, open:open.k, onToggle:()=>tog('k'),
+      cols:kCols, colHead:kHead,
+      onAdd:()=>setKeyAccts(p=>[...p,mkBlankAcct()]),
+      note:'Invoiced YTD: NetSuite net invoiced (invoices less credit memos, all revenue accounts), Jan 1–Jun 24 2026. Open orders are unbilled SO value as of 6/24; pipeline auto-populates from the weekly Podio upload. All fields editable. ⚑ Seiko trailing-12M invoiced is $745,769 (just under the $800K Key threshold) — retained as Key Account pending year-end tier review.',
+    },
+      keyAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
+        onChange:ch(setKeyAccts), onDel:dl(setKeyAccts)
+      }))
     ),
-    h(Sec,{title:'Strategic growth accounts',def:GROWTH.length+' accounts  ·  FY2026 YTD',dot:'#534AB7',total:grwT,open:secs.g,onToggle:()=>tog('g')},
-      h(Thead,{cols:KCOLS,labels:['account  /  brands','invoiced YTD  ·  ann.','backlog','awaiting inv.','wtd pipeline','score']}),
-      ...GROWTH.map(co=>h(ARow,{key:co,co,podio})),
-      h('div',{className:'sn'},'A. Jaffe: BUILD — events business  ·  HexaClad: reactivated May 2026, $0 invoiced this window — open SO in awaiting invoice  ·  Kate Spade: no NS entity, tracked via Podio only  ·  Van Cleef & Arpels: PTNext division, added Jun 2026 — $334K weighted pipeline across 19 projects (boutique buildouts)')
+
+    // ── Growth Accounts ──
+    h(Section,{
+      title:'Strategic growth accounts', def:'~5–10 accounts with $500K+ potential',
+      dot:'#534AB7', total:grwScore, open:open.g, onToggle:()=>tog('g'),
+      cols:kCols, colHead:kHead,
+      onAdd:()=>setGrwAccts(p=>[...p,mkBlankAcct()]),
+      note:'Invoiced YTD: NetSuite net invoiced, Jan 1–Jun 24 2026. Open orders (unbilled, 6/24) are built in; pipeline auto-populates from the weekly Podio upload.',
+    },
+      grwAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
+        onChange:ch(setGrwAccts), onDel:dl(setGrwAccts)
+      }))
     ),
-    h(Sec,{title:'Strategic target accounts',def:'9 verified prospects  ·  re-ranked Jun 10, 2026',dot:'#BA7517',total:tgtT,open:secs.t,onToggle:()=>tog('t')},
-      h(Thead,{cols:TCOLS,labels:['account  ·  verdict  ·  revenue','new biz won','wtd pipeline','score','']}),
-      targets.length===0&&h('div',{className:'em'},'No strategic targets added yet'),
-      ...targets.map(t=>h(TRow,{key:t.id,t,onChange:(f,v)=>saveT(targets.map(x=>x.id===t.id?{...x,[f]:v}:x)),onDel:()=>saveT(targets.filter(x=>x.id!==t.id))})),
-      h('button',{className:'addbt',onClick:()=>saveT([...targets,{id:uid(),name:'',won:'',pipe:''}])},'+ add target account'),
-      h('div',{className:'sn'},'New biz won + pipeline entered manually  ·  Pull from Podio .CRM Prospects app')
+
+    // ── Target Accounts ──
+    h(Section,{
+      title:'Strategic target accounts', def:'Prospects with $800K+ annual potential',
+      dot:'#BA7517', total:tgtScore, open:open.t, onToggle:()=>tog('t'),
+      cols:tCols, colHead:tHead,
+      onAdd:()=>setTgtAccts(p=>[...p,mkBlankTgt()]),
+      note:'Pull from Podio .CRM → Prospects. Formula: New Business Won + Σ(Pipeline × Probability Weight).',
+    },
+      tgtAccts.length===0
+        ? h('div',{className:'empty-msg'},'No strategic targets — click "+ add account" to add from Podio .CRM')
+        : tgtAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:true,cols:tCols,invFallback:false,
+            onChange:ch(setTgtAccts), onDel:dl(setTgtAccts)
+          }))
     ),
+
+    // ── Other Accounts ──
+    (nsData||podioData) && h(OtherAccounts,{
+      nsOtherOrders: nsData?.otherOrders,
+      podioOtherClients: podioData?.otherClients,
+    }),
+
+    // ── Active Client Count ──
     h('div',{className:'sec'},
-      h('div',{className:'sh',onClick:()=>tog('c')},
-        h('div',{style:{display:'flex',alignItems:'center',gap:8}},
-          h('div',{style:{width:8,height:8,borderRadius:'50%',background:'#888780',flexShrink:0}}),
-          h('span',{style:{fontSize:14,fontWeight:600,color:'#111'}},' Active client count'),
-          h('span',{style:{fontSize:11,color:'#aaa',marginLeft:4}},'FY2026 month-by-month  ·  live NS')
+      h('div',{className:'sec-hdr',onClick:()=>tog('c')},
+        h('div',{className:'sec-l'},
+          h('div',{className:'sec-dot',style:{background:'#888780'}}),
+          h('span',{className:'sec-name'},'Active client count'),
+          h('span',{className:'sec-def'},'unique customers invoiced, trailing 12 months')
         ),
-        h('div',{style:{display:'flex',alignItems:'center',gap:10}},
-          h('span',{style:{fontSize:14,fontWeight:600,color:YTD_UNIQUE<=YTD_GOAL?'#111':'#A32D2D'}},YTD_UNIQUE,' YTD  ·  ',TRAILING_12M,' T12M'),
-          h('span',{style:{fontSize:13,display:'inline-block',transition:'transform .15s',transform:secs.c?'rotate(180deg)':'none',color:'#aaa'}},'⌄')
+        h('div',{className:'sec-r'},
+          h('span',{className:'sec-tot'},cc||'—'),
+          h('span',{className:`sec-chev ${open.c?'open':''}`},'▼')
         )
       ),
-      secs.c&&h(MonthlySection)
-    ),
-    h('div',{className:'footer'},
-      'PAC TEAM GROUP  ·  Commercial Scorecard  ·  FY2026  ·  NetSuite data queried '+NS_DATE+'  ·  ',
-      'To refresh: ask Claude to re-query NetSuite and generate a new HTML file, then replace this file in GitHub'
+      open.c && h('div',{className:'cnt-body'},
+        h('div',{className:'cnt-row'},
+          h('span',{className:'cnt-lbl'},
+            h('span',{className:'stag ns-tag',style:{marginRight:6}},'NS'),
+            'Unique clients invoiced, trailing 12 months:'
+          ),
+          h('input',{type:'number',className:'cnt-inp',value:activeCount,
+            onChange:e=>setActiveCount(e.target.value)})
+        ),
+        h('div',{className:'cnt-note'},
+          'Pre-loaded: 47 (billing-entity level, Apr 2025–Mar 2026 portfolio). ',
+          'Update when you run the NS invoiced export. ',
+          'Goal: hold flat or decline as strategic account revenue grows and low-value clients are offboarded.'
+        )
+      )
     )
   );
 }
-ReactDOM.render(h(App),document.getElementById('root'));
+
+ReactDOM.render(h(App), document.getElementById('root'));
 </script>
 </body>
 </html>
