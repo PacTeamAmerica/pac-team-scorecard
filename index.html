@@ -164,10 +164,10 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <ul class="about-list">
         <li class="l1"><b>Invoiced YTD</b> — revenue already recognized this year, net of credit memos, from NetSuite.</li>
         <li class="l2"><b>Open orders</b> — won but not yet billed: the unbilled value of open sales orders.</li>
-        <li class="l3"><b>Weighted pipeline</b> — future opportunities from Podio, discounted by how likely each is to close: 80%+ counts in full, 50–79% at half, below 50% not at all.</li>
+        <li class="l3"><b>Weighted pipeline</b> — genuine future opportunities from Podio that are <b>not yet in NetSuite</b>, discounted by how likely each is to close: 80%+ counts in full, 50–79% at half, below 50% not at all. Projects that have already become a NetSuite order or invoice are matched by Project&nbsp;# and excluded here, so they're never counted twice.</li>
       </ul>
       <p>Accounts sit in three tiers — <strong>Key accounts</strong> (the largest, defended relationships), <strong>Strategic growth</strong> (accounts with room to scale), and <strong>Strategic targets</strong> (CEO-approved net-new names). The <strong>active-client count</strong> tracks concentration: the strategy favors fewer, deeper relationships, so a smaller number is the goal.</p>
-      <p class="about-foot">Each Monday, three exports — NetSuite invoiced revenue, NetSuite open orders, and the Podio pipeline — are dropped into the panel below and every figure recomputes instantly. Between uploads, the scorecard runs on the last numbers built in, so it always shows something real.</p>
+      <p class="about-foot">The three layers are kept distinct on purpose — invoiced, open orders, and pipeline never overlap, so each dollar is counted once. Each Monday, three exports — NetSuite invoiced revenue, NetSuite open orders, and the Podio pipeline — are dropped into the panel below and every figure recomputes instantly. Between uploads, the scorecard runs on the last numbers built in, so it always shows something real.</p>
     </div>
   </details>
 
@@ -222,12 +222,21 @@ const TARGET_SEED = [
   {id:'t-pandora',     name:'Pandora',        brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
 ];
 
-// ── BUILT-IN PODIO PIPELINE SEED ─────────────────────────────────────────────
-// Weighted pipeline by holding company from the .Projects export (6/29/2026).
-// Active statuses (In Progress / On Hold / Opportunity); weight = prob>=80?1.0
-// : prob>=50?0.5 : 0. Re-uploading the same Podio file reproduces these values.
-// Source: Projects - PowerBI Export (11).xlsx.
-const PODIO_SEED = {"byId":{"citizen":{"projects":57,"wtd":6880385,"contributing":31},"_other":{"projects":145,"wtd":1912320,"contributing":66},"swatch":{"projects":29,"wtd":626290,"contributing":17},"seiko":{"projects":62,"wtd":719446,"contributing":40},"timex":{"projects":16,"wtd":198542,"contributing":12},"thelios":{"projects":13,"wtd":169096,"contributing":8},"tiffany":{"projects":7,"wtd":60000,"contributing":4},"jewelry":{"projects":11,"wtd":20500,"contributing":5},"tapestry":{"projects":3,"wtd":200000,"contributing":1},"bedrock":{"projects":6,"wtd":131688,"contributing":6},"diamond":{"projects":3,"wtd":245737,"contributing":1}},"totalActive":352};
+// ── NETSUITE PROJECT CODES (reconciliation key) ──────────────────────────────
+// Every Podio "Project #" found in a NetSuite sales order or invoice/credit memo
+// (624 codes, pulled 6/29/2026). Any active Podio project whose Project # is in
+// this set has already converted to a NetSuite order/invoice, so its value is
+// ALREADY counted in Open Orders or Invoiced YTD — it is excluded from pipeline
+// to prevent double-counting. Refresh this list when NetSuite data is refreshed.
+const NS_PROJECT_CODES = new Set(["ACCU19-048-6737","ACCU19-048-7074","ACCU19-049-6359","ACCU19-049-7395","ACCU25-3566-6182","ACCU25-3566-6686","ACCU25-3566-7314","AJAF24-5725-2025","AJAF25-3923-6938","ANLU24-3377-5807","ANLU24-3377-6358","ANLU24-3377-6986","ASF25-3631-6283","BEN18-024-6190","BEN18-024-7193","BEN22-251-4028","BEN23-2909-4945","BENA25-3759-6575","BENA25-3761-6578","BENA25-3893-6873","BENA26-4026-7201","BROY22-2086-6833","BULO17-272-7157","BULO21-1939-6187","BULO21-1939-6386","BULO21-1939-6411","BULO21-1939-6440","BULO21-1939-6458","BULO21-1939-6739","BULO21-1939-7019","BULO21-1939-7319","BULO21-1971-6070","BULO22-2485-6368","BULO23-2717-4503","BULO23-2804-4709","BULO23-2804-6030","BULO23-2804-6069","BULO23-2804-6078","BULO23-2804-6309","BULO23-2804-6481","BULO23-2804-6659","BULO23-2804-6674","BULO23-2804-6846","BULO23-2804-6880","BULO23-2804-6889","BULO23-2804-7047","BULO23-2804-7083","BULO23-2804-7092","BULO23-2804-7238","BULO23-2804-7252","BULO23-2804-7293","BULO23-2804-7377","BULO23-2804-7446","BULO23-2882-4862","BULO24-3049-6300","BULO24-3049-6323","BULO24-3049-6452","BULO24-3049-6662","BULO24-3049-6982","BULO24-3049-7250","BULO24-3049-7605","BULO24-3053-5213","BULO24-308-6073","BULO24-308-6121","BULO24-308-6271","BULO24-308-6272","BULO24-308-6410","BULO24-308-6450","BULO24-325-5580","BULO24-3279-6745","BULO24-3407-5862","BULO24-3407-6203","BULO24-3407-6266","BULO24-3407-6545","BULO24-3407-6550","BULO24-3431-5909","BULO24-3445-6351","BULO24-3445-7257","BULO24-3447-5949","BULO25-3519-6102","BULO25-3575-6212","BULO25-359-6217","BULO25-3622-6276","BULO25-3772-6595","BULO25-3772-7132","BULO25-3773-6596","BULO25-3859-6766","BULO25-3892-6867","BULO25-3903-6898","BULO25-3936-6969","BULO25-3937-7561","BULO25-3942-6980","BULO25-3972-7033","BULO26-4015-7163","BULO26-4099-7386","CARA25-3867-6811","CARA25-3879-6812","CARA25-3879-7070","CARA25-3879-7124","CARA25-3879-7369","CASI16-263-6896","CASI16-343-7241","CASI24-3186-5483","CASI25-3876-6805","CASI25-4005-7134","CDPK23-2955-6857","CITI12-130-6258","CITI12-130-6454","CITI12-160-6285","CITI12-160-6568","CITI12-160-6751","CITI12-160-7449","CITI12-160-7560","CITI14-406-6315","CITI14-406-6438","CITI14-406-6439","CITI14-406-6455","CITI16-354-6364","CITI16-354-6907","CITI17-260-6401","CITI18-141-6161","CITI18-141-6415","CITI18-141-6858","CITI18-141-6905","CITI18-141-7075","CITI18-141-7158","CITI18-141-7220","CITI18-167-7159","CITI20-1232-6362","CITI20-1232-6987","CITI20-1232-7445","CITI20-1515-6186","CITI20-1515-6377","CITI20-1515-6385","CITI20-1515-6429","CITI20-1515-6457","CITI20-1515-6738","CITI20-1515-6913","CITI20-1515-6952","CITI20-1515-7016","CITI20-1515-7053","CITI20-1515-7321","CITI20-1515-7354","CITI20-1515-7642","CITI22-2167-5617","CITI22-2167-7258","CITI23-2535-4077","CITI23-2535-6844","CITI23-2535-6878","CITI23-2535-6890","CITI23-2535-7036","CITI23-2535-7108","CITI23-2535-7128","CITI23-2535-7147","CITI23-2535-7235","CITI23-2535-7467","CITI23-2535-7619","CITI23-2535-7640","CITI23-2637-6690","CITI23-2795-7245","CITI23-2932-6801","CITI24-3052-5212","CITI24-3148-5413","CITI24-3178-5798","CITI24-3224-5542","CITI24-3225-6120","CITI24-3249-5579","CITI24-3249-7039","CITI24-3307-5689","CITI24-3307-6733","CITI24-3319-5714","CITI24-343-5908","CITI24-3432-5910","CITI24-3494-6043","CITI25-3502-6058","CITI25-3502-6830","CITI25-3518-6101","CITI25-3542-6148","CITI25-3542-6834","CITI25-3546-6157","CITI25-3659-6342","CITI25-3667-6371","CITI25-3687-6402","CITI25-3692-6421","CITI25-3717-6476","CITI25-3747-6819","CITI25-376-6577","CITI25-377-6770","CITI25-377-6771","CITI25-377-6835","CITI25-377-6959","CITI25-377-7301","CITI25-3831-6694","CITI25-3855-6754","CITI25-3908-6908","CITI25-3927-6943","CITI25-3934-6971","CITI25-3964-7017","CITI25-3965-7018","CITI25-397-7031","CITI25-3975-7038","CITI25-3976-7042","CITI26-4043-7254","CITI26-4045-7256","CITI26-4058-7284","CITI26-413-7513","COAC17-046-5831","COAC17-046-5847","COAC17-046-5943","COAC17-046-6252","COAC17-046-6512","COAC17-046-6664","COAC17-046-6726","COAC17-046-6823","COAC17-046-6932","COAC17-046-7054","COAC17-046-7194","COAC17-046-7215","COAC17-046-7300","COAC17-046-7485","COAC24-3001-5120","COAC24-3453-5961","COAC25-3625-6267","COAC25-3679-6390","COPP26-4014-7162","CRWN16-367-5748","CRWN16-367-6015","CRWN16-367-6462","CRWN16-367-6842","CRWN16-367-6868","CRWN16-367-7117","CRWN16-367-7413","CRWN16-367-7595","CRWN23-2754-5739","CRWN23-2754-6189","CRWN23-2754-6607","CRWN23-2754-6760","CRWN23-2754-6764","CRWN23-2754-7064","CRWN23-2754-7282","CRWN24-3109-6530","CRWN26-4087-7365","DESI25-3665-635","DIAD25-368-6392","DIAD25-368-6624","DIOR25-4002-7122","DSGN24-3111-5330","DSGN25-3895-6882","DSGN25-3895-6891","FRED25-3956-7004","FRED25-3977-7043","GRAN21-163-6572","GRAN22-251-4028","GRAN23-2609-6333","GRAN23-2644-7240","GRAN23-2743-4562","GRAN23-2749-6804","GRAN23-2762-6453","GRAN23-2827-7296","GRAN23-2874-4843","GRAN23-2916-4959","GRAN23-2916-6793","GRAN24-3033-5172","GRAN24-3071-5242","GRAN24-3072-6778","GRAN24-3073-5244","GRAN24-3074-5245","GRAN24-3156-5432","GRAN24-324-5568","GRAN24-324-6541","GRAN24-3247-6388","GRAN24-3294-5661","GRAN24-3413-5868","GRAN24-3456-5964","GRAN25-366-6344","GRAN25-3661-6345","GRAN25-3686-6400","GRAN25-3736-6523","GRAN25-3753-6564","GRAN25-3792-6622","GRAN25-3792-6625","GRAN25-3825-6677","GRAN25-3834-6701","GRAN25-3834-6924","GRAN25-385-6731","GRAN25-3851-6736","GRAN25-3863-6780","GRAN25-3868-6786","GRAN25-3869-6787","GRAN25-3883-6829","GRAN25-3885-6839","GRAN25-389-6861","GRAN25-3896-6883","GRAN25-3904-6900","GRAN25-3911-6911","GRAN25-3911-7150","GRAN25-3912-6912","GRAN25-3913-6916","GRAN25-3926-6941","GRAN25-396-7010","GRAN25-3961-7011","GRAN25-4-7101","GRAN26-4068-7309","GRAN26-4068-7317","GRAN26-4068-7459","GRAN26-4068-7461","GRAN26-4068-7503","GRAN26-4068-7623","GRAN26-4103-7406","HAWI14-175-5933","HAWI14-175-6009","HAWI14-175-6035","HAWI14-175-6077","HAWI14-175-6240","HAWI14-175-6265","HAWI14-175-6365","HAWI14-175-6609","HAWI14-175-6761","HAWI14-175-6776","HAWI14-175-6843","HAWI14-175-7013","HAWI14-175-7026","HAWI14-175-7077","HAWI14-175-7187","HAWI14-175-7214","HAWI14-175-7435","HAWI14-175-7475","HAWI14-175-7530","HAWI14-175-7537","HAWI14-175-7540","HAWI14-175-7636","HAWI14-175-7646","HAWI14-435-6623","HAWI14-435-6718","HAWI14-435-6799","HAWI24-3094-5286","HAWI24-3094-6709","HAWI24-3094-6950","HAWI24-3094-7112","HAWI24-3094-7203","HAWI24-3094-7430","HAWI24-3094-7592","HAWI24-3383-5822","HAWI24-3386-5829","HAWI24-3386-6845","HAWI24-3386-7040","HAWI24-3386-7115","HAWI24-3386-7511","HAWI24-3401-5853","HAWI24-3401-6576","HAWI24-3401-7325","HAWI24-3401-7520","HAWI25-3533-6118","HAWI25-3632-6286","HAWI25-3632-7343","HAWI25-3632-7437","HAWI25-3632-7438","HAWI25-3675-6382","HAWI25-3771-6592","HAWI25-3812-6655","HAWI25-3812-6957","HAWI25-3812-7185","HAWI25-3812-7347","HAWI25-3815-6658","HAWI25-3897-6884","HAWI25-3922-6931","HAWI25-3922-7429","HAWI25-3935-6965","HAWI25-3962-7012","HAWI25-3968-7027","HAWI25-3968-7078","HAWI25-3985-7063","HAWI25-3986-7071","HAWI25-4006-7135","HAWI25-4007-7143","HAWI26-4061-7291","HAWI26-4073-7326","HAWI26-4088-7368","HAWI26-4111-7457","HAWI26-4122-7474","HAWI26-4138-7532","HAWI26-4176-7632","HEXA24-3064-5958","HEXA24-3064-7349","HMOS24-3439-5930","HMOS24-344-5931","HMOS25-3987-7073","HRAG23-2556-6606","HRAG24-3124-5365","HRAG26-4031-7210","JEVA23-2887-4886","JEVA23-2887-6019","KHEP25-3637-6305","KHEP26-4081-7335","KWIA25-3705-6445","KWIA25-3932-6966","LACO24-3192-6963","LACO25-3728-6498","LUMD24-3222-5539","LUMM26-402-7172","LUXO14-221-6012","LUXO14-221-6214","LUXO14-221-6406","LUXO14-221-6590","LUXO14-221-6809","LUXO14-221-6946","LUXO14-221-7206","LUXO14-221-7388","LUXO15-260-7093","MADA25-3894-6877","MARL22-2137-6557","MARL22-2137-7072","MARL22-2137-7197","MARL25-3537-6138","MARL26-4071-7313","MARL26-4112-7453","MARL26-4127-7497","MCS16-419-6935","MIKI19-0532-7432","MIKI20-122-6870","MIKI23-2986-7522","MIKI24-313-6814","MIKI25-388-6813","MIKI25-3881-6815","MIKI25-3949-6994","MONI25-3931-6954","MONI26-4083-7350","MOVA23-2773-5641","MOVA23-2773-6588","MOVA23-2773-6735","MOVA23-2773-6885","MOVA23-2773-7165","MOVA24-3425-5902","MOVA25-3969-7030","NOMO24-3466-5983","NOMO24-3495-6044","NUNA24-3221-5550","NVLH26-4017-7169","NVLH26-4017-7412","OBRI24-3329-7477","OBRI24-3329-7596","PACT24-3039-5188","PENN22-2042-7114","RENN24-3255-5595","REVD24-3056-6083","REVD24-3056-6666","RIGH24-3471-5994","RLFP24-3333-5741","RLFP24-3399-5852","RLFP25-3689-6407","RLFP25-3689-6465","RLFP25-3689-6838","RLFP25-3689-6902","RLFP25-3689-6933","RLFP25-3979-7380","RLFP25-3979-7394","RLFP25-3979-7439","SEIK18-091-6533","SEIK21-1801-5875","SEIK25-3733-6518","SEIK25-3744-6535","SEQU20-1191-7105","SEQU22-2009-6637","SEQU22-2009-6848","SEQU22-2009-7584","SHIN18-278-6091","SHIN18-278-6229","SHIN18-278-7351","SHIN19-05-6717","SHIN21-1857-6156","SHIN22-2409-6826","SHIN24-3276-5633","SHIN24-328-5636","SHIN24-328-7120","SHIN24-328-7136","SHIN25-352-6104","SHIN25-3604-6233","SHIN25-3914-6917","SHIN25-398-7056","SHIN25-3992-7086","SHIN26-4102-7400","TABA25-3574-6198","THEL19-010-6951","THEL23-2632-4288","THEL23-2643-4305","THEL24-3103-5309","THEL24-3217-6183","THEL24-3323-5720","THEL24-3354-5765","THEL24-3354-5771","THEL24-338-5814","THEL24-3443-5937","THEL24-3514-6092","THEL25-3553-6164","THEL25-3651-6335","THEL25-3681-6393","THEL25-3774-6597","THEL25-3774-6796","THEL25-3847-6719","THEL25-3847-6720","THEL25-3847-6721","THEL25-3888-6851","THEL25-3888-6925","THEL25-6876-0001","THEL26-4093-7373","THEL26-4129-7504","TIFF22-2161-4538","TIFF22-2161-5900","TIFF22-2161-6937","TIFF22-2161-7168","TIFF22-2161-7212","TIFF24-3048-5207","TIFF24-3048-7175","TIFF24-3512-6089","TIFF25-3635-6289","TIFF25-3756-6567","TIFF25-3802-6641","TIFF26-4092-7372","TIFF26-4095-7381","TIFF26-4098-7385","TIME21-169-2760","TIME21-169-6008","TIME21-169-6067","TIME21-169-6961","TIME21-169-7138","TIME21-169-7586","TIME22-2478-3978","TIME22-2478-6013","TIME22-2478-6587","TIME22-2478-6638","TIME22-2478-6640","TIME22-2478-6822","TIME22-2478-6955","TIME22-2478-7020","TIME22-2478-7137","TIME22-2478-7223","TIME22-2478-7488","TIME22-2478-7541","TIME22-2478-7587","TIME22-2478-7588","TIME22-2478-7589","TIME22-2478-7594","TIME24-3396-5849","TIME24-3396-7095","TIME24-3396-7554","TIME25-3787-6618","TJGR17-304-6447","TJGR17-304-6627","TJGR17-304-7080","TJGR17-304-7268","TJGR17-304-7269","TJGR20-1416-7271","TJGR21-1557-5857","TJGR21-1557-7232","TJGR21-1728-6707","TJGR22-2238-7285","TJGR23-2565-6244","TJGR23-2573-7025","TJGR23-2805-7410","TJGR24-3204-6141","TJGR24-3204-6422","TJGR24-3204-6424","TJGR24-3204-6643","TJGR24-3204-6710","TJGR24-3204-6893","TJGR24-3204-6995","TJGR24-3204-7065","TJGR24-3204-7103","TJGR24-3421-5889","TJGR24-3421-7144","TJGR24-3467-5989","TJGR25-3609-6241","TJGR25-3646-6319","TJGR25-3664-6352","TJGR25-3666-6361","TJGR25-373-6501","TJGR25-3757-6569","TJGR25-3775-6599","TJGR25-3775-6600","TJGR25-3784-6613","TJGR25-3799-6633","TJGR25-3805-6645","TJGR25-3805-7023","TJGR25-3805-7099","TJGR25-3805-7242","TJGR25-3805-7398","TJGR25-3805-7472","TJGR25-3916-6922","TJGR25-3916-7578","TJGR25-3929-6945","TJGR25-3994-7090","TJGR25-3996-7096","TJGR26-407-7312","TJGR26-4086-7364","TJGR26-4101-7396","TJGR26-4142-7545","TNFE24-3243-5571","TNFE24-3243-7306","TNFE24-3243-7307","TNFE24-3435-5925","TNFE26-4091-7371","TUDO24-2998-5116","TUDO24-3172-5452","TUDO25-1234-5997","TUDO25-1234-5999","VANC22-2262-6039","VANC22-2262-6040","VANC22-2262-6084","VANC22-2262-6307","VANC24-3029-5372","VANC25-3818-6665","VANC25-3846-6715","VANC25-3898-6886","VANC25-3901-6892","VANC25-3938-6972","VANC25-3958-7006","VANC26-4152-7569","VICT25-3877-6806","VICT25-3921-6930","WATC24-3237-6691","WHEE25-3573-6196","ZWIL19-063-6007","ZWIL25-3765-6581","ZWIL25-3766-6582"]);
+
+// ── BUILT-IN PODIO PIPELINE SEED (reconciled) ────────────────────────────────
+// Weighted pipeline by holding company from the .Projects export (6/29/2026),
+// AFTER removing projects already in NetSuite (matched on Project #). Pipeline =
+// genuine, not-yet-in-NetSuite opportunity only. Active statuses (In Progress /
+// On Hold / Opportunity); weight = prob>=80?1.0 : prob>=50?0.5 : 0.
+// 110 of 352 active projects ($9.67M, 87%) removed as already-in-NetSuite.
+const PODIO_SEED = {"byId":{"jewelry":{"projects":4,"wtd":4000,"contributing":1},"thelios":{"projects":11,"wtd":69500,"contributing":6},"seiko":{"projects":50,"wtd":356540,"contributing":29},"_other":{"projects":118,"wtd":551244,"contributing":42},"citizen":{"projects":37,"wtd":452317,"contributing":12},"timex":{"projects":7,"wtd":12250,"contributing":3},"tiffany":{"projects":3,"wtd":2500,"contributing":1},"swatch":{"projects":9,"wtd":48300,"contributing":4},"tapestry":{"projects":2,"wtd":0,"contributing":0},"diamond":{"projects":1,"wtd":0,"contributing":0}},"otherClients":{"Van Cleef & Arpels":334500,"Casio Computer":61182,"Vacheron Constantin - Americas":50000,"London Jewelers":45000,"Ana Luisa":25000,"Movado Group":7500,"Renna Jewels":7000,"Teddy Baldassarre":6000,"Irys RFID":5000,"Hamilton Jewelers":2562,"Fable":2500,"Sequel International":2500,"Luxottica":1000,"Test Organization":1000,"Accenture":500},"totalActive":242};
 
 // ── BUILT-IN NETSUITE OPEN-ORDER SEED ────────────────────────────────────────
 // Open sales orders on an UNBILLED basis as of 6/29/2026, mapped to holding
@@ -309,16 +318,30 @@ function parsePodio(rows) {
     client: headers.indexOf('Client'),
     est:    headers.findIndex(h=>h.includes('Estimate value - amount')),
     prob:   headers.indexOf('Probability'),
+    proj:   headers.indexOf('Project #'),
   };
   if (ci.client===-1||ci.status===-1) return {error:'Missing Client or Status column — make sure this is the Podio Active Client Count export'};
 
   const byId = {};
   const otherClients = {};
   const ACTIVE = new Set(['In Progress','On Hold','Opportunity']);
+  const projCode = v => {
+    const m = (v==null?'':v.toString()).match(/[A-Za-z]+[0-9]{2}-[0-9]+-[0-9]+/);
+    return m ? m[0].toUpperCase() : '';
+  };
+  let kept = 0, removed = 0;
 
   rows.slice(1).forEach(row => {
     const status = (row[ci.status]||'').toString().trim();
     if (!ACTIVE.has(status)) return;
+
+    // Reconciliation: if this project's Project # already exists in NetSuite
+    // (an order or invoice), its value is already in Open Orders / Invoiced —
+    // exclude it from pipeline to avoid double-counting.
+    const code = ci.proj>=0 ? projCode(row[ci.proj]) : '';
+    if (code && NS_PROJECT_CODES.has(code)) { removed++; return; }
+    kept++;
+
     const client = (row[ci.client]||'').toString().trim();
     const est = parseFloat(row[ci.est])||0;
     const prob = parseFloat(row[ci.prob])||0;
@@ -337,8 +360,7 @@ function parsePodio(rows) {
     }
   });
 
-  const activeRows = rows.slice(1).filter(r=>ACTIVE.has((r[ci.status]||'').toString().trim()));
-  return {byId, otherClients, totalActive:activeRows.length};
+  return {byId, otherClients, totalActive:kept, removedInNS:removed};
 }
 
 function parseNSOrders(rows) {
@@ -607,7 +629,7 @@ function Section({title,def,dot,total,open,onToggle,children,onAdd,note,colHead,
 
 // ── APP ───────────────────────────────────────────────────────────────────────
 function App() {
-  const [podioMeta, setPodioMeta] = useState({name:'Built-in · .Projects (6/29/2026)', totalActive:PODIO_SEED.totalActive});
+  const [podioMeta, setPodioMeta] = useState({name:'Built-in · .Projects (6/29/2026)', totalActive:PODIO_SEED.totalActive, removedInNS:110});
   const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (6/29/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
   const [podioData, setPodioData] = useState(PODIO_SEED);
   const [nsData, setNsData] = useState(NS_SEED);
@@ -655,7 +677,7 @@ function App() {
   const handlePodioFile = (name, rows) => {
     const parsed = parsePodio(rows);
     if (parsed.error) { alert('Podio parse error: '+parsed.error); return; }
-    setPodioMeta({name, totalActive:parsed.totalActive});
+    setPodioMeta({name, totalActive:parsed.totalActive, removedInNS:parsed.removedInNS||0});
     setPodioData(parsed);
     applyPodio(parsed);
   };
@@ -715,7 +737,7 @@ function App() {
           sub:'Export: .Projects → Active Client Count view (XLSX)',
           loaded:!!podioMeta,
           fileLabel:podioMeta?.name,
-          info:podioMeta ? `${podioMeta.totalActive} active projects parsed` : '',
+          info:podioMeta ? `${podioMeta.totalActive} in pipeline${podioMeta.removedInNS?` · ${podioMeta.removedInNS} already in NetSuite (removed)`:''}` : '',
           onFile:handlePodioFile,
         }),
         h(FileZone,{
@@ -740,7 +762,7 @@ function App() {
     // ── Summary bar ──
     filesLoaded && h('div',{className:'summary-bar'},
       podioMeta && h('span',{className:'sum-tag'},
-        h('strong',null,'Podio: '), podioMeta.totalActive,' active projects'
+        h('strong',null,'Pipeline: '), podioMeta.totalActive,' projects not yet in NetSuite'
       ),
       nsMeta && h('span',{className:'sum-tag'},
         h('strong',null,'Open Orders: '),
