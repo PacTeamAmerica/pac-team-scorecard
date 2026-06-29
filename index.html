@@ -49,6 +49,10 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .fb-part{background:#fff;border:1px solid #e0ece6;border-radius:9px;padding:8px 14px;text-align:right;min-width:94px}
 .fb-part .p-lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:#a3a299;font-weight:600}
 .fb-part .p-val{font-size:15px;font-weight:600;color:#1a1a18;margin-top:2px;font-variant-numeric:tabular-nums}
+.fb-risk{background:#fdfaf3;border:1px solid #f0e3c4;border-radius:11px;padding:10px 16px;text-align:right;min-width:150px}
+.fb-risk .r-lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:#a98a3c;font-weight:700}
+.fb-risk .r-val{font-size:20px;font-weight:700;color:#9a6a12;margin-top:1px;letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+.fb-risk .r-note{font-size:10px;color:#b09a6a;margin-top:3px;line-height:1.35}
 .tile.t1{border-top:3px solid #1D9E75}
 .tile.t2{border-top:3px solid #534AB7}
 .tile.t3{border-top:3px solid #BA7517}
@@ -169,16 +173,16 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <span class="about-chev">▼</span>
     </summary>
     <div class="about-body">
-      <p>The Commercial Scorecard gives PAC TEAM a single, living view of where revenue stands across every strategic account — what has been earned, what is committed, and what is still in play.</p>
-      <p>The <strong>Total forecasted revenue</strong> bubble at the top is the grand total for 2026 across every account and division — invoiced YTD plus open orders plus weighted pipeline — with its three components shown beside it. Below it, the four tiles break that picture down by tier and track client concentration.</p>
+      <p>The Commercial Scorecard gives PAC TEAM a single, living view of where revenue stands across every strategic account: what has been earned, what is committed, and what is still in play.</p>
+      <p>The bubble at the top frames where <strong>2026</strong> lands as two numbers. <strong>Booked + landing</strong> is the revenue realistically expected to hit this year: invoiced YTD, plus open orders that aren't on hold, plus pipeline with a PO expected by <b>August 31</b>. The <strong>at-risk</strong> figure beside it is work that probably slips to 2027: on-hold orders and pipeline without a PO by the cutoff. The Aug 31 line exists because these are build-and-ship projects: if a PO isn't in by then, production can't realistically complete and ship before December 31. The cutoff is automatic. Once the calendar passes Aug 31, not-yet-won pipeline moves to at-risk on its own.</p>
       <p>Each account carries one <strong>score</strong>, built from three layers of decreasing certainty:</p>
       <ul class="about-list">
-        <li class="l1"><b>Invoiced YTD</b> — revenue already recognized this year, net of credit memos, from NetSuite.</li>
-        <li class="l2"><b>Open orders</b> — won but not yet billed: the unbilled value of open sales orders.</li>
-        <li class="l3"><b>Weighted pipeline</b> — genuine future opportunities from Podio that are <b>not yet in NetSuite</b>, discounted by how likely each is to close: 80%+ counts in full, 50–79% at half, below 50% not at all. Projects already in NetSuite (matched by Project&nbsp;#) are excluded so nothing is double-counted, and <b>PTA and PTNext division projects are excluded</b> — the pipeline reflects PTJapan and other non-PTA/PTNext work only.</li>
+        <li class="l1"><b>Invoiced YTD</b>: revenue already recognized this year, net of credit memos, from NetSuite.</li>
+        <li class="l2"><b>Open orders</b>: won but not yet billed, the unbilled value of open sales orders.</li>
+        <li class="l3"><b>Weighted pipeline</b>: genuine future opportunities from Podio that are <b>not yet in NetSuite</b>, discounted by how likely each is to close: 80%+ counts in full, 50–79% at half, below 50% not at all. Projects already in NetSuite (matched by Project&nbsp;#) are excluded so nothing is double-counted, and <b>PTA and PTNext division projects are excluded</b>, so the pipeline reflects PTJapan and other non-PTA/PTNext work only.</li>
       </ul>
-      <p>Accounts sit in three tiers — <strong>Key accounts</strong> (the largest, defended relationships), <strong>Strategic growth</strong> (accounts with room to scale), and <strong>Strategic targets</strong> (CEO-approved net-new names). Everything else — smaller relationships and <b>one-off retail projects</b> such as Diamond Dream Jewelry — rolls up under <strong>Other active accounts</strong> rather than a strategic tier, so the tiers stay focused on accounts the strategy is actually built around. The <strong>active-client count</strong> tracks concentration: the strategy favors fewer, deeper relationships, so a smaller number is the goal.</p>
-      <p class="about-foot">The three layers are kept distinct on purpose — invoiced, open orders, and pipeline never overlap, so each dollar is counted once. Each Monday, three exports — NetSuite invoiced revenue, NetSuite open orders, and the Podio pipeline — are dropped into the panel below and every figure recomputes instantly. Between uploads, the scorecard runs on the last numbers built in, so it always shows something real.</p>
+      <p>Accounts sit in three tiers: <strong>Key accounts</strong> (the largest, defended relationships), <strong>Strategic growth</strong> (accounts with room to scale), and <strong>Strategic targets</strong> (CEO-approved net-new names). Everything else, including smaller relationships and <b>one-off retail projects</b> such as Diamond Dream Jewelry, rolls up under <strong>Other active accounts</strong> rather than a strategic tier, so the tiers stay focused on accounts the strategy is actually built around. The <strong>active-client count</strong> tracks concentration: the strategy favors fewer, deeper relationships, so a smaller number is the goal.</p>
+      <p class="about-foot">The three layers are kept distinct on purpose: invoiced, open orders, and pipeline never overlap, so each dollar is counted once. Each Monday, three exports (NetSuite invoiced revenue, NetSuite open orders, and the Podio pipeline) are dropped into the panel below and every figure recomputes instantly. Between uploads, the scorecard runs on the last numbers built in, so it always shows something real.</p>
     </div>
   </details>
 
@@ -202,10 +206,10 @@ const KEY_DEFS = [
 ];
 const GROWTH_DEFS = [
   {id:'jewelry', name:'The Jewelry Group',        brands:'',        amA:'FIX',   jA:'SCALE', inv:246586},
-  {id:'thelios', name:'Thelios',                  brands:'LVMH',    amA:'FIX',   jA:'—',     inv:162516},
+  {id:'thelios', name:'Thelios',                  brands:'LVMH',    amA:'FIX',   jA:'-',     inv:162516},
   {id:'timex',   name:'Timex Group',              brands:'',        amA:'FIX',   jA:'SCALE', inv:254252},
   {id:'tiffany', name:'Tiffany & Co.',            brands:'LVMH',    amA:'SCALE', jA:'SCALE', inv:45689},
-  {id:'jaffe',   name:'A. Jaffe (Paramount)',      brands:'',        amA:'—',     jA:'SCALE', inv:0},
+  {id:'jaffe',   name:'A. Jaffe (Paramount)',      brands:'',        amA:'-',     jA:'SCALE', inv:0},
   {id:'bedrock', name:'Bedrock Manufacturing',    brands:'Shinola', amA:'FIX',   jA:'SCALE', inv:52162},
 ];
 const ALL_DEFS = [...KEY_DEFS, ...GROWTH_DEFS];
@@ -236,7 +240,7 @@ const TARGET_SEED = [
 // Every Podio "Project #" found in a NetSuite sales order or invoice/credit memo
 // (624 codes, pulled 6/29/2026). Any active Podio project whose Project # is in
 // this set has already converted to a NetSuite order/invoice, so its value is
-// ALREADY counted in Open Orders or Invoiced YTD — it is excluded from pipeline
+// ALREADY counted in Open Orders or Invoiced YTD, so it is excluded from pipeline
 // to prevent double-counting. Refresh this list when NetSuite data is refreshed.
 const NS_PROJECT_CODES = new Set(["ACCU19-048-6737","ACCU19-048-7074","ACCU19-049-6359","ACCU19-049-7395","ACCU25-3566-6182","ACCU25-3566-6686","ACCU25-3566-7314","AJAF24-5725-2025","AJAF25-3923-6938","ANLU24-3377-5807","ANLU24-3377-6358","ANLU24-3377-6986","ASF25-3631-6283","BEN18-024-6190","BEN18-024-7193","BEN22-251-4028","BEN23-2909-4945","BENA25-3759-6575","BENA25-3761-6578","BENA25-3893-6873","BENA26-4026-7201","BROY22-2086-6833","BULO17-272-7157","BULO21-1939-6187","BULO21-1939-6386","BULO21-1939-6411","BULO21-1939-6440","BULO21-1939-6458","BULO21-1939-6739","BULO21-1939-7019","BULO21-1939-7319","BULO21-1971-6070","BULO22-2485-6368","BULO23-2717-4503","BULO23-2804-4709","BULO23-2804-6030","BULO23-2804-6069","BULO23-2804-6078","BULO23-2804-6309","BULO23-2804-6481","BULO23-2804-6659","BULO23-2804-6674","BULO23-2804-6846","BULO23-2804-6880","BULO23-2804-6889","BULO23-2804-7047","BULO23-2804-7083","BULO23-2804-7092","BULO23-2804-7238","BULO23-2804-7252","BULO23-2804-7293","BULO23-2804-7377","BULO23-2804-7446","BULO23-2882-4862","BULO24-3049-6300","BULO24-3049-6323","BULO24-3049-6452","BULO24-3049-6662","BULO24-3049-6982","BULO24-3049-7250","BULO24-3049-7605","BULO24-3053-5213","BULO24-308-6073","BULO24-308-6121","BULO24-308-6271","BULO24-308-6272","BULO24-308-6410","BULO24-308-6450","BULO24-325-5580","BULO24-3279-6745","BULO24-3407-5862","BULO24-3407-6203","BULO24-3407-6266","BULO24-3407-6545","BULO24-3407-6550","BULO24-3431-5909","BULO24-3445-6351","BULO24-3445-7257","BULO24-3447-5949","BULO25-3519-6102","BULO25-3575-6212","BULO25-359-6217","BULO25-3622-6276","BULO25-3772-6595","BULO25-3772-7132","BULO25-3773-6596","BULO25-3859-6766","BULO25-3892-6867","BULO25-3903-6898","BULO25-3936-6969","BULO25-3937-7561","BULO25-3942-6980","BULO25-3972-7033","BULO26-4015-7163","BULO26-4099-7386","CARA25-3867-6811","CARA25-3879-6812","CARA25-3879-7070","CARA25-3879-7124","CARA25-3879-7369","CASI16-263-6896","CASI16-343-7241","CASI24-3186-5483","CASI25-3876-6805","CASI25-4005-7134","CDPK23-2955-6857","CITI12-130-6258","CITI12-130-6454","CITI12-160-6285","CITI12-160-6568","CITI12-160-6751","CITI12-160-7449","CITI12-160-7560","CITI14-406-6315","CITI14-406-6438","CITI14-406-6439","CITI14-406-6455","CITI16-354-6364","CITI16-354-6907","CITI17-260-6401","CITI18-141-6161","CITI18-141-6415","CITI18-141-6858","CITI18-141-6905","CITI18-141-7075","CITI18-141-7158","CITI18-141-7220","CITI18-167-7159","CITI20-1232-6362","CITI20-1232-6987","CITI20-1232-7445","CITI20-1515-6186","CITI20-1515-6377","CITI20-1515-6385","CITI20-1515-6429","CITI20-1515-6457","CITI20-1515-6738","CITI20-1515-6913","CITI20-1515-6952","CITI20-1515-7016","CITI20-1515-7053","CITI20-1515-7321","CITI20-1515-7354","CITI20-1515-7642","CITI22-2167-5617","CITI22-2167-7258","CITI23-2535-4077","CITI23-2535-6844","CITI23-2535-6878","CITI23-2535-6890","CITI23-2535-7036","CITI23-2535-7108","CITI23-2535-7128","CITI23-2535-7147","CITI23-2535-7235","CITI23-2535-7467","CITI23-2535-7619","CITI23-2535-7640","CITI23-2637-6690","CITI23-2795-7245","CITI23-2932-6801","CITI24-3052-5212","CITI24-3148-5413","CITI24-3178-5798","CITI24-3224-5542","CITI24-3225-6120","CITI24-3249-5579","CITI24-3249-7039","CITI24-3307-5689","CITI24-3307-6733","CITI24-3319-5714","CITI24-343-5908","CITI24-3432-5910","CITI24-3494-6043","CITI25-3502-6058","CITI25-3502-6830","CITI25-3518-6101","CITI25-3542-6148","CITI25-3542-6834","CITI25-3546-6157","CITI25-3659-6342","CITI25-3667-6371","CITI25-3687-6402","CITI25-3692-6421","CITI25-3717-6476","CITI25-3747-6819","CITI25-376-6577","CITI25-377-6770","CITI25-377-6771","CITI25-377-6835","CITI25-377-6959","CITI25-377-7301","CITI25-3831-6694","CITI25-3855-6754","CITI25-3908-6908","CITI25-3927-6943","CITI25-3934-6971","CITI25-3964-7017","CITI25-3965-7018","CITI25-397-7031","CITI25-3975-7038","CITI25-3976-7042","CITI26-4043-7254","CITI26-4045-7256","CITI26-4058-7284","CITI26-413-7513","COAC17-046-5831","COAC17-046-5847","COAC17-046-5943","COAC17-046-6252","COAC17-046-6512","COAC17-046-6664","COAC17-046-6726","COAC17-046-6823","COAC17-046-6932","COAC17-046-7054","COAC17-046-7194","COAC17-046-7215","COAC17-046-7300","COAC17-046-7485","COAC24-3001-5120","COAC24-3453-5961","COAC25-3625-6267","COAC25-3679-6390","COPP26-4014-7162","CRWN16-367-5748","CRWN16-367-6015","CRWN16-367-6462","CRWN16-367-6842","CRWN16-367-6868","CRWN16-367-7117","CRWN16-367-7413","CRWN16-367-7595","CRWN23-2754-5739","CRWN23-2754-6189","CRWN23-2754-6607","CRWN23-2754-6760","CRWN23-2754-6764","CRWN23-2754-7064","CRWN23-2754-7282","CRWN24-3109-6530","CRWN26-4087-7365","DESI25-3665-635","DIAD25-368-6392","DIAD25-368-6624","DIOR25-4002-7122","DSGN24-3111-5330","DSGN25-3895-6882","DSGN25-3895-6891","FRED25-3956-7004","FRED25-3977-7043","GRAN21-163-6572","GRAN22-251-4028","GRAN23-2609-6333","GRAN23-2644-7240","GRAN23-2743-4562","GRAN23-2749-6804","GRAN23-2762-6453","GRAN23-2827-7296","GRAN23-2874-4843","GRAN23-2916-4959","GRAN23-2916-6793","GRAN24-3033-5172","GRAN24-3071-5242","GRAN24-3072-6778","GRAN24-3073-5244","GRAN24-3074-5245","GRAN24-3156-5432","GRAN24-324-5568","GRAN24-324-6541","GRAN24-3247-6388","GRAN24-3294-5661","GRAN24-3413-5868","GRAN24-3456-5964","GRAN25-366-6344","GRAN25-3661-6345","GRAN25-3686-6400","GRAN25-3736-6523","GRAN25-3753-6564","GRAN25-3792-6622","GRAN25-3792-6625","GRAN25-3825-6677","GRAN25-3834-6701","GRAN25-3834-6924","GRAN25-385-6731","GRAN25-3851-6736","GRAN25-3863-6780","GRAN25-3868-6786","GRAN25-3869-6787","GRAN25-3883-6829","GRAN25-3885-6839","GRAN25-389-6861","GRAN25-3896-6883","GRAN25-3904-6900","GRAN25-3911-6911","GRAN25-3911-7150","GRAN25-3912-6912","GRAN25-3913-6916","GRAN25-3926-6941","GRAN25-396-7010","GRAN25-3961-7011","GRAN25-4-7101","GRAN26-4068-7309","GRAN26-4068-7317","GRAN26-4068-7459","GRAN26-4068-7461","GRAN26-4068-7503","GRAN26-4068-7623","GRAN26-4103-7406","HAWI14-175-5933","HAWI14-175-6009","HAWI14-175-6035","HAWI14-175-6077","HAWI14-175-6240","HAWI14-175-6265","HAWI14-175-6365","HAWI14-175-6609","HAWI14-175-6761","HAWI14-175-6776","HAWI14-175-6843","HAWI14-175-7013","HAWI14-175-7026","HAWI14-175-7077","HAWI14-175-7187","HAWI14-175-7214","HAWI14-175-7435","HAWI14-175-7475","HAWI14-175-7530","HAWI14-175-7537","HAWI14-175-7540","HAWI14-175-7636","HAWI14-175-7646","HAWI14-435-6623","HAWI14-435-6718","HAWI14-435-6799","HAWI24-3094-5286","HAWI24-3094-6709","HAWI24-3094-6950","HAWI24-3094-7112","HAWI24-3094-7203","HAWI24-3094-7430","HAWI24-3094-7592","HAWI24-3383-5822","HAWI24-3386-5829","HAWI24-3386-6845","HAWI24-3386-7040","HAWI24-3386-7115","HAWI24-3386-7511","HAWI24-3401-5853","HAWI24-3401-6576","HAWI24-3401-7325","HAWI24-3401-7520","HAWI25-3533-6118","HAWI25-3632-6286","HAWI25-3632-7343","HAWI25-3632-7437","HAWI25-3632-7438","HAWI25-3675-6382","HAWI25-3771-6592","HAWI25-3812-6655","HAWI25-3812-6957","HAWI25-3812-7185","HAWI25-3812-7347","HAWI25-3815-6658","HAWI25-3897-6884","HAWI25-3922-6931","HAWI25-3922-7429","HAWI25-3935-6965","HAWI25-3962-7012","HAWI25-3968-7027","HAWI25-3968-7078","HAWI25-3985-7063","HAWI25-3986-7071","HAWI25-4006-7135","HAWI25-4007-7143","HAWI26-4061-7291","HAWI26-4073-7326","HAWI26-4088-7368","HAWI26-4111-7457","HAWI26-4122-7474","HAWI26-4138-7532","HAWI26-4176-7632","HEXA24-3064-5958","HEXA24-3064-7349","HMOS24-3439-5930","HMOS24-344-5931","HMOS25-3987-7073","HRAG23-2556-6606","HRAG24-3124-5365","HRAG26-4031-7210","JEVA23-2887-4886","JEVA23-2887-6019","KHEP25-3637-6305","KHEP26-4081-7335","KWIA25-3705-6445","KWIA25-3932-6966","LACO24-3192-6963","LACO25-3728-6498","LUMD24-3222-5539","LUMM26-402-7172","LUXO14-221-6012","LUXO14-221-6214","LUXO14-221-6406","LUXO14-221-6590","LUXO14-221-6809","LUXO14-221-6946","LUXO14-221-7206","LUXO14-221-7388","LUXO15-260-7093","MADA25-3894-6877","MARL22-2137-6557","MARL22-2137-7072","MARL22-2137-7197","MARL25-3537-6138","MARL26-4071-7313","MARL26-4112-7453","MARL26-4127-7497","MCS16-419-6935","MIKI19-0532-7432","MIKI20-122-6870","MIKI23-2986-7522","MIKI24-313-6814","MIKI25-388-6813","MIKI25-3881-6815","MIKI25-3949-6994","MONI25-3931-6954","MONI26-4083-7350","MOVA23-2773-5641","MOVA23-2773-6588","MOVA23-2773-6735","MOVA23-2773-6885","MOVA23-2773-7165","MOVA24-3425-5902","MOVA25-3969-7030","NOMO24-3466-5983","NOMO24-3495-6044","NUNA24-3221-5550","NVLH26-4017-7169","NVLH26-4017-7412","OBRI24-3329-7477","OBRI24-3329-7596","PACT24-3039-5188","PENN22-2042-7114","RENN24-3255-5595","REVD24-3056-6083","REVD24-3056-6666","RIGH24-3471-5994","RLFP24-3333-5741","RLFP24-3399-5852","RLFP25-3689-6407","RLFP25-3689-6465","RLFP25-3689-6838","RLFP25-3689-6902","RLFP25-3689-6933","RLFP25-3979-7380","RLFP25-3979-7394","RLFP25-3979-7439","SEIK18-091-6533","SEIK21-1801-5875","SEIK25-3733-6518","SEIK25-3744-6535","SEQU20-1191-7105","SEQU22-2009-6637","SEQU22-2009-6848","SEQU22-2009-7584","SHIN18-278-6091","SHIN18-278-6229","SHIN18-278-7351","SHIN19-05-6717","SHIN21-1857-6156","SHIN22-2409-6826","SHIN24-3276-5633","SHIN24-328-5636","SHIN24-328-7120","SHIN24-328-7136","SHIN25-352-6104","SHIN25-3604-6233","SHIN25-3914-6917","SHIN25-398-7056","SHIN25-3992-7086","SHIN26-4102-7400","TABA25-3574-6198","THEL19-010-6951","THEL23-2632-4288","THEL23-2643-4305","THEL24-3103-5309","THEL24-3217-6183","THEL24-3323-5720","THEL24-3354-5765","THEL24-3354-5771","THEL24-338-5814","THEL24-3443-5937","THEL24-3514-6092","THEL25-3553-6164","THEL25-3651-6335","THEL25-3681-6393","THEL25-3774-6597","THEL25-3774-6796","THEL25-3847-6719","THEL25-3847-6720","THEL25-3847-6721","THEL25-3888-6851","THEL25-3888-6925","THEL25-6876-0001","THEL26-4093-7373","THEL26-4129-7504","TIFF22-2161-4538","TIFF22-2161-5900","TIFF22-2161-6937","TIFF22-2161-7168","TIFF22-2161-7212","TIFF24-3048-5207","TIFF24-3048-7175","TIFF24-3512-6089","TIFF25-3635-6289","TIFF25-3756-6567","TIFF25-3802-6641","TIFF26-4092-7372","TIFF26-4095-7381","TIFF26-4098-7385","TIME21-169-2760","TIME21-169-6008","TIME21-169-6067","TIME21-169-6961","TIME21-169-7138","TIME21-169-7586","TIME22-2478-3978","TIME22-2478-6013","TIME22-2478-6587","TIME22-2478-6638","TIME22-2478-6640","TIME22-2478-6822","TIME22-2478-6955","TIME22-2478-7020","TIME22-2478-7137","TIME22-2478-7223","TIME22-2478-7488","TIME22-2478-7541","TIME22-2478-7587","TIME22-2478-7588","TIME22-2478-7589","TIME22-2478-7594","TIME24-3396-5849","TIME24-3396-7095","TIME24-3396-7554","TIME25-3787-6618","TJGR17-304-6447","TJGR17-304-6627","TJGR17-304-7080","TJGR17-304-7268","TJGR17-304-7269","TJGR20-1416-7271","TJGR21-1557-5857","TJGR21-1557-7232","TJGR21-1728-6707","TJGR22-2238-7285","TJGR23-2565-6244","TJGR23-2573-7025","TJGR23-2805-7410","TJGR24-3204-6141","TJGR24-3204-6422","TJGR24-3204-6424","TJGR24-3204-6643","TJGR24-3204-6710","TJGR24-3204-6893","TJGR24-3204-6995","TJGR24-3204-7065","TJGR24-3204-7103","TJGR24-3421-5889","TJGR24-3421-7144","TJGR24-3467-5989","TJGR25-3609-6241","TJGR25-3646-6319","TJGR25-3664-6352","TJGR25-3666-6361","TJGR25-373-6501","TJGR25-3757-6569","TJGR25-3775-6599","TJGR25-3775-6600","TJGR25-3784-6613","TJGR25-3799-6633","TJGR25-3805-6645","TJGR25-3805-7023","TJGR25-3805-7099","TJGR25-3805-7242","TJGR25-3805-7398","TJGR25-3805-7472","TJGR25-3916-6922","TJGR25-3916-7578","TJGR25-3929-6945","TJGR25-3994-7090","TJGR25-3996-7096","TJGR26-407-7312","TJGR26-4086-7364","TJGR26-4101-7396","TJGR26-4142-7545","TNFE24-3243-5571","TNFE24-3243-7306","TNFE24-3243-7307","TNFE24-3435-5925","TNFE26-4091-7371","TUDO24-2998-5116","TUDO24-3172-5452","TUDO25-1234-5997","TUDO25-1234-5999","VANC22-2262-6039","VANC22-2262-6040","VANC22-2262-6084","VANC22-2262-6307","VANC24-3029-5372","VANC25-3818-6665","VANC25-3846-6715","VANC25-3898-6886","VANC25-3901-6892","VANC25-3938-6972","VANC25-3958-7006","VANC26-4152-7569","VICT25-3877-6806","VICT25-3921-6930","WATC24-3237-6691","WHEE25-3573-6196","ZWIL19-063-6007","ZWIL25-3765-6581","ZWIL25-3766-6582"]);
 
@@ -249,7 +253,7 @@ const NS_PROJECT_CODES = new Set(["ACCU19-048-6737","ACCU19-048-7074","ACCU19-04
 // and (b) all PTA and PTNext division projects. Only PTJapan / other-division work
 // that is not yet in NetSuite remains. 110 removed as in-NetSuite + 185 as PTA/PTNext
 // division -> 57 of 352 active projects kept ($288,795).
-const PODIO_SEED = {"byId":{"_other":{"projects":12,"wtd":58000,"contributing":3},"seiko":{"projects":29,"wtd":185795,"contributing":19},"citizen":{"projects":7,"wtd":1700,"contributing":1},"timex":{"projects":2,"wtd":0,"contributing":1},"thelios":{"projects":3,"wtd":0,"contributing":0},"jewelry":{"projects":2,"wtd":0,"contributing":0},"swatch":{"projects":3,"wtd":43300,"contributing":3}},"otherClients":{"Casio Computer":58000},"totalActive":57};
+const PODIO_SEED = {"byId":{"_other":{"projects":12,"wtd":58000,"contributing":3},"seiko":{"projects":29,"wtd":185795,"contributing":19},"citizen":{"projects":7,"wtd":1700,"contributing":1},"timex":{"projects":2,"wtd":0,"contributing":1},"thelios":{"projects":3,"wtd":0,"contributing":0},"jewelry":{"projects":2,"wtd":0,"contributing":0},"swatch":{"projects":3,"wtd":43300,"contributing":3}},"otherClients":{"Casio Computer":58000},"totalActive":57,"pipeLanding":115500};
 
 // ── BUILT-IN NETSUITE OPEN-ORDER SEED ────────────────────────────────────────
 // Open sales orders on an UNBILLED basis as of 6/29/2026, mapped to holding
@@ -257,6 +261,8 @@ const PODIO_SEED = {"byId":{"_other":{"projects":12,"wtd":58000,"contributing":3
 // upload overrides these values. Source: live SuiteQL (267 open orders,
 // $7,978,376 unbilled).
 const NS_SEED = {"byId":{"citizen":{"orders":29,"total":3510063.61},"seiko":{"orders":14,"total":731964.51},"swatch":{"orders":16,"total":577066.57},"tiffany":{"orders":110,"total":413870.55},"_other":{"orders":60,"total":1874169.6},"tapestry":{"orders":2,"total":222335.0},"timex":{"orders":10,"total":187861.03},"jaffe":{"orders":2,"total":162541.0},"jewelry":{"orders":12,"total":148631.39},"thelios":{"orders":4,"total":86562.0},"bedrock":{"orders":8,"total":63311.04}},"otherOrders":{"Diamond Dream Jewelry & Apparel":183060.88,"HEXACLAD":277009.2,"Tudor Watch, U.S.A.":265796,"Nuna":254969,"Victorinox Swiss Army":163304,"Monica Rich Kosann (MRK)":159883,"CASIO":146045,"BEN BRIDGE JEWELER":130962.81,"The North Face":84142.83,"Nouvel Heritage":58575.87,"BENARD DESIGN":55795.9,"Luxottica":33742.5,"J'EVAR":21481.21,"Obrists Interior America":8847.6,"Ralph Lauren":8482,"MIKIMOTO America Co., Ltd.":7381,"Renna Jewels":6663,"MADALUX":2860,"Davaco, LP":2056,"Marla Aaron Jewelry":1060,"Van Cleef & Arpels America":890.2,"CROWNRING":811.6,"Copper Hill Development, Inc.":200,"Right Time Watches & Jewelry":150},"totalOrders":267,"reportDate":"As of 6/29/2026"};
+// Open-order $ on projects currently On Hold in Podio (refreshed monthly with NetSuite).
+const OPEN_ORDERS_ONHOLD = 67928.26;
 
 // ── MAPPING FUNCTIONS ─────────────────────────────────────────────────────────
 function podioClientToId(client) {
@@ -331,25 +337,28 @@ function parsePodio(rows) {
     prob:   headers.indexOf('Probability'),
     proj:   headers.indexOf('Project #'),
     div:    headers.indexOf('Division'),
+    podate: headers.indexOf('Projected PO date'),
   };
-  if (ci.client===-1||ci.status===-1) return {error:'Missing Client or Status column — make sure this is the Podio Active Client Count export'};
+  if (ci.client===-1||ci.status===-1) return {error:'Missing Client or Status column. Make sure this is the Podio Active Client Count export'};
 
   const byId = {};
   const otherClients = {};
   const ACTIVE = new Set(['In Progress','On Hold','Opportunity']);
   const EXCLUDE_DIV = new Set(['PTA','PTNext']);   // these divisions are not used in pipeline
+  const PO_CUTOFF = new Date(2026,7,31);           // Aug 31 2026: production must start to ship by Dec 31
+  const asDate = v => { const d = (v instanceof Date) ? v : new Date(v); return isNaN(d) ? null : d; };
   const projCode = v => {
     const m = (v==null?'':v.toString()).match(/[A-Za-z]+[0-9]{2}-[0-9]+-[0-9]+/);
     return m ? m[0].toUpperCase() : '';
   };
-  let kept = 0, removed = 0;
+  let kept = 0, removed = 0, pipeLanding = 0;
 
   rows.slice(1).forEach(row => {
     const status = (row[ci.status]||'').toString().trim();
     if (!ACTIVE.has(status)) return;
 
     // Reconciliation: if this project's Project # already exists in NetSuite
-    // (an order or invoice), its value is already in Open Orders / Invoiced —
+    // (an order or invoice), its value is already in Open Orders / Invoiced, so
     // exclude it from pipeline to avoid double-counting.
     const code = ci.proj>=0 ? projCode(row[ci.proj]) : '';
     if (code && NS_PROJECT_CODES.has(code)) { removed++; return; }
@@ -375,9 +384,13 @@ function parsePodio(rows) {
     if (!id && client) {
       otherClients[client] = (otherClients[client]||0) + wtd;
     }
+
+    // Pipeline that can still land in 2026: a projected PO date on or before Aug 31.
+    const po = ci.podate>=0 ? asDate(row[ci.podate]) : null;
+    if (po && po <= PO_CUTOFF) pipeLanding += wtd;
   });
 
-  return {byId, otherClients, totalActive:kept, removedInNS:removed};
+  return {byId, otherClients, totalActive:kept, removedInNS:removed, pipeLanding};
 }
 
 function parseNSOrders(rows) {
@@ -392,7 +405,7 @@ function parseNSOrders(rows) {
     if (first.startsWith('As of')) reportDate = first;
     if (row.some(c=>(c||'').toString().trim()==='Account')) { headerIdx=i; break; }
   }
-  if (headerIdx===-1) return {error:'Could not find header row — make sure this is the NetSuite Custom Open Sales Orders export'};
+  if (headerIdx===-1) return {error:'Could not find header row. Make sure this is the NetSuite Custom Open Sales Orders export'};
 
   const byId = {};
   const otherOrders = {};
@@ -441,7 +454,7 @@ function parseInvoiced(rows) {
       break;
     }
   }
-  if (hi===-1||ti===-1||ai===-1) return {error:'Could not find Type/Amount header — make sure this is the NetSuite Custom Income Stmt Detail export'};
+  if (hi===-1||ti===-1||ai===-1) return {error:'Could not find Type/Amount header. Make sure this is the NetSuite Custom Income Stmt Detail export'};
 
   const byId={}; const other={}; let invCount=0, net=0;
   rows.slice(hi+1).forEach(r=>{
@@ -488,7 +501,7 @@ function FileZone({label, sub, fileLabel, tag, onFile, loaded, info, pending}) {
     return h('div',{className:'zone pending'},
       h('i',{className:'ti ti-upload zone-icon'}),
       h('div',{className:'zone-label'},label),
-      h('div',{className:'zone-sub'},'Coming soon — upload when ready'),
+      h('div',{className:'zone-sub'},'Coming soon, upload when ready'),
     );
   }
 
@@ -514,7 +527,7 @@ function FileZone({label, sub, fileLabel, tag, onFile, loaded, info, pending}) {
 }
 
 function Badge({label}) {
-  if (!label||label==='—') return null;
+  if (!label||label==='-') return null;
   const cls = label==='DEFEND'?'bdefend':label==='SCALE'?'bscale':label==='BUILD'?'bbuild':
               label.startsWith('FIX')?'bfix':'bfire';
   return h('span',{className:`bdg ${cls}`},label);
@@ -656,7 +669,7 @@ function App() {
   const initAccounts = defs => defs.map(d => {
     const p = PODIO_SEED.byId[d.id];
     return {
-      id:d.id, name:d.name, brands:d.brands||'', amA:d.amA||'—', jA:d.jA||'—',
+      id:d.id, name:d.name, brands:d.brands||'', amA:d.amA||'-', jA:d.jA||'-',
       inv:String(d.inv||0), ord:String(Math.round(NS_SEED.byId[d.id]?.total||0)),
       pipe:String(Math.round(p?.wtd||0)), pipeN:p?.projects||0, pipeContrib:p?.contributing||0,
     };
@@ -728,7 +741,7 @@ function App() {
 
   const ch = setter => (id,f,v) => setter(p=>p.map(a=>a.id===id?{...a,[f]:v}:a));
   const dl = setter => id => setter(p=>p.filter(a=>a.id!==id));
-  const mkBlankAcct = () => ({id:uid(),name:'',brands:'',amA:'—',jA:'—',inv:'0',ord:'0',pipe:'0',pipeN:0,pipeContrib:0});
+  const mkBlankAcct = () => ({id:uid(),name:'',brands:'',amA:'-',jA:'-',inv:'0',ord:'0',pipe:'0',pipeN:0,pipeContrib:0});
   const mkBlankTgt = () => ({id:uid(),name:'',won:'0',pipe:'0',pipeN:0,pipeContrib:0});
 
   const keyScore = keyAccts.reduce((s,a)=>s+(+a.inv||0)+(+a.ord||0)+(+a.pipe||0),0);
@@ -736,12 +749,16 @@ function App() {
   const tgtScore = tgtAccts.reduce((s,a)=>s+(+a.won||0)+(+a.pipe||0),0);
   const cc = parseInt(activeCount)||0;
 
-  // Total forecasted revenue 2026 — every dollar on the board, all accounts & divisions:
-  // company-wide net invoiced YTD + all open orders + all genuine pipeline + targets.
+  // 2026 projection on the Aug-31 production cutoff: work not invoiced by Aug 31
+  // can't produce and ship by Dec 31, so it's flagged at-risk (likely slips to 2027).
   const totalInvoiced = +invMeta?.net || 0;
   const totalOrders   = Object.values(nsData?.byId||{}).reduce((s,v)=>s+(v.total||0),0);
   const totalPipe     = Object.values(podioData?.byId||{}).reduce((s,v)=>s+(v.wtd||0),0);
-  const forecastTotal = totalInvoiced + totalOrders + totalPipe + tgtScore;
+  const cutoffPassed  = new Date() > new Date(2026,7,31,23,59,59);   // after Aug 31 → no runway
+  const pipeLanding   = cutoffPassed ? 0 : (+podioData?.pipeLanding || 0);   // PO expected by Aug 31
+  const openLanding   = totalOrders - OPEN_ORDERS_ONHOLD;                    // open orders not On Hold
+  const bookedLanding = totalInvoiced + openLanding + pipeLanding;           // realistic 2026 landing
+  const atRisk        = OPEN_ORDERS_ONHOLD + (totalPipe - pipeLanding);      // slips to 2027
 
   const kCols = 'minmax(0,1.6fr) 120px 120px 140px 95px 28px';
   const tCols = 'minmax(0,2fr) 120px 140px 95px 28px';
@@ -754,7 +771,7 @@ function App() {
 
     // ── Upload Panel ──
     h('div',{className:'upload-panel'},
-      h('h2',null,'Data Sources  —  upload each Monday to refresh'),
+      h('h2',null,'Data Sources: upload each Monday to refresh'),
       h('div',{className:'upload-zones'},
         h(FileZone,{
           label:'Podio Pipeline', tag:'Podio',
@@ -797,27 +814,24 @@ function App() {
         h('strong',null,'Invoiced YTD: '), fmtShort(invMeta.net),' · ',invMeta.period
       ),
       invFallback && h('span',{className:'sum-tag',style:{borderColor:'#f5dfa0',color:'#854f0b'}},
-        '⚠ Invoiced YTD = portfolio data (Apr 2025–Mar 2026) — upload NS export to replace'
+        '⚠ Invoiced YTD = portfolio data (Apr 2025–Mar 2026). Upload NS export to replace'
       )
     ),
 
-    // ── Total forecast bubble ──
+    // ── 2026 projection bubble (booked + landing  vs  at-risk) ──
     h('div',{className:'forecast-bubble'},
       h('div',{className:'fb-left'},
-        h('div',{className:'fb-lbl'},'Total forecasted revenue · 2026'),
-        h('div',{className:'fb-val'},fmtShort(forecastTotal)),
-        h('div',{className:'fb-note'},'Invoiced YTD + open orders + weighted pipeline · all accounts, all divisions')
+        h('div',{className:'fb-lbl'},'Projected 2026 revenue · booked + landing'),
+        h('div',{className:'fb-val'},fmtShort(bookedLanding)),
+        h('div',{className:'fb-note'},
+          'Invoiced YTD ',fmtShort(totalInvoiced),
+          ' + open orders not on hold ',fmtShort(openLanding),
+          ' + pipeline with a PO expected by Aug 31 ',fmtShort(pipeLanding))
       ),
-      h('div',{className:'fb-parts'},
-        h('div',{className:'fb-part'},
-          h('div',{className:'p-lbl'},'Invoiced YTD'),
-          h('div',{className:'p-val'},fmtShort(totalInvoiced))),
-        h('div',{className:'fb-part'},
-          h('div',{className:'p-lbl'},'Open orders'),
-          h('div',{className:'p-val'},fmtShort(totalOrders))),
-        h('div',{className:'fb-part'},
-          h('div',{className:'p-lbl'},'Pipeline'),
-          h('div',{className:'p-val'},fmtShort(totalPipe)))
+      h('div',{className:'fb-risk'},
+        h('div',{className:'r-lbl'},'At-risk · likely slips to 2027'),
+        h('div',{className:'r-val'},fmtShort(atRisk)),
+        h('div',{className:'r-note'},'On-hold orders + pipeline with no PO by Aug 31')
       )
     ),
 
@@ -835,12 +849,12 @@ function App() {
       ),
       h('div',{className:'tile t3'},
         h('div',{className:'tile-lbl'},'strategic targets'),
-        h('div',{className:'tile-val'},tgtAccts.length?fmtShort(tgtScore):'—'),
+        h('div',{className:'tile-val'},tgtAccts.length?fmtShort(tgtScore):'-'),
         h('div',{className:'tile-sub'},tgtAccts.length?tgtAccts.length+' prospects':'Add from Podio .CRM')
       ),
       h('div',{className:'tile t4'},
         h('div',{className:'tile-lbl'},'active client count'),
-        h('div',{className:'tile-val'},cc||'—'),
+        h('div',{className:'tile-val'},cc||'-'),
         h('div',{className:'tile-sub'},'invoiced, trailing 12 mo')
       )
     ),
@@ -851,7 +865,7 @@ function App() {
       dot:'#1D9E75', total:keyScore, open:open.k, onToggle:()=>tog('k'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setKeyAccts(p=>[...p,mkBlankAcct()]),
-      note:'Invoiced YTD: NetSuite net invoiced (invoices less credit memos, all revenue accounts), Jan 1–Jun 29 2026. Open orders are unbilled SO value as of 6/29; pipeline auto-populates from the weekly Podio upload. All fields editable. ⚑ Seiko trailing-12M invoiced is $767,124 (just under the $800K Key threshold) — retained as Key Account pending year-end tier review.',
+      note:'Invoiced YTD: NetSuite net invoiced (invoices less credit memos, all revenue accounts), Jan 1–Jun 29 2026. Open orders are unbilled SO value as of 6/29; pipeline auto-populates from the weekly Podio upload. All fields editable. ⚑ Seiko trailing-12M invoiced is $767,124 (just under the $800K Key threshold), retained as Key Account pending year-end tier review.',
     },
       keyAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setKeyAccts), onDel:dl(setKeyAccts)
@@ -877,10 +891,10 @@ function App() {
       dot:'#BA7517', total:tgtScore, open:open.t, onToggle:()=>tog('t'),
       cols:tCols, colHead:tHead,
       onAdd:()=>setTgtAccts(p=>[...p,mkBlankTgt()]),
-      note:'15 CEO-approved net-new targets (Jun 2026). New biz won + weighted pipeline are entered manually from Podio .CRM → Prospects — seeded at $0 until those figures are added. Formula: New Business Won + Σ(Pipeline × Probability Weight).',
+      note:'15 CEO-approved net-new targets (Jun 2026). New biz won + weighted pipeline are entered manually from Podio .CRM → Prospects, seeded at $0 until those figures are added. Formula: New Business Won + Σ(Pipeline × Probability Weight).',
     },
       tgtAccts.length===0
-        ? h('div',{className:'empty-msg'},'No strategic targets — click "+ add account" to add from Podio .CRM')
+        ? h('div',{className:'empty-msg'},'No strategic targets. Click "+ add account" to add from Podio .CRM')
         : tgtAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:true,cols:tCols,invFallback:false,
             onChange:ch(setTgtAccts), onDel:dl(setTgtAccts)
           }))
@@ -901,7 +915,7 @@ function App() {
           h('span',{className:'sec-def'},'unique customers invoiced, trailing 12 months')
         ),
         h('div',{className:'sec-r'},
-          h('span',{className:'sec-tot'},cc||'—'),
+          h('span',{className:'sec-tot'},cc||'-'),
           h('span',{className:`sec-chev ${open.c?'open':''}`},'▼')
         )
       ),
