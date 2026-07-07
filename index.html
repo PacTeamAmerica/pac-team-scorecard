@@ -217,6 +217,12 @@ const GROWTH_DEFS = [
   {id:'tiffany', name:'Tiffany & Co.',            brands:'LVMH',    amA:'SCALE', jA:'SCALE', inv:45689},
   {id:'jaffe',   name:'A. Jaffe (Paramount)',      brands:'',        amA:'BUILD',     jA:'SCALE', inv:113813},
   {id:'bedrock', name:'Bedrock Manufacturing',    brands:'Shinola', amA:'FIX',   jA:'SCALE', inv:52162},
+  {id:'hexaclad', name:'HexaClad',                brands:'',        amA:'BUILD',     jA:'BUILD',     inv:0},
+  {id:'nuna',     name:'Nuna',                    brands:'',        amA:'BUILD',     jA:'BUILD',     inv:0},
+  {id:'mrk',      name:'Monica Rich Kosann',      brands:'MRK',     amA:'BUILD',     jA:'BUILD',     inv:5300},
+  {id:'casio',    name:'Casio',                   brands:'',        amA:'BUILD',     jA:'BUILD',     inv:64660},
+  {id:'luxottica',name:'Luxottica',               brands:'',        amA:'BUILD',     jA:'BUILD',     inv:15711},
+  {id:'northface',name:'The North Face',          brands:'',        amA:'BUILD',     jA:'BUILD',     inv:122192},
 ];
 const ALL_DEFS = [...KEY_DEFS, ...GROWTH_DEFS];
 const KNOWN_IDS = new Set(ALL_DEFS.map(d=>d.id));
@@ -266,7 +272,7 @@ const PODIO_SEED = {"byId":{"seiko":{"projects":27,"wtd":162795,"contributing":1
 // companies (status B/D/E/F, amountUnbilled > 0). A fresh NetSuite Open Orders
 // upload overrides these values. Source: live SuiteQL (260 open orders,
 // $5,447,752 unbilled).
-const NS_SEED = {"byId": {"seiko": {"orders": 15, "total": 782630.51}, "swatch": {"orders": 15, "total": 571656.57}, "citizen": {"orders": 25, "total": 1219495.97}, "tiffany": {"orders": 110, "total": 413870.55}, "tapestry": {"orders": 2, "total": 222335.0}, "timex": {"orders": 9, "total": 163030.25}, "jewelry": {"orders": 9, "total": 152666.65}, "thelios": {"orders": 5, "total": 87768.0}, "bedrock": {"orders": 8, "total": 63311.04}, "jaffe": {"orders": 1, "total": 48728.0}, "_other": {"orders": 61, "total": 1722259.1}}, "otherOrders": {"HEXACLAD": 277009.2, "Tudor Watch, U.S.A.": 265796, "Nuna": 254969, "Diamond Dream Jewelry & Apparel": 183060.88, "Monica Rich Kosann (MRK)": 159883, "CASIO": 146045, "BEN BRIDGE JEWELER": 130962.81, "The North Face": 84142.83, "Nouvel Heritage": 58575.87, "BENARD DESIGN": 55795.9, "Luxottica": 33742.5, "J'EVAR": 21481.21, "MOVADO GROUP INC.": 19320, "Obrists Interior America": 8847.6, "MIKIMOTO America Co., Ltd.": 7381, "CROWNRING": 6926.6, "MADALUX": 2860, "Davaco, LP": 2056, "Bell & Ross": 1603.5, "Van Cleef & Arpels America": 890.2, "Marla Aaron Jewelry": 560, "Copper Hill Development, Inc.": 200, "Right Time Watches & Jewelry": 150}, "totalOrders": 260, "reportDate": "As of 7/6/2026"};
+const NS_SEED = {"byId": {"seiko": {"orders": 15, "total": 782630.51}, "swatch": {"orders": 15, "total": 571656.57}, "citizen": {"orders": 25, "total": 1219495.97}, "tiffany": {"orders": 110, "total": 413870.55}, "tapestry": {"orders": 2, "total": 222335.0}, "timex": {"orders": 9, "total": 163030.25}, "jewelry": {"orders": 9, "total": 152666.65}, "thelios": {"orders": 5, "total": 87768.0}, "bedrock": {"orders": 8, "total": 63311.04}, "jaffe": {"orders": 1, "total": 48728.0}, "_other": {"orders": 29, "total": 766467.57}, "hexaclad": {"orders": 1, "total": 277009.2}, "nuna": {"orders": 7, "total": 254969}, "mrk": {"orders": 3, "total": 159883}, "casio": {"orders": 1, "total": 146045}, "luxottica": {"orders": 3, "total": 33742.5}, "northface": {"orders": 17, "total": 84142.83}}, "otherOrders": {"Tudor Watch, U.S.A.": 265796, "Diamond Dream Jewelry & Apparel": 183060.88, "BEN BRIDGE JEWELER": 130962.81, "Nouvel Heritage": 58575.87, "BENARD DESIGN": 55795.9, "J'EVAR": 21481.21, "MOVADO GROUP INC.": 19320, "Obrists Interior America": 8847.6, "MIKIMOTO America Co., Ltd.": 7381, "CROWNRING": 6926.6, "MADALUX": 2860, "Davaco, LP": 2056, "Bell & Ross": 1603.5, "Van Cleef & Arpels America": 890.2, "Marla Aaron Jewelry": 560, "Copper Hill Development, Inc.": 200, "Right Time Watches & Jewelry": 150}, "totalOrders": 260, "reportDate": "As of 7/6/2026"};
 // Open-order $ on projects currently On Hold in Podio (refreshed monthly with NetSuite).
 const OPEN_ORDERS_ONHOLD = 69679.26;
 
@@ -294,6 +300,12 @@ function podioClientToId(client) {
   if (/tiffany/.test(s)) return 'tiffany';
   if (/shinola/.test(s)) return 'bedrock';
   if (/jaffe/.test(s)) return 'jaffe';
+  if (/hexaclad/.test(s)) return 'hexaclad';
+  if (/nuna/.test(s)) return 'nuna';
+  if (/monica rich kosann|\bmrk\b/.test(s)) return 'mrk';
+  if (/casio/.test(s)) return 'casio';
+  if (/luxottica/.test(s)) return 'luxottica';
+  if (/north ?face/.test(s)) return 'northface';
   return null;
 }
 
@@ -311,6 +323,12 @@ function nsCustomerToId(customer) {
   if (s.includes('JEWELRY GROUP')) return 'jewelry';
   if (s.includes('SHINOLA')) return 'bedrock';
   if (/A\.JAFFE|A\. JAFFE|\bJAFFE\b/.test(s)) return 'jaffe';
+  if (s.includes('HEXACLAD')) return 'hexaclad';
+  if (s.includes('NUNA')) return 'nuna';
+  if (s.includes('KOSANN')||/\bMRK\b/.test(s)) return 'mrk';
+  if (s.includes('CASIO')) return 'casio';
+  if (s.includes('LUXOTTICA')) return 'luxottica';
+  if (/NORTH ?FACE/.test(s)) return 'northface';
   return null;
 }
 
@@ -921,7 +939,7 @@ function App() {
       dot:'#534AB7', total:grwScore, open:open.g, onToggle:()=>tog('g'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setGrwAccts(p=>[...p,mkBlankAcct()]),
-      note:'Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Jul 6 2026. Open orders (unbilled, 7/6) are built in; pipeline auto-populates from the weekly Podio upload.',
+      note:'Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Jul 6 2026. Open orders (unbilled, 7/6) are built in; pipeline auto-populates from the weekly Podio upload. Promoted from Other Active Accounts 7/6/2026: HexaClad, Nuna, Monica Rich Kosann, Casio, Luxottica, The North Face. Note: HexaClad and Nuna show $0 revenue YTD because their 2026 billings to date are deposit invoices posted outside income accounts; their value sits in open orders.',
     },
       grwAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setGrwAccts), onDel:dl(setGrwAccts)
