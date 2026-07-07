@@ -53,6 +53,11 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .fb-risk .r-lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:#a98a3c;font-weight:700}
 .fb-risk .r-val{font-size:20px;font-weight:700;color:#9a6a12;margin-top:1px;letter-spacing:-.3px;font-variant-numeric:tabular-nums}
 .fb-risk .r-note{font-size:10px;color:#b09a6a;margin-top:3px;line-height:1.35}
+.fb-seasonal{flex-basis:100%;border-top:1px dashed #cfe9de;margin-top:4px;padding-top:10px}
+.fb-seasonal .s-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:#4f7a6a;font-weight:700}
+.fb-seasonal .s-val{font-size:21px;font-weight:700;color:#13694e;letter-spacing:-.3px;font-variant-numeric:tabular-nums;margin-top:2px}
+.fb-seasonal .s-base{font-size:13px;font-weight:600;color:#4f7a6a}
+.fb-seasonal .s-note{font-size:10.5px;color:#8a998f;margin-top:3px;line-height:1.4}
 .tile.t1{border-top:3px solid #1D9E75}
 .tile.t2{border-top:3px solid #534AB7}
 .tile.t3{border-top:3px solid #BA7517}
@@ -164,7 +169,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <h1>PAC TEAM &nbsp;·&nbsp; Commercial Scorecard</h1>
       <div class="sub">Upload Podio and NetSuite files each Monday to refresh all metrics</div>
     </div>
-    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite net invoiced, Jan 1–Jul 2 2026 · Open orders: 7/2 · Pipeline: Podio 7/2</div>
+    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite P&L revenue (income accounts), Jan 1–Jul 6 2026 · Open orders: 7/6 · Pipeline: Podio 7/2</div>
   </div>
 
   <details class="about">
@@ -174,13 +179,14 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     </summary>
     <div class="about-body">
       <p>The Commercial Scorecard gives PAC TEAM a single, living view of where revenue stands across every strategic account: what has been earned, what is committed, and what is still in play.</p>
-      <p>The bubble at the top frames where <strong>2026</strong> lands as two numbers. <strong>Booked + landing</strong> is the revenue realistically expected to hit this year: revenue YTD, plus open orders that aren't on hold, plus pipeline with a PO expected by <b>August 31</b>. The <strong>at-risk</strong> figure beside it is work that probably slips to 2027: on-hold orders and pipeline without a PO by the cutoff. The Aug 31 line exists because these are build-and-ship projects: if a PO isn't in by then, production can't realistically complete and ship before December 31. The cutoff is automatic. Once the calendar passes Aug 31, not-yet-won pipeline moves to at-risk on its own.</p>
+      <p>The bubble at the top frames where <strong>2026</strong> lands as three numbers. <strong>Booked + landing</strong> is the revenue realistically expected to hit this year: revenue YTD, plus open orders that aren't on hold, plus pipeline with a PO expected by <b>August 31</b>. The <strong>at-risk</strong> figure beside it is work that probably slips to 2027: on-hold orders and pipeline without a PO by the cutoff. The Aug 31 line exists because these are build-and-ship projects: if a PO isn't in by then, production can't realistically complete and ship before December 31. The cutoff is automatic. Once the calendar passes Aug 31, not-yet-won pipeline moves to at-risk on its own. The <strong>seasonally adjusted full-year range</strong> beneath them corrects for PAC TEAM’s back-loaded calendar: only ~39% of 2025 revenue was recognized in the first half, with August (17.7%) and December (24.8%) the heaviest months, so a mid-year booked view structurally understates the year. The range divides revenue YTD by the share of 2025 revenue recognized by the same calendar date: the low end assumes the rest of the year simply repeats 2025 in dollars, the high end scales it with this year’s YTD growth rate, and the base applies damped growth. It recomputes daily and converges to actuals by December 31. One caution for single-month reads: part of the December peak reflects year-end revenue-recognition entries rather than shipping cadence, so quarterly cumulative shares are more trustworthy than any one month.</p>
       <p>Each account carries one <strong>score</strong>, built from three layers of decreasing certainty:</p>
       <ul class="about-list">
-        <li class="l1"><b>Revenue YTD</b>: revenue already recognized this year, net of credit memos, from NetSuite.</li>
+        <li class="l1"><b>Revenue YTD</b>: recognized revenue this year from NetSuite income accounts (invoices net of credit memos, plus revenue journals), the same basis as the P&amp;L.</li>
         <li class="l2"><b>Open orders</b>: won but not yet billed, the unbilled value of open sales orders.</li>
         <li class="l3"><b>Weighted pipeline</b>: genuine future opportunities from Podio that are <b>not yet in NetSuite</b>, discounted by how likely each is to close: 80%+ counts in full, 50–79% at half, below 50% not at all. Projects already in NetSuite (matched by Project&nbsp;#) are excluded so nothing is double-counted, and <b>PTA and PTNext division projects are excluded</b>, so the pipeline reflects PTJapan and other non-PTA/PTNext work only.</li>
       </ul>
+      <p><b>Basis note:</b> Revenue YTD is <b>recognized P&amp;L revenue</b>: postings to NetSuite income accounts (invoices net of credit memos, plus revenue journals and adjustments), Jan 1 to today. It ties directly to the income statement and to Finance’s revenue forecast model. The company total includes about −$449K of non-customer revenue adjustments (journals and vendor-bill contra entries) that cannot be attributed to a single account, so the account rows intentionally sum slightly higher than the total. Gross billings (invoice totals including freight and duty pass-throughs) run higher, ≈$9.83M YTD vs ≈$9.20M revenue.</p>
       <p>Accounts sit in three tiers: <strong>Key accounts</strong> (the largest, defended relationships), <strong>Strategic growth</strong> (accounts with room to scale), and <strong>Strategic targets</strong> (CEO-approved net-new names). Everything else, including smaller relationships and <b>one-off retail projects</b> such as Diamond Dream Jewelry, rolls up under <strong>Other active accounts</strong> rather than a strategic tier, so the tiers stay focused on accounts the strategy is actually built around. The <strong>active-client count</strong> tracks concentration: the strategy favors fewer, deeper relationships, so a smaller number is the goal.</p>
       <p class="about-foot">The three layers are kept distinct on purpose: revenue, open orders, and pipeline never overlap, so each dollar is counted once. Each Monday, three exports (NetSuite invoiced revenue, NetSuite open orders, and the Podio pipeline) are dropped into the panel below and every figure recomputes instantly. Between uploads, the scorecard runs on the last numbers built in, so it always shows something real.</p>
     </div>
@@ -201,7 +207,7 @@ const h = React.createElement;
 const KEY_DEFS = [
   {id:'citizen', name:'Citizen Watch Co.',    brands:'Citizen · Bulova · Caravelle · Accutron · Frederique Constant (all regions)', amA:'DEFEND', jA:'SCALE',  inv:7174779},
   {id:'seiko',   name:'Seiko Holdings Group', brands:'Grand Seiko · Seiko',                                                         amA:'BUILD',  jA:'BUILD',  inv:323932},
-  {id:'swatch',  name:'The Swatch Group',     brands:'Harry Winston',                                                               amA:'DEFEND', jA:'SCALE',  inv:316004},
+  {id:'swatch',  name:'The Swatch Group',     brands:'Harry Winston',                                                               amA:'DEFEND', jA:'SCALE',  inv:321789},
   {id:'tapestry',name:'Tapestry',             brands:'Coach · Kate Spade',                                                          amA:'BUILD',  jA:'SCALE',  inv:36672},
 ];
 const GROWTH_DEFS = [
@@ -256,13 +262,22 @@ const NS_PROJECT_CODES = new Set(["ACCU19-048-6737","ACCU19-048-7074","ACCU19-04
 const PODIO_SEED = {"byId":{"seiko":{"projects":27,"wtd":162795,"contributing":16},"_other":{"projects":12,"wtd":58000,"contributing":3},"timex":{"projects":2,"wtd":0,"contributing":0},"citizen":{"projects":7,"wtd":1700,"contributing":1},"thelios":{"projects":3,"wtd":0,"contributing":0},"jewelry":{"projects":2,"wtd":0,"contributing":0},"swatch":{"projects":3,"wtd":43300,"contributing":3}},"otherClients":{"Casio Computer":58000},"totalActive":56,"removedInNS":276,"pipeLanding":115500};
 
 // ── BUILT-IN NETSUITE OPEN-ORDER SEED ────────────────────────────────────────
-// Open sales orders on an UNBILLED basis as of 7/2/2026, mapped to holding
+// Open sales orders on an UNBILLED basis as of 7/6/2026, mapped to holding
 // companies (status B/D/E/F, amountUnbilled > 0). A fresh NetSuite Open Orders
-// upload overrides these values. Source: live SuiteQL (267 open orders,
-// $7,978,376 unbilled).
-const NS_SEED = {"byId":{"jaffe":{"orders":1,"total":48728},"tiffany":{"orders":110,"total":413870.55},"citizen":{"orders":24,"total":1218644.21},"tapestry":{"orders":2,"total":222335},"jewelry":{"orders":8,"total":76432.65},"swatch":{"orders":16,"total":577066.57},"thelios":{"orders":4,"total":86562},"timex":{"orders":8,"total":160783.25},"bedrock":{"orders":8,"total":63311.04},"_other":{"orders":59,"total":1701835.6},"seiko":{"orders":15,"total":746330.51}},"otherOrders":{"HEXACLAD":277009.2,"Tudor Watch, U.S.A.":265796,"Nuna":254969,"Diamond Dream Jewelry & Apparel":183060.88,"Monica Rich Kosann (MRK)":159883,"CASIO":146045,"BEN BRIDGE JEWELER":130962.81,"The North Face":84142.83,"Nouvel Heritage":58575.87,"BENARD DESIGN":55795.9,"Luxottica":33742.5,"J'EVAR":21481.21,"Obrists Interior America":8847.6,"MIKIMOTO America Co., Ltd.":7381,"CROWNRING":6926.6,"MADALUX":2860,"Davaco, LP":2056,"Marla Aaron Jewelry":1060,"Van Cleef & Arpels America":890.2,"Copper Hill Development, Inc.":200,"Right Time Watches & Jewelry":150},"totalOrders":255,"reportDate":"As of 7/2/2026"};
+// upload overrides these values. Source: live SuiteQL (260 open orders,
+// $5,447,752 unbilled).
+const NS_SEED = {"byId": {"seiko": {"orders": 15, "total": 782630.51}, "swatch": {"orders": 15, "total": 571656.57}, "citizen": {"orders": 25, "total": 1219495.97}, "tiffany": {"orders": 110, "total": 413870.55}, "tapestry": {"orders": 2, "total": 222335.0}, "timex": {"orders": 9, "total": 163030.25}, "jewelry": {"orders": 9, "total": 152666.65}, "thelios": {"orders": 5, "total": 87768.0}, "bedrock": {"orders": 8, "total": 63311.04}, "jaffe": {"orders": 1, "total": 48728.0}, "_other": {"orders": 61, "total": 1722259.1}}, "otherOrders": {"HEXACLAD": 277009.2, "Tudor Watch, U.S.A.": 265796, "Nuna": 254969, "Diamond Dream Jewelry & Apparel": 183060.88, "Monica Rich Kosann (MRK)": 159883, "CASIO": 146045, "BEN BRIDGE JEWELER": 130962.81, "The North Face": 84142.83, "Nouvel Heritage": 58575.87, "BENARD DESIGN": 55795.9, "Luxottica": 33742.5, "J'EVAR": 21481.21, "MOVADO GROUP INC.": 19320, "Obrists Interior America": 8847.6, "MIKIMOTO America Co., Ltd.": 7381, "CROWNRING": 6926.6, "MADALUX": 2860, "Davaco, LP": 2056, "Bell & Ross": 1603.5, "Van Cleef & Arpels America": 890.2, "Marla Aaron Jewelry": 560, "Copper Hill Development, Inc.": 200, "Right Time Watches & Jewelry": 150}, "totalOrders": 260, "reportDate": "As of 7/6/2026"};
 // Open-order $ on projects currently On Hold in Podio (refreshed monthly with NetSuite).
 const OPEN_ORDERS_ONHOLD = 69679.26;
+
+// ── 2025 MONTHLY REVENUE (P&L basis) · SEASONAL BASELINE ─────────────────────
+// Recognized revenue by month, FY2025, from NetSuite income accounts (invoices
+// net of credit memos + revenue journals). Source: live SuiteQL, pulled 7/6/2026.
+// Drives the seasonally adjusted full-year range: PAC TEAM recognizes only ~39%
+// of revenue in H1; August (17.7%) and December (24.8%) are the heavy months.
+// Refresh alongside the other NetSuite seeds at each monthly rebuild.
+const SEASONAL_2025 = [708024,1132147,1898362,886226,638342,2207248,782991,3374853,1247913,497662,957583,4731430];
+const SEASONAL_2025_TOTAL = SEASONAL_2025.reduce((s,v)=>s+v,0);
 
 // ── MAPPING FUNCTIONS ─────────────────────────────────────────────────────────
 function podioClientToId(client) {
@@ -660,10 +675,10 @@ function Section({title,def,dot,total,open,onToggle,children,onAdd,note,colHead,
 // ── APP ───────────────────────────────────────────────────────────────────────
 function App() {
   const [podioMeta, setPodioMeta] = useState({name:'Built-in · .Projects (6/29/2026)', totalActive:PODIO_SEED.totalActive, removedInNS:276});
-  const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (7/2/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
+  const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (7/6/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
   const [podioData, setPodioData] = useState(PODIO_SEED);
   const [nsData, setNsData] = useState(NS_SEED);
-  const [invMeta, setInvMeta] = useState({name:'Built-in · Net invoiced (7/2/2026)', period:'Jan 1–Jul 2 2026', net:9647538});
+  const [invMeta, setInvMeta] = useState({name:'Built-in · P&L revenue (7/6/2026)', period:'Jan 1–Jul 6 2026', net:9204674});
 
   // Account state initialized from definitions
   const initAccounts = defs => defs.map(d => {
@@ -760,6 +775,23 @@ function App() {
   const bookedLanding = totalInvoiced + openLanding + pipeLanding;           // realistic 2026 landing
   const atRisk        = OPEN_ORDERS_ONHOLD + (totalPipe - pipeLanding);      // slips to 2027
 
+  // Seasonally adjusted full-year range: revenue YTD ÷ share of 2025 revenue
+  // recognized by this calendar date (day-prorated within the current month).
+  // Low = rest of year repeats 2025 dollars; high = rest of year scales with
+  // 2026 YTD growth; base = damped (square-root) growth. Recomputes daily and
+  // converges to actuals by Dec 31.
+  const _now  = new Date();
+  const _mIdx = _now.getFullYear()>2026 ? 11 : (_now.getFullYear()<2026 ? 0 : _now.getMonth());
+  const _dim  = new Date(2026,_mIdx+1,0).getDate();
+  const _frac = _now.getFullYear()>2026 ? 1 : Math.min(_now.getDate()/_dim,1);
+  const cumRecognized = SEASONAL_2025.slice(0,_mIdx).reduce((s,v)=>s+v,0) + SEASONAL_2025[_mIdx]*_frac;
+  const cumShare = cumRecognized / SEASONAL_2025_TOTAL;
+  const remain25 = SEASONAL_2025_TOTAL - cumRecognized;
+  const seasGrowth = cumRecognized>0 ? totalInvoiced/cumRecognized : 1;
+  const seasLow  = totalInvoiced + remain25;
+  const seasBase = totalInvoiced + remain25*Math.sqrt(Math.max(seasGrowth,0));
+  const seasHigh = cumShare>0.02 ? totalInvoiced/cumShare : seasLow;
+
   const kCols = 'minmax(0,1.6fr) 120px 120px 140px 95px 28px';
   const tCols = 'minmax(0,2fr) 120px 140px 95px 28px';
   const kHead = ['holding company  /  brands','revenue YTD','open orders','wtd pipeline','score',''];
@@ -790,11 +822,11 @@ function App() {
           onFile:handleNSFile,
         }),
         h(FileZone,{
-          label:'NetSuite Invoiced Revenue', tag:'NS',
+          label:'NetSuite Revenue (Income Stmt)', tag:'NS',
           sub:'Report: Custom Income Stmt Detail w/ Job Details (XLS or XLSX)',
           loaded:!!invMeta,
           fileLabel:invMeta?.name,
-          info:invMeta ? `${fmtShort(invMeta.net)} net invoiced · ${invMeta.period}` : '',
+          info:invMeta ? `${fmtShort(invMeta.net)} P&L revenue · ${invMeta.period}` : '',
           onFile:handleInvoicedFile,
         })
       )
@@ -832,6 +864,17 @@ function App() {
         h('div',{className:'r-lbl'},'At-risk · likely slips to 2027'),
         h('div',{className:'r-val'},fmtShort(atRisk)),
         h('div',{className:'r-note'},'On-hold orders + pipeline with no PO by Aug 31')
+      ),
+      h('div',{className:'fb-seasonal'},
+        h('div',{className:'s-lbl'},'Seasonally adjusted 2026 full-year \u00b7 P&L basis'),
+        h('div',{className:'s-val'},
+          fmtShort(seasLow),' \u2013 ',fmtShort(seasHigh),
+          h('span',{className:'s-base'},'  \u00b7  base ',fmtShort(seasBase))),
+        h('div',{className:'s-note'},
+          fmtShort(totalInvoiced),' revenue YTD \u00f7 ',(cumShare*100).toFixed(1),
+          '%, the share of 2025 revenue recognized by this date. Low end: rest of year repeats 2025. High end: rest of year scales with 2026\u2019s ',
+          ((seasGrowth-1)*100).toFixed(0),
+          '% YTD growth. PAC TEAM is back-half heavy: Aug + Dec alone were 42% of 2025 revenue. Recomputes daily; converges to actuals by Dec 31.')
       )
     ),
 
@@ -865,7 +908,7 @@ function App() {
       dot:'#1D9E75', total:keyScore, open:open.k, onToggle:()=>tog('k'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setKeyAccts(p=>[...p,mkBlankAcct()]),
-      note:'Revenue YTD: NetSuite net invoiced (invoices less credit memos, all revenue accounts), Jan 1–Jun 29 2026. Open orders are unbilled SO value as of 6/29; pipeline auto-populates from the weekly Podio upload. All fields editable. ⚑ Seiko trailing-12M invoiced is $767,124 (just under the $800K Key threshold), retained as Key Account pending year-end tier review.',
+      note:'Revenue YTD: NetSuite recognized revenue (income accounts, net of credit memos), Jan 1–Jul 6 2026; ties to the P&L and Finance\u2019s forecast model. Open orders are unbilled SO value as of 7/6; pipeline auto-populates from the weekly Podio upload. All fields editable. ⚑ Seiko trailing-12M invoiced is $767,124 (just under the $800K Key threshold), retained as Key Account pending year-end tier review.',
     },
       keyAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setKeyAccts), onDel:dl(setKeyAccts)
@@ -878,7 +921,7 @@ function App() {
       dot:'#534AB7', total:grwScore, open:open.g, onToggle:()=>tog('g'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setGrwAccts(p=>[...p,mkBlankAcct()]),
-      note:'Revenue YTD: NetSuite net invoiced, Jan 1–Jun 29 2026. Open orders (unbilled, 6/29) are built in; pipeline auto-populates from the weekly Podio upload.',
+      note:'Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Jul 6 2026. Open orders (unbilled, 7/6) are built in; pipeline auto-populates from the weekly Podio upload.',
     },
       grwAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setGrwAccts), onDel:dl(setGrwAccts)
