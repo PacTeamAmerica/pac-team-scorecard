@@ -164,7 +164,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <h1>PAC TEAM &nbsp;·&nbsp; Commercial Scorecard</h1>
       <div class="sub">Upload Podio and NetSuite files each Monday to refresh all metrics</div>
     </div>
-    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite net invoiced, Jan 1–Jun 29 2026 · Open orders: 6/29 · Pipeline: Podio 6/29</div>
+    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite net invoiced, Jan 1–Jul 2 2026 · Open orders: 7/2 · Pipeline: Podio 7/2</div>
   </div>
 
   <details class="about">
@@ -199,17 +199,17 @@ const h = React.createElement;
 
 // ── HOLDING COMPANY DEFINITIONS ──────────────────────────────────────────────
 const KEY_DEFS = [
-  {id:'citizen', name:'Citizen Watch Co.',    brands:'Citizen · Bulova · Caravelle · Accutron · Frederique Constant (all regions)', amA:'DEFEND', jA:'SCALE',  inv:5349537},
-  {id:'seiko',   name:'Seiko Holdings Group', brands:'Grand Seiko · Seiko',                                                         amA:'BUILD',  jA:'BUILD',  inv:322810},
+  {id:'citizen', name:'Citizen Watch Co.',    brands:'Citizen · Bulova · Caravelle · Accutron · Frederique Constant (all regions)', amA:'DEFEND', jA:'SCALE',  inv:7174779},
+  {id:'seiko',   name:'Seiko Holdings Group', brands:'Grand Seiko · Seiko',                                                         amA:'BUILD',  jA:'BUILD',  inv:323932},
   {id:'swatch',  name:'The Swatch Group',     brands:'Harry Winston',                                                               amA:'DEFEND', jA:'SCALE',  inv:316004},
   {id:'tapestry',name:'Tapestry',             brands:'Coach · Kate Spade',                                                          amA:'BUILD',  jA:'SCALE',  inv:36672},
 ];
 const GROWTH_DEFS = [
-  {id:'jewelry', name:'The Jewelry Group',        brands:'',        amA:'FIX',   jA:'SCALE', inv:246586},
+  {id:'jewelry', name:'The Jewelry Group',        brands:'',        amA:'FIX',   jA:'SCALE', inv:318785},
   {id:'thelios', name:'Thelios',                  brands:'LVMH',    amA:'FIX',   jA:'-',     inv:162516},
-  {id:'timex',   name:'Timex Group',              brands:'',        amA:'FIX',   jA:'SCALE', inv:254252},
+  {id:'timex',   name:'Timex Group',              brands:'',        amA:'FIX',   jA:'SCALE', inv:281330},
   {id:'tiffany', name:'Tiffany & Co.',            brands:'LVMH',    amA:'SCALE', jA:'SCALE', inv:45689},
-  {id:'jaffe',   name:'A. Jaffe (Paramount)',      brands:'',        amA:'-',     jA:'SCALE', inv:0},
+  {id:'jaffe',   name:'A. Jaffe (Paramount)',      brands:'',        amA:'BUILD',     jA:'SCALE', inv:113813},
   {id:'bedrock', name:'Bedrock Manufacturing',    brands:'Shinola', amA:'FIX',   jA:'SCALE', inv:52162},
 ];
 const ALL_DEFS = [...KEY_DEFS, ...GROWTH_DEFS];
@@ -253,16 +253,16 @@ const NS_PROJECT_CODES = new Set(["ACCU19-048-6737","ACCU19-048-7074","ACCU19-04
 // and (b) all PTA and PTNext division projects. Only PTJapan / other-division work
 // that is not yet in NetSuite remains. 110 removed as in-NetSuite + 185 as PTA/PTNext
 // division -> 57 of 352 active projects kept ($288,795).
-const PODIO_SEED = {"byId":{"_other":{"projects":12,"wtd":58000,"contributing":3},"seiko":{"projects":29,"wtd":185795,"contributing":19},"citizen":{"projects":7,"wtd":1700,"contributing":1},"timex":{"projects":2,"wtd":0,"contributing":1},"thelios":{"projects":3,"wtd":0,"contributing":0},"jewelry":{"projects":2,"wtd":0,"contributing":0},"swatch":{"projects":3,"wtd":43300,"contributing":3}},"otherClients":{"Casio Computer":58000},"totalActive":57,"pipeLanding":115500};
+const PODIO_SEED = {"byId":{"seiko":{"projects":27,"wtd":162795,"contributing":16},"_other":{"projects":12,"wtd":58000,"contributing":3},"timex":{"projects":2,"wtd":0,"contributing":0},"citizen":{"projects":7,"wtd":1700,"contributing":1},"thelios":{"projects":3,"wtd":0,"contributing":0},"jewelry":{"projects":2,"wtd":0,"contributing":0},"swatch":{"projects":3,"wtd":43300,"contributing":3}},"otherClients":{"Casio Computer":58000},"totalActive":56,"removedInNS":276,"pipeLanding":115500};
 
 // ── BUILT-IN NETSUITE OPEN-ORDER SEED ────────────────────────────────────────
-// Open sales orders on an UNBILLED basis as of 6/29/2026, mapped to holding
+// Open sales orders on an UNBILLED basis as of 7/2/2026, mapped to holding
 // companies (status B/D/E/F, amountUnbilled > 0). A fresh NetSuite Open Orders
 // upload overrides these values. Source: live SuiteQL (267 open orders,
 // $7,978,376 unbilled).
-const NS_SEED = {"byId":{"citizen":{"orders":29,"total":3510063.61},"seiko":{"orders":14,"total":731964.51},"swatch":{"orders":16,"total":577066.57},"tiffany":{"orders":110,"total":413870.55},"_other":{"orders":60,"total":1874169.6},"tapestry":{"orders":2,"total":222335.0},"timex":{"orders":10,"total":187861.03},"jaffe":{"orders":2,"total":162541.0},"jewelry":{"orders":12,"total":148631.39},"thelios":{"orders":4,"total":86562.0},"bedrock":{"orders":8,"total":63311.04}},"otherOrders":{"Diamond Dream Jewelry & Apparel":183060.88,"HEXACLAD":277009.2,"Tudor Watch, U.S.A.":265796,"Nuna":254969,"Victorinox Swiss Army":163304,"Monica Rich Kosann (MRK)":159883,"CASIO":146045,"BEN BRIDGE JEWELER":130962.81,"The North Face":84142.83,"Nouvel Heritage":58575.87,"BENARD DESIGN":55795.9,"Luxottica":33742.5,"J'EVAR":21481.21,"Obrists Interior America":8847.6,"Ralph Lauren":8482,"MIKIMOTO America Co., Ltd.":7381,"Renna Jewels":6663,"MADALUX":2860,"Davaco, LP":2056,"Marla Aaron Jewelry":1060,"Van Cleef & Arpels America":890.2,"CROWNRING":811.6,"Copper Hill Development, Inc.":200,"Right Time Watches & Jewelry":150},"totalOrders":267,"reportDate":"As of 6/29/2026"};
+const NS_SEED = {"byId":{"jaffe":{"orders":1,"total":48728},"tiffany":{"orders":110,"total":413870.55},"citizen":{"orders":24,"total":1218644.21},"tapestry":{"orders":2,"total":222335},"jewelry":{"orders":8,"total":76432.65},"swatch":{"orders":16,"total":577066.57},"thelios":{"orders":4,"total":86562},"timex":{"orders":8,"total":160783.25},"bedrock":{"orders":8,"total":63311.04},"_other":{"orders":59,"total":1701835.6},"seiko":{"orders":15,"total":746330.51}},"otherOrders":{"HEXACLAD":277009.2,"Tudor Watch, U.S.A.":265796,"Nuna":254969,"Diamond Dream Jewelry & Apparel":183060.88,"Monica Rich Kosann (MRK)":159883,"CASIO":146045,"BEN BRIDGE JEWELER":130962.81,"The North Face":84142.83,"Nouvel Heritage":58575.87,"BENARD DESIGN":55795.9,"Luxottica":33742.5,"J'EVAR":21481.21,"Obrists Interior America":8847.6,"MIKIMOTO America Co., Ltd.":7381,"CROWNRING":6926.6,"MADALUX":2860,"Davaco, LP":2056,"Marla Aaron Jewelry":1060,"Van Cleef & Arpels America":890.2,"Copper Hill Development, Inc.":200,"Right Time Watches & Jewelry":150},"totalOrders":255,"reportDate":"As of 7/2/2026"};
 // Open-order $ on projects currently On Hold in Podio (refreshed monthly with NetSuite).
-const OPEN_ORDERS_ONHOLD = 67928.26;
+const OPEN_ORDERS_ONHOLD = 69679.26;
 
 // ── MAPPING FUNCTIONS ─────────────────────────────────────────────────────────
 function podioClientToId(client) {
@@ -659,11 +659,11 @@ function Section({title,def,dot,total,open,onToggle,children,onAdd,note,colHead,
 
 // ── APP ───────────────────────────────────────────────────────────────────────
 function App() {
-  const [podioMeta, setPodioMeta] = useState({name:'Built-in · .Projects (6/29/2026)', totalActive:PODIO_SEED.totalActive, removedInNS:295});
-  const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (6/29/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
+  const [podioMeta, setPodioMeta] = useState({name:'Built-in · .Projects (6/29/2026)', totalActive:PODIO_SEED.totalActive, removedInNS:276});
+  const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (7/2/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
   const [podioData, setPodioData] = useState(PODIO_SEED);
   const [nsData, setNsData] = useState(NS_SEED);
-  const [invMeta, setInvMeta] = useState({name:'Built-in · Net invoiced (6/29/2026)', period:'Jan 1–Jun 29 2026', net:7429409});
+  const [invMeta, setInvMeta] = useState({name:'Built-in · Net invoiced (7/2/2026)', period:'Jan 1–Jul 2 2026', net:9647538});
 
   // Account state initialized from definitions
   const initAccounts = defs => defs.map(d => {
