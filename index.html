@@ -58,6 +58,32 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .fb-seasonal .s-val{font-size:21px;font-weight:700;color:#13694e;letter-spacing:-.3px;font-variant-numeric:tabular-nums;margin-top:2px}
 .fb-seasonal .s-base{font-size:13px;font-weight:600;color:#4f7a6a}
 .fb-seasonal .s-note{font-size:10.5px;color:#8a998f;margin-top:3px;line-height:1.4}
+.forecast-bubble{cursor:pointer;position:relative;transition:box-shadow .15s ease}
+.forecast-bubble:hover{box-shadow:0 3px 12px rgba(19,105,78,.16)}
+.forecast-bubble:focus-visible{outline:2px solid #13694E;outline-offset:2px}
+.fb-hint{position:absolute;top:10px;right:12px;font-size:9px;color:#4f7a6a;text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.ytd-overlay{position:fixed;inset:0;background:rgba(26,26,24,.55);display:flex;align-items:center;justify-content:center;z-index:1000}
+.ytd-modal{background:#fff;width:85vw;height:85vh;border-radius:14px;padding:22px 26px;position:relative;display:flex;flex-direction:column;box-shadow:0 18px 60px rgba(0,0,0,.3);overflow:auto}
+.ytd-close{position:absolute;top:10px;right:12px;border:0;background:transparent;font-size:24px;line-height:1;color:#8a8880;cursor:pointer;padding:4px 9px;border-radius:6px}
+.ytd-close:hover{background:#f2f1ec;color:#1a1a18}
+.ytd-head{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.ytd-head em{font-style:normal;color:#13694E}
+.ytd-sub{font-size:11px;color:#8a8880;margin:2px 0 12px}
+.ytd-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:#555;margin-bottom:10px}
+.ytd-legend span{display:flex;align-items:center;gap:6px}
+.ytd-sw{display:inline-block;width:16px;height:0;border-top:3px solid #b4b2a9}
+.ytd-sw.g{border-color:#13694E}
+.ytd-sw.d{border-color:#13694E;border-top-style:dashed}
+.ytd-sw.b{width:16px;height:10px;border:0;background:rgba(19,105,78,.10);border-radius:2px}
+.ytd-chart{position:relative;flex:1;min-height:260px}
+.ytd-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.ytd-stat{border:1px solid #e5e3dc;border-radius:10px;padding:10px 12px}
+.ytd-stat .l{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:#8a8880;margin-bottom:4px}
+.ytd-stat .v{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.ytd-stat .v.up{color:#13694E}
+.ytd-stat .n{font-size:9px;color:#8a8880;margin-top:2px}
+.ytd-foot{font-size:10px;color:#8a8880;line-height:1.55;margin-top:12px}
+@media(max-width:720px){.ytd-stats{grid-template-columns:repeat(2,1fr)}.ytd-modal{width:94vw;height:90vh;padding:16px}}
 .tile.t1{border-top:3px solid #1D9E75}
 .tile.t2{border-top:3px solid #534AB7}
 .tile.t3{border-top:3px solid #BA7517}
@@ -198,9 +224,10 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
-const {useState,useCallback,useMemo,useRef} = React;
+const {useState,useEffect,useCallback,useMemo,useRef} = React;
 const h = React.createElement;
 
 // ── HOLDING COMPANY DEFINITIONS ──────────────────────────────────────────────
@@ -284,6 +311,10 @@ const OPEN_ORDERS_ONHOLD = 69679.26;
 // Refresh alongside the other NetSuite seeds at each monthly rebuild.
 const SEASONAL_2025 = [708024,1132147,1898362,886226,638342,2207248,782991,3374853,1247913,497662,957583,4731430];
 const SEASONAL_2025_TOTAL = SEASONAL_2025.reduce((s,v)=>s+v,0);
+// 2026 recognized revenue by month (P&L basis, live SuiteQL). Final month is
+// month-to-date through YTD_ASOF. Refresh alongside the other NetSuite seeds.
+const MONTHLY_2026 = [1599015,1085708,1287307,1086308,721991,3696353,225919];
+const YTD_ASOF = {label:'Jul 14, 2026', month:6, dayFrac:14/31}; // month is 0-indexed
 
 // ── MAPPING FUNCTIONS ─────────────────────────────────────────────────────────
 function podioClientToId(client) {
@@ -561,6 +592,80 @@ function FileZone({label, sub, fileLabel, tag, onFile, loaded, info, pending}) {
   );
 }
 
+function YtdModal({onClose}) {
+  const cvs = useRef(null);
+  useEffect(() => {
+    const cum = a => a.reduce((r,v,i)=>(r.push((r[i-1]||0)+v),r),[]);
+    const C25 = cum(SEASONAL_2025), C26 = cum(MONTHLY_2026);
+    const cal25 = C25[YTD_ASOF.month-1] + SEASONAL_2025[YTD_ASOF.month]*YTD_ASOF.dayFrac;
+    const ytd26 = C26[C26.length-1];
+    const growth = ytd26/cal25, damp = Math.sqrt(growth);
+    const remTo = m => C25[m]-cal25;
+    const months = [6,7,8,9,10,11];
+    const proj = f => months.map(m=>Math.round(ytd26+remTo(m)*f));
+    const pad = n => Array(n).fill(null);
+    const fmtM = v => '$'+(v/1e6).toFixed(1)+'M';
+    let chart = null;
+    if (window.Chart && cvs.current) {
+      chart = new Chart(cvs.current,{type:'line',
+        data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+          datasets:[
+            {label:'2025 actual',data:C25,borderColor:'#b4b2a9',backgroundColor:'#b4b2a9',borderWidth:2.5,pointRadius:2.5,pointHoverRadius:4,tension:.25},
+            {label:'2026 actual',data:[...C26,...pad(12-C26.length)],borderColor:'#13694E',backgroundColor:'#13694E',borderWidth:3,pointRadius:3,pointHoverRadius:5,tension:.25},
+            {label:'2026 projection (base)',data:[...pad(6),...proj(damp)],borderColor:'#13694E',borderDash:[6,5],borderWidth:2,pointRadius:0,pointHoverRadius:4,tension:.25},
+            {label:'range low',data:[...pad(6),...proj(1)],borderColor:'transparent',pointRadius:0,fill:'+1',backgroundColor:'rgba(19,105,78,.10)',tension:.25},
+            {label:'range high',data:[...pad(6),...proj(growth)],borderColor:'transparent',pointRadius:0,tension:.25}
+          ]},
+        options:{responsive:true,maintainAspectRatio:false,
+          interaction:{mode:'index',intersect:false},
+          plugins:{legend:{display:false},
+            tooltip:{filter:i=>i.dataset.label!=='range low'&&i.dataset.label!=='range high',
+              callbacks:{title:i=>i[0].dataIndex===YTD_ASOF.month?'Jul (through '+YTD_ASOF.label+')':i[0].label,
+                         label:c=>' '+c.dataset.label+': '+fmtM(c.raw)}}},
+          scales:{x:{grid:{display:false},ticks:{color:'#8a8880',font:{size:11}}},
+                  y:{beginAtZero:true,grid:{color:'rgba(137,135,129,.14)'},ticks:{color:'#8a8880',font:{size:11},callback:v=>fmtM(v)}}}},
+        plugins:[{id:'backHalf',afterDraw(ch){
+          const {ctx,chartArea:a,scales:{x}}=ch;
+          const xs=x.getPixelForValue(7)-((x.getPixelForValue(7)-x.getPixelForValue(6))/2);
+          ctx.save();ctx.fillStyle='rgba(180,178,169,.10)';ctx.fillRect(xs,a.top,a.right-xs,a.bottom-a.top);
+          ctx.fillStyle='#8f6f1f';ctx.font='600 10px -apple-system,Segoe UI,sans-serif';ctx.textAlign='right';
+          ctx.fillText('BACK-HALF ZONE \u00b7 61% OF 2025 REVENUE LANDED HERE',a.right-8,a.top+14);ctx.restore();
+        }}]});
+    }
+    const onKey = e => { if (e.key==='Escape') onClose(); };
+    window.addEventListener('keydown',onKey);
+    document.body.style.overflow='hidden';
+    return () => { if (chart) chart.destroy(); window.removeEventListener('keydown',onKey); document.body.style.overflow=''; };
+  },[]);
+  const cum = a => a.reduce((r,v,i)=>(r.push((r[i-1]||0)+v),r),[]);
+  const C25 = cum(SEASONAL_2025);
+  const cal25 = C25[YTD_ASOF.month-1] + SEASONAL_2025[YTD_ASOF.month]*YTD_ASOF.dayFrac;
+  const ytd26 = MONTHLY_2026.reduce((a,b)=>a+b,0);
+  const growth = ytd26/cal25;
+  const rem = SEASONAL_2025_TOTAL - cal25;
+  const fS = v => '$'+(v/1e6).toFixed(2)+'M';
+  const fR = v => '$'+(v/1e6).toFixed(1)+'M';
+  return h('div',{className:'ytd-overlay',onClick:onClose},
+    h('div',{className:'ytd-modal',onClick:e=>e.stopPropagation(),role:'dialog','aria-modal':'true','aria-label':'Cumulative revenue year to date, 2025 versus 2026'},
+      h('button',{className:'ytd-close',onClick:onClose,'aria-label':'Close'},'\u00d7'),
+      h('div',{className:'ytd-head'},h('em',null,'PAC TEAM GROUP'),' \u00b7 Cumulative Revenue YTD, 2025 vs 2026'),
+      h('div',{className:'ytd-sub'},'P&L basis \u00b7 NetSuite income accounts \u00b7 as of ',YTD_ASOF.label,'. Same basis as this scorecard and Finance\u2019s forecast model.'),
+      h('div',{className:'ytd-legend'},
+        h('span',null,h('i',{className:'ytd-sw'}),'2025 actual'),
+        h('span',null,h('i',{className:'ytd-sw g'}),'2026 actual (Jul is month-to-date)'),
+        h('span',null,h('i',{className:'ytd-sw d'}),'2026 seasonal projection (base)'),
+        h('span',null,h('i',{className:'ytd-sw b'}),'Projection range: 2025 repeat \u2192 current pace')),
+      h('div',{className:'ytd-chart'},h('canvas',{ref:cvs})),
+      h('div',{className:'ytd-stats'},
+        h('div',{className:'ytd-stat'},h('div',{className:'l'},'2026 Revenue YTD'),h('div',{className:'v'},fS(ytd26)),h('div',{className:'n'},'Jan 1 \u2013 ',YTD_ASOF.label)),
+        h('div',{className:'ytd-stat'},h('div',{className:'l'},'2025 at same date'),h('div',{className:'v'},fS(cal25)),h('div',{className:'n'},'calendar-matched, day-prorated')),
+        h('div',{className:'ytd-stat'},h('div',{className:'l'},'YTD pace vs 2025'),h('div',{className:'v up'},'+',Math.round((growth-1)*100),'%'),h('div',{className:'n'},fS(ytd26-cal25),' ahead')),
+        h('div',{className:'ytd-stat'},h('div',{className:'l'},'Seasonal full-year base'),h('div',{className:'v'},fR(ytd26+rem*Math.sqrt(growth))),h('div',{className:'n'},'range ',fR(ytd26+rem),' \u2013 ',fR(ytd26+rem*growth)))),
+      h('div',{className:'ytd-foot'},
+        h('b',null,'How to read this.'),' Our revenue is back loaded. 61% of 2025 revenue was recognized after June, and August and December together made up 42% of the year. The shaded fan projects 2026 forward along the 2025 monthly curve, starting from today\u2019s position. The bottom of the range assumes the rest of the year matches 2025 dollar for dollar. The top scales it to our current pace. The dashed line splits the difference using damped growth. One caution on December: part of the 2025 peak came from year-end revenue recognition entries, not shipping volume. Source: live SuiteQL income account postings as of ',YTD_ASOF.label,'. June 2026 includes backdated entries.')
+    ));
+}
+
 function Badge({label}) {
   if (!label||label==='-') return null;
   const cls = label==='DEFEND'?'bdefend':label==='SCALE'?'bscale':label==='BUILD'?'bbuild':
@@ -698,7 +803,7 @@ function App() {
   const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (7/14/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
   const [podioData, setPodioData] = useState(PODIO_SEED);
   const [nsData, setNsData] = useState(NS_SEED);
-  const [invMeta, setInvMeta] = useState({name:'Built-in · P&L revenue (7/14/2026)', period:'Jan 1–Jul 14 2026', net:9650889});
+  const [invMeta, setInvMeta] = useState({name:'Built-in · P&L revenue (7/14/2026)', period:'Jan 1–Jul 14 2026', net:9702601});
 
   // Account state initialized from definitions
   const initAccounts = defs => defs.map(d => {
@@ -714,6 +819,7 @@ function App() {
   const [grwAccts, setGrwAccts] = useState(()=>initAccounts(GROWTH_DEFS));
   const [tgtAccts, setTgtAccts] = useState(()=>TARGET_SEED.map(t=>({...t})));
   const [activeCount, setActiveCount] = useState('66');
+  const [showYtd, setShowYtd] = useState(false);
   const [open, setOpen] = useState({k:true,g:true,t:false,c:false,o:false});
   const [invFallback, setInvFallback] = useState(false);
 
@@ -871,7 +977,10 @@ function App() {
     ),
 
     // ── 2026 projection bubble (booked + landing  vs  at-risk) ──
-    h('div',{className:'forecast-bubble'},
+    h('div',{className:'forecast-bubble',onClick:()=>setShowYtd(true),role:'button',tabIndex:0,
+      onKeyDown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setShowYtd(true);}},
+      title:'View cumulative Revenue YTD: 2025 vs 2026'},
+      h('div',{className:'fb-hint'},'2025 vs 2026 \u2197'),
       h('div',{className:'fb-left'},
         h('div',{className:'fb-lbl'},'Projected 2026 revenue · booked + landing'),
         h('div',{className:'fb-val'},fmtShort(bookedLanding)),
@@ -992,12 +1101,13 @@ function App() {
             onChange:e=>setActiveCount(e.target.value)})
         ),
         h('div',{className:'cnt-note'},
-          'Pre-loaded: 47 (billing-entity level, Apr 2025–Mar 2026 portfolio). ',
+          'Pre-loaded: 66 (billing-entity level, trailing 12 months Jul 15 2025–Jul 14 2026, excludes internal entities). ',
           'Update when you run the NS invoiced export. ',
           'Goal: hold flat or decline as strategic account revenue grows and low-value clients are offboarded.'
         )
       )
-    )
+    ),
+    showYtd ? h(YtdModal, {onClose:()=>setShowYtd(false)}) : null
   );
 }
 
