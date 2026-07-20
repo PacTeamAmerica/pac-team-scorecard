@@ -182,6 +182,7 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .bdg{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
 .bdefend{background:#e1f5ee;color:#0f6e56}
 .bscale{background:#e6f1fb;color:#185fa5}
+.bgrow{background:#dff3ea;color:#13694E}
 .bbuild{background:#eeedfe;color:#534ab7}
 .bfix{background:#faeeda;color:#854f0b}
 .bfire{background:#fcebeb;color:#a32d2d}
@@ -295,6 +296,7 @@ const GROWTH_DEFS = [
   {id:'mrk',      name:'Monica Rich Kosann',      brands:'MRK',     amA:'BUILD',     jA:'BUILD',     inv:127691},
   {id:'casio',    name:'Casio',                   brands:'',        amA:'BUILD',     jA:'BUILD',     inv:64660},
   {id:'luxottica',name:'Luxottica',               brands:'',        amA:'BUILD',     jA:'BUILD',     inv:49574},
+  {id:'pandora',  name:'Pandora',                 brands:'',        amA:'GROW',      jA:'-',         inv:0},
   {id:'northface',name:'The North Face',          brands:'',        amA:'BUILD',     jA:'BUILD',     inv:122192},
   {id:'ralphlauren',name:'Ralph Lauren',           brands:'RL \u00b7 RL Asia Pacific \u00b7 RL Europe', amA:'BUILD', jA:'BUILD', inv:46916},
 ];
@@ -344,7 +346,7 @@ const NS_PROJECT_CODES = new Set(["ACCU19-048-3261", "ACCU19-048-3869", "ACCU19-
 // (non-PTA: 41 PTJ/PTNext + 30 blank + 3 PTT + 1 Lansa) -> 147 kept,
 // $3,511,127 weighted. Landing by product cutoff: $2,815,377, of which
 // $221,500 lands via the extended reorder cutoffs. 4 event projects ($0 wtd).
-const PODIO_SEED = {"byId":{"citizen":{"projects":39,"wtd":2722910,"contributing":22},"nuna":{"projects":1,"wtd":0,"contributing":0},"jewelry":{"projects":3,"wtd":25500,"contributing":3},"bedrock":{"projects":1,"wtd":0,"contributing":0},"timex":{"projects":6,"wtd":12250,"contributing":2},"ralphlauren":{"projects":1,"wtd":2170,"contributing":1},"tapestry":{"projects":3,"wtd":1547,"contributing":1},"_other":{"projects":56,"wtd":425000,"contributing":12},"seiko":{"projects":14,"wtd":160500,"contributing":8},"casio":{"projects":4,"wtd":86000,"contributing":1},"thelios":{"projects":7,"wtd":67750,"contributing":5},"tiffany":{"projects":3,"wtd":2500,"contributing":1},"swatch":{"projects":6,"wtd":5000,"contributing":1},"hexaclad":{"projects":1,"wtd":0,"contributing":0},"northface":{"projects":2,"wtd":0,"contributing":0}},"otherClients":{"Marla Aaron Jewelry":12500,"CrownRing":2500,"Bell & Ross":0,"Borsheims Fine Jewelry":0,"Van Cleef & Arpels":9000,"Test Organization":1000,"Pandora":360000,"Marcolin USA":0,"PAC TEAM AMERICA":0,"London Jewelers":12500,"Dilamani":0,"ZWILLING J.A. Henckels LLC":0,"Ben Bridge Jeweler":0,"Movado Group":0,"Julian Boxenbaum":0,"Ana Luisa":25000,"Signet Jewelers":0,"Sequel International":2500,"PacTeam America":0,"Diamond Dream Jewelry + Apparel":0,"Christian Dior Couture (Europe)":0,"Benard Creative":0,"Pac Team":0,"LVMH Moet Hennessy Louis Vuitton":0,"Lana Jewelry":0,"RNB Jewelry":0},"totalActive":147,"removedInNS":121,"removedDiv":75,"pipeLanding":2815377,"extN":4,"extWtd":221500,"eventN":4,"eventWtd":0};
+const PODIO_SEED = {"byId": {"citizen": {"projects": 39, "wtd": 2722910, "contributing": 22}, "nuna": {"projects": 1, "wtd": 0, "contributing": 0}, "jewelry": {"projects": 3, "wtd": 25500, "contributing": 3}, "bedrock": {"projects": 1, "wtd": 0, "contributing": 0}, "timex": {"projects": 6, "wtd": 12250, "contributing": 2}, "ralphlauren": {"projects": 1, "wtd": 2170, "contributing": 1}, "tapestry": {"projects": 3, "wtd": 1547, "contributing": 1}, "_other": {"projects": 55, "wtd": 65000, "contributing": 11}, "seiko": {"projects": 14, "wtd": 160500, "contributing": 8}, "casio": {"projects": 4, "wtd": 86000, "contributing": 1}, "thelios": {"projects": 7, "wtd": 67750, "contributing": 5}, "tiffany": {"projects": 3, "wtd": 2500, "contributing": 1}, "swatch": {"projects": 6, "wtd": 5000, "contributing": 1}, "hexaclad": {"projects": 1, "wtd": 0, "contributing": 0}, "northface": {"projects": 2, "wtd": 0, "contributing": 0}, "pandora": {"projects": 1, "wtd": 360000, "contributing": 1}}, "otherClients": {"Marla Aaron Jewelry": 12500, "CrownRing": 2500, "Bell & Ross": 0, "Borsheims Fine Jewelry": 0, "Van Cleef & Arpels": 9000, "Test Organization": 1000, "Marcolin USA": 0, "PAC TEAM AMERICA": 0, "London Jewelers": 12500, "Dilamani": 0, "ZWILLING J.A. Henckels LLC": 0, "Ben Bridge Jeweler": 0, "Movado Group": 0, "Julian Boxenbaum": 0, "Ana Luisa": 25000, "Signet Jewelers": 0, "Sequel International": 2500, "PacTeam America": 0, "Diamond Dream Jewelry + Apparel": 0, "Christian Dior Couture (Europe)": 0, "Benard Creative": 0, "Pac Team": 0, "LVMH Moet Hennessy Louis Vuitton": 0, "Lana Jewelry": 0, "RNB Jewelry": 0}, "totalActive": 147, "removedInNS": 121, "removedDiv": 75, "pipeLanding": 2815377, "extN": 4, "extWtd": 221500, "eventN": 4, "eventWtd": 0};
 
 // ── BUILT-IN NETSUITE OPEN-ORDER SEED ────────────────────────────────────────
 // Open sales orders on an UNBILLED basis as of 7/20/2026, mapped to holding
@@ -388,6 +390,7 @@ const PREV_2025 = {
   bedrock:   359744,     // Shinola
   hexaclad:  238000,
   nuna:      0,          // new in 2026
+  pandora:   0,          // no FY2025 NetSuite revenue; pipeline-only to date
   mrk:       2000,
   casio:     150758,
   luxottica: 83677,
@@ -437,6 +440,7 @@ function podioClientToId(client) {
   if (/nuna/.test(s)) return 'nuna';
   if (/monica rich kosann|\bmrk\b/.test(s)) return 'mrk';
   if (/casio/.test(s)) return 'casio';
+  if (/pandora/.test(s)) return 'pandora';
   if (/luxottica/.test(s)) return 'luxottica';
   if (/north ?face/.test(s)) return 'northface';
   if (/ralph lauren/.test(s)) return 'ralphlauren';
@@ -461,6 +465,7 @@ function nsCustomerToId(customer) {
   if (s.includes('NUNA')) return 'nuna';
   if (s.includes('KOSANN')||/\bMRK\b/.test(s)) return 'mrk';
   if (s.includes('CASIO')) return 'casio';
+  if (s.includes('PANDORA')) return 'pandora';
   if (s.includes('LUXOTTICA')) return 'luxottica';
   if (/NORTH ?FACE/.test(s)) return 'northface';
   if (s.includes('RALPH LAUREN')) return 'ralphlauren';
@@ -908,7 +913,7 @@ function FunnelModal({onClose, inv, orders, onHold, pipe, pipeLanding, bookedLan
 function Badge({label}) {
   if (!label||label==='-') return null;
   const cls = label==='DEFEND'?'bdefend':label==='SCALE'?'bscale':label==='BUILD'?'bbuild':
-              label.startsWith('FIX')?'bfix':'bfire';
+              label==='GROW'?'bgrow':label.startsWith('FIX')?'bfix':'bfire';
   return h('span',{className:`bdg ${cls}`},label);
 }
 
