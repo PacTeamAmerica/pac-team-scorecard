@@ -307,20 +307,22 @@ const KNOWN_IDS = new Set(ALL_DEFS.map(d=>d.id));
 // CEO-approved net-new target list (Jun 2026). New biz won + weighted pipeline
 // are entered manually from the Podio .CRM → Prospects app; seeded at 0 here.
 const TARGET_SEED = [
-  {id:'t-toryburch',   name:'Tory Burch',     brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-brilliant',   name:'Brilliant Earth', brands:'',              won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-jared',       name:'Jared',          brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-zales',       name:'Zales',          brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-yurman',      name:'David Yurman',   brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-jamesavery',  name:'James Avery',    brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  // The twelve, per "Who We Sell To" memo (J. Muscarella, 7/20/2026).
+  // Signet is ONE account entered via Zales; Vera Wang LOVE is the Zales wedge
+  // (the licensee buys, so Vera Wang and Zales are one conversation). Former
+  // Jared/Zales/Vera Wang rows folded in. Pandora moved to Strategic Growth
+  // (memo Decision 1).
+  {id:'t-signet',      name:'Signet Jewelers', brands:'Enter via Zales \u00b7 Vera Wang LOVE', won:'0', pipe:'0', pipeN:0, pipeContrib:0},
   {id:'t-esteelauder', name:'Est\u00e9e Lauder', brands:'',            won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-kendra',      name:'Kendra Scott',   brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-verawang',    name:'Vera Wang',      brands:'WHP Global',     won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-centric',     name:'Centric Brands', brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-fossil',      name:'Fossil',         brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-loreal',      name:"L'Or\u00e9al",   brands:'Luxe Portfolio', won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-capri',       name:'Capri Holdings', brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
-  {id:'t-pandora',     name:'Pandora',        brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-loreal',      name:"L'Or\u00e9al Luxe", brands:'',            won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-fossil',      name:'Fossil',          brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-capri',       name:'Capri Holdings',  brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-yurman',      name:'David Yurman',    brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-brilliant',   name:'Brilliant Earth', brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-kendra',      name:'Kendra Scott',    brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-jamesavery',  name:'James Avery',     brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-toryburch',   name:'Tory Burch',      brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
+  {id:'t-centric',     name:'Centric Brands',  brands:'',               won:'0', pipe:'0', pipeN:0, pipeContrib:0},
 ];
 
 // ── NETSUITE PROJECT CODES (reconciliation key) ──────────────────────────────
@@ -1328,7 +1330,7 @@ function App() {
 
     // ── Target Accounts ──
     h(Section,{
-      title:'Strategic target accounts', def:'Prospects with $800K+ annual potential',
+      title:'Strategic target accounts', def:'The twelve \u00b7 per \u201cWho We Sell To\u201d memo, 7/20',
       dot:'#BA7517', total:tgtScore, open:open.t, onToggle:()=>tog('t'),
       cols:tCols, colHead:tHead,
       onAdd:()=>setTgtAccts(p=>[...p,mkBlankTgt()]),
