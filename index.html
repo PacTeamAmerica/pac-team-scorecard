@@ -13,19 +13,25 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 
 /* Upload panel */
 .upload-panel{background:#fff;border-radius:12px;border:1px solid #e5e3dc;padding:24px;margin-bottom:20px}
-.upload-panel h2{font-size:14px;font-weight:600;margin-bottom:16px;color:#444}
-.upload-zones{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.zone{border:1.5px dashed #d0cec6;border-radius:8px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .15s;position:relative;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.upload-panel h2{font-size:14px;font-weight:600;color:#444;margin:0}
+.upload-head{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none;margin-bottom:14px}
+.upload-head:hover h2{color:#1a1a18}
+.upload-meta{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+.upload-count{font-size:10px;color:#aaa;white-space:nowrap}
+.upload-zones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.zone{border:1.5px dashed #d0cec6;border-radius:8px;padding:9px 26px 9px 10px;text-align:left;cursor:pointer;transition:all .15s;position:relative;min-height:0;display:flex;flex-direction:row;align-items:center;gap:8px}
 .zone:hover,.zone.drag{border-color:#1D9E75;background:#f0faf6}
 .zone.loaded{border-style:solid;border-color:#1D9E75;background:#f0faf6}
 .zone.pending{border-color:#d0cec6;background:#fafaf8;cursor:default}
 .zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.zone-icon{font-size:22px;color:#aaa}
+.zone-icon{font-size:17px;color:#aaa;flex:0 0 auto}
+.zone-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
+.zone-tag{position:absolute;top:6px;right:6px}
 .zone.loaded .zone-icon{color:#1D9E75}
-.zone-label{font-size:12px;font-weight:600;color:#555}
-.zone-sub{font-size:10px;color:#aaa;line-height:1.4}
+.zone-label{font-size:11px;font-weight:600;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zone-sub{font-size:9.5px;color:#aaa;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .zone.loaded .zone-sub{color:#1D9E75}
-.zone-badge{font-size:10px;padding:2px 6px;border-radius:4px;background:#e1f5ee;color:#0f6e56;font-weight:500;margin-top:2px}
+.zone-badge{font-size:9px;padding:1px 5px;border-radius:4px;background:#e1f5ee;color:#0f6e56;font-weight:500;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;align-self:flex-start}
 .zone.pending input[type=file]{pointer-events:none}
 
 /* Summary bar */
@@ -186,14 +192,14 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .bbuild{background:#eeedfe;color:#534ab7}
 .bfix{background:#faeeda;color:#854f0b}
 .bfire{background:#fcebeb;color:#a32d2d}
-.acell{display:flex;flex-direction:column;align-items:flex-end}
-.acell-lbl{font-size:9px;color:#aaa;margin-bottom:2px;display:flex;align-items:center;gap:3px}
+.acell{display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;min-height:52px}
+.acell-lbl{font-size:9px;color:#aaa;margin-bottom:2px;display:flex;align-items:center;gap:3px;min-height:13px}
 .stag{font-size:8px;padding:1px 4px;border-radius:3px;font-weight:600}
 .ns-tag{background:#e6f1fb;color:#185fa5}
 .po-tag{background:#e1f5ee;color:#0f6e56}
 .fb-tag{background:#faeeda;color:#854f0b}
 .aval{font-size:12px;color:#1a1a18;padding:3px 7px;background:#f5f3ee;border-radius:4px;text-align:right}
-.aval-score{font-size:13px;font-weight:700;color:#1a1a18}
+.aval-score{font-size:13px;font-weight:700;color:#1a1a18;padding:4px 0;line-height:17px}
 .ainp{width:100%;font-size:12px;text-align:right;padding:3px 7px;border:1px solid #e0ddd6;border-radius:4px;background:#fff;color:#1a1a18}
 .ainp:focus{outline:none;border-color:#1D9E75;background:#f0faf6}
 .pipe-badge{font-size:9px;padding:1px 5px;border-radius:3px;background:#e1f5ee;color:#0f6e56;font-weight:500;margin-top:2px;white-space:nowrap}
@@ -254,6 +260,8 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .wow-hint{font-size:10px;color:#ba7517;background:#fdf6e8;border:1px solid #f5dfa0;border-radius:6px;padding:7px 10px;margin-top:9px;line-height:1.5}
 .wow-dl{font-size:11px;padding:6px 11px;border:1px solid #e5e3dc;border-radius:6px;background:#faf9f6;color:#555;cursor:pointer;white-space:nowrap}
 .wow-dl:hover{background:#f0ede6}
+@media(max-width:1100px){.upload-zones{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.upload-zones{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:700px){.wow-row{grid-template-columns:minmax(0,1fr) 80px}.wow-code,.wow-cause{display:none}}
 
 input[type=number]{-moz-appearance:textfield}
@@ -308,9 +316,9 @@ const KEY_DEFS = [
   {id:'citizen', name:'Citizen Watch Co.',    brands:'Citizen · Bulova · Caravelle · Accutron · Frederique Constant (all regions)', amA:'DEFEND', jA:'SCALE',  inv:7430986},
   {id:'seiko',   name:'Seiko Holdings Group', brands:'Grand Seiko · Seiko',                                                         amA:'BUILD',  jA:'BUILD',  inv:420540},
   {id:'swatch',  name:'The Swatch Group',     brands:'Harry Winston',                                                               amA:'DEFEND', jA:'SCALE',  inv:322930},
-  {id:'tapestry',name:'Tapestry',             brands:'Coach · Kate Spade',                                                          amA:'BUILD',  jA:'SCALE',  inv:36672},
 ];
 const GROWTH_DEFS = [
+  {id:'tapestry',name:'Tapestry',                brands:'Coach · Kate Spade', amA:'BUILD', jA:'SCALE', inv:36672},
   {id:'jewelry', name:'The Jewelry Group',        brands:'',        amA:'FIX',   jA:'SCALE', inv:324779},
   {id:'thelios', name:'Thelios',                  brands:'LVMH',    amA:'FIX',   jA:'-',     inv:162516},
   {id:'timex',   name:'Timex Group',              brands:'',        amA:'FIX',   jA:'SCALE', inv:328526},
@@ -545,6 +553,13 @@ function readXLSX(file, cb) {
 // weekly Podio upload produces an entry; the page diffs the current parse against
 // the most recent committed entry. Committing the downloaded file is what advances
 // the baseline, so the CEO and I always see the same comparison.
+// Conversions detected in the Podio Purchase Orders export of 7/27/2026: project
+// codes whose Sales Confirmation # is a live NetSuite SO, meaning the client PO
+// landed and the job is booked. Seeded so the zone behaves like the other three;
+// a weekly upload replaces it. Goes stale between rebuilds, which is exactly why
+// the panel nags for a fresh upload while this built-in set is still in use.
+const PO_SEED = {codes: ["ACCU19-049-7395", "BELL26-419-7656", "BEN18-024-7193", "BENA26-4026-7201", "BULO21-1939-7019", "BULO21-1939-7319", "BULO21-1939-7643", "BULO23-2804-7293", "BULO23-2804-7377", "BULO23-2804-7446", "BULO23-2804-7684", "BULO23-2804-7747", "BULO24-3049-7605", "BULO24-325-5580", "BULO24-325-7731", "BULO24-3445-7257", "BULO25-3575-6212", "BULO25-3937-7561", "BULO25-3972-7033", "BULO26-4015-7163", "CARA25-3879-7070", "CARA25-3879-7369", "CARA25-3879-7644", "CASI16-343-7241", "CASIJA25-3804-6642", "CASIJA26-41-7389", "CITI12-160-7449", "CITI12-160-7560", "CITI20-1515-7016", "CITI20-1515-7321", "CITI20-1515-7354", "CITI20-1515-7583", "CITI20-1515-7642", "CITI22-2167-7258", "CITI23-2535-7467", "CITI23-2535-7619", "CITI23-2535-7640", "CITI23-2535-7685", "CITI25-3542-7682", "CITI25-377-7301", "CITI25-397-7031", "CITI26-4045-7256", "CITI26-4128-7500", "CITI26-413-7513", "CITI26-4162-7602", "COAC17-046-7215", "COAC17-046-7300", "COAC17-046-7485", "CRWN16-367-7413", "CRWN16-367-7595", "CRWN19-1061-7641", "CRWN23-2754-7282", "CRWN26-4087-7365", "FABL26-4185-7650", "GHJ25-369-6413", "GRAN24-324-5568", "GRAN24-3294-5661", "GRAN26-4068-7459", "GSJ22-2121-6769", "GSJ22-2121-6774", "GSJ22-2121-7151", "GSJ22-2121-7383", "GSJ22-2445-6123", "GSJ22-2477-7625", "GSJ23-2688-6927", "GSJ23-2808-6280", "GSJ23-2808-6698", "GSJ23-2808-7069", "GSJ23-2808-7110", "GSJ23-2808-7111", "GSJ23-2808-7701", "GSJ23-2884-6968", "GSJ24-3085-7491", "GSJ24-3289-6973", "GSJ24-351-6087", "GSJ25-3716-6473", "GSJ25-3716-6547", "GSJ25-3716-6810", "GSJ25-3716-6976", "GSJ25-3754-6565", "GSJ25-3755-6566", "GSJ25-3777-6602", "GSJ25-3777-6824", "GSJ25-3824-6676", "GSJ25-3845-6714", "GSJ25-3953-7000", "GSJ25-3981-7059", "GSJ25-401-7152", "GSJ25-4011-7153", "GSJ26-4016-7164", "GSJ26-4022-7191", "GSJ26-4036-7218", "GSJ26-406-7288", "GSJ26-4072-7316", "GSJ26-4084-7360", "GSJ26-4182-7645", "HAWI14-175-6843", "HAWI14-175-7013", "HAWI14-175-7026", "HAWI14-175-7214", "HAWI14-175-7435", "HAWI14-175-7475", "HAWI14-175-7537", "HAWI14-175-7636", "HAWI14-175-7646", "HAWI14-175-7677", "HAWI24-3094-7430", "HAWI24-3094-7592", "HAWI24-3386-6845", "HAWI24-3386-7511", "HAWI24-3401-7325", "HAWI26-417-7618", "HEXA24-3064-7349", "LUXO14-221-7206", "LUXO14-221-7388", "LUXO14-221-7652", "MCS16-419-7666", "MIKI19-0532-7432", "MIKI23-2986-7522", "MIKI24-313-6814", "MONI26-4083-7350", "MONI26-4119-7466", "NVLH26-4017-7169", "OBRI24-3329-7477", "OBRI24-3329-7596", "RLFP25-3979-7380", "RLFP25-3979-7394", "RLFP25-3979-7439", "RLFP25-3979-7694", "SEIKJ24-3311-7577", "SEIKJ24-3449-7181", "SEIKJ25-3809-6652", "SEIKJ25-3821-6668", "SEIKJ25-3955-7002", "SEQU22-2009-7584", "SHIN18-278-7351", "SHIN22-2118-7681", "SHIN24-3276-5633", "SHIN26-4102-7400", "TASK25-3865-6783", "TASK25-3865-7591", "TASK25-4009-7149", "TASK26-4019-7171", "TASK26-4019-7174", "TEDD26-4186-7651", "THEL24-3103-5309", "THEL26-4093-7373", "TIME21-169-7586", "TIME21-169-7603", "TIME22-2478-7223", "TIME22-2478-7488", "TIME22-2478-7541", "TIME22-2478-7587", "TIME22-2478-7588", "TIME22-2478-7589", "TIME22-2478-7594", "TIME24-3396-7554", "TJGR20-1416-7271", "TJGR22-2238-7285", "TJGR24-3421-7144", "TJGR25-3805-7398", "TJGR25-3805-7472", "TJGR26-407-7312", "VAJ25-3789-6619", "VANC25-3958-7006", "VANC26-4136-7526", "VANC26-4152-7569"], records: 185};
+
 const PODIO_ASOF    = '2026-07-27';            // date stamped on the built-in seed
 const SNAPSHOT_URL  = './snapshot-history.json';
 const SNAPSHOT_KEEP = 12;                       // entries retained in the file
@@ -883,29 +898,31 @@ function FileZone({label, sub, fileLabel, tag, onFile, loaded, info, pending}) {
   if (pending) {
     return h('div',{className:'zone pending'},
       h('i',{className:'ti ti-upload zone-icon'}),
-      h('div',{className:'zone-label'},label),
-      h('div',{className:'zone-sub'},'Coming soon, upload when ready'),
+      h('div',{className:'zone-body'},
+        h('div',{className:'zone-label'},label),
+        h('div',{className:'zone-sub'},'Coming soon, upload when ready')),
     );
   }
 
   return h('div',{
     className:`zone ${loaded?'loaded':''} ${drag?'drag':''}`,
+    title: loaded ? [fileLabel, info].filter(Boolean).join(' \u2014 ') : sub,
     onDragOver:e=>{e.preventDefault();setDrag(true)},
     onDragLeave:()=>setDrag(false),
     onDrop:e=>{e.preventDefault();setDrag(false);const f=e.dataTransfer.files[0];if(f)handleFile(f);}
   },
     h('input',{type:'file',accept:'.xlsx,.xls',ref:inputRef,onChange:e=>handleFile(e.target.files[0])}),
     h('i',{className:`ti ${loaded?'ti-circle-check':'ti-upload'} zone-icon`}),
-    h('div',{className:'zone-label'},label),
-    loaded
-      ? h(React.Fragment,null,
-          h('div',{className:'zone-sub',style:{fontWeight:500}},fileLabel),
-          h('div',{className:'zone-badge'},info)
-        )
-      : h('div',{className:'zone-sub'},sub),
-    h('div',{style:{marginTop:4}},
-      h('span',{className:`stag ${tag==='NS'?'ns-tag':'po-tag'}`},tag)
-    )
+    h('div',{className:'zone-body'},
+      h('div',{className:'zone-label'},label),
+      loaded
+        ? h(React.Fragment,null,
+            h('div',{className:'zone-sub',style:{fontWeight:500}},fileLabel),
+            info ? h('div',{className:'zone-badge'},info) : null
+          )
+        : h('div',{className:'zone-sub'},sub)
+    ),
+    h('span',{className:`stag ${tag==='NS'?'ns-tag':'po-tag'} zone-tag`},tag)
   );
 }
 
@@ -1276,8 +1293,8 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
           (m.delta>=0?'+':'\u2212'),fmtShort(Math.abs(m.delta)))
       ))
     ),
-    !poMeta && h('div',{className:'wow-hint'},
-      'Upload the Podio Purchase Orders export above so conversions are detected live; without it, jobs booked since the last NetSuite rebuild cannot be told apart from lost work.')
+    (!poMeta || /^Built-in/.test(poMeta.name||'')) && h('div',{className:'wow-hint'},
+      'Purchase Orders is still on the built-in set from the last rebuild. Upload this week\u2019s export so conversions are detected live \u2014 otherwise jobs booked since then cannot be told apart from lost work.')
   );
 }
 
@@ -1306,11 +1323,12 @@ function App() {
   const [showFunnel, setShowFunnel] = useState(false);
   const [open, setOpen] = useState({k:true,g:true,t:false,c:false,o:false});
   const [invFallback, setInvFallback] = useState(false);
-  const [poCodes, setPoCodes]   = useState(new Set());
-  const [poMeta, setPoMeta]     = useState(null);
+  const [poCodes, setPoCodes]   = useState(new Set(PO_SEED.codes));
+  const [poMeta, setPoMeta]     = useState({name:'Built-in \u00b7 Purchase Orders (7/27/2026)', codes:PO_SEED.codes.length, records:PO_SEED.records});
   const [podioRows, setPodioRows] = useState(null);   // kept so a later PO upload can re-parse
   const [history, setHistory]   = useState(null);
   const [histErr, setHistErr]   = useState('');
+  const [upOpen, setUpOpen]     = useState(true);
 
   // Pull the committed snapshot history. Fails quietly when opened from disk
   // (file:// blocks fetch) or before the first history file is committed.
@@ -1324,6 +1342,10 @@ function App() {
   }, []);
 
   const tog = k => setOpen(o=>({...o,[k]:!o[k]}));
+
+  // How many sources are genuinely uploaded vs still on the built-in seed.
+  const uploadedN = [podioMeta, poMeta, nsMeta, invMeta]
+    .filter(m => m && m.name && !/^Built-in/.test(m.name)).length;
 
   // Week-over-week movement against the most recent committed snapshot.
   const wow = useMemo(() => {
@@ -1460,19 +1482,26 @@ function App() {
 
     // ── Upload Panel ──
     h('div',{className:'upload-panel'},
-      h('h2',null,'Data Sources: upload each Monday to refresh'),
-      h('div',{className:'upload-zones'},
+      h('div',{className:'upload-head',onClick:()=>setUpOpen(o=>!o)},
+        h('h2',null,'Data Sources: upload each Monday to refresh'),
+        h('div',{className:'upload-meta'},
+          h('span',{className:'upload-count'},
+            uploadedN, ' of 4 uploaded', uploadedN<4 ? ' \u00b7 rest built-in' : ''),
+          h('span',{className:`sec-chev ${upOpen?'open':''}`},'\u25bc')
+        )
+      ),
+      upOpen && h('div',{className:'upload-zones'},
         h(FileZone,{
           label:'Podio Pipeline', tag:'Podio',
-          sub:'Export: .Projects → Active Client Count view (XLSX)',
+          sub:'.Projects export (XLSX)',
           loaded:!!podioMeta,
           fileLabel:podioMeta?.name,
           info:podioMeta ? `${podioMeta.totalActive} in pipeline${podioMeta.removedInNS?` · ${podioMeta.removedInNS} already in NetSuite`:''}${podioMeta.removedDiv?` · ${podioMeta.removedDiv} non-PTA excluded`:''}${podioMeta.extWtd?` · +${fmtShort(podioMeta.extWtd)} landing via reorder cutoffs`:''}${podioMeta.eventN?` · ${podioMeta.eventN} event project${podioMeta.eventN>1?'s':''}`:''}` : '',
           onFile:handlePodioFile,
         }),
         h(FileZone,{
-          label:'Podio Purchase Orders', tag:'Podio',
-          sub:'Export: Purchase Orders app (XLSX) \u2014 live conversion detection',
+          label:'Purchase Orders', tag:'Podio',
+          sub:'Purchase Orders export (XLSX)',
           loaded:!!poMeta,
           fileLabel:poMeta?.name,
           info:poMeta ? `${poMeta.codes} converted project${poMeta.codes===1?'':'s'} \u00b7 ${poMeta.records} booked PO records` : '',
@@ -1480,15 +1509,15 @@ function App() {
         }),
         h(FileZone,{
           label:'NetSuite Open Orders', tag:'NS',
-          sub:'Report: Custom Open Sales Orders 3 (XLS or XLSX)',
+          sub:'Custom Open Sales Orders 3',
           loaded:!!nsMeta,
           fileLabel:nsMeta?.name,
           info:nsMeta ? `${nsMeta.totalOrders} open orders · ${nsMeta.reportDate}` : '',
           onFile:handleNSFile,
         }),
         h(FileZone,{
-          label:'NetSuite Revenue (Income Stmt)', tag:'NS',
-          sub:'Report: Custom Income Stmt Detail w/ Job Details (XLS or XLSX)',
+          label:'NetSuite Revenue', tag:'NS',
+          sub:'Custom Income Stmt Detail',
           loaded:!!invMeta,
           fileLabel:invMeta?.name,
           info:invMeta ? `${fmtShort(invMeta.net)} P&L revenue · ${invMeta.period}` : '',
@@ -1597,7 +1626,7 @@ function App() {
       dot:'#534AB7', total:grwScore, prev25:grwPrev, open:open.g, onToggle:()=>tog('g'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setGrwAccts(p=>[...p,mkBlankAcct()]),
-      note:'Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Jul 27 2026. Open orders (unbilled, 7/27) are built in; pipeline auto-populates from the weekly Podio upload. Promoted from Other Active Accounts 7/6/2026: HexaClad, Nuna, Monica Rich Kosann, Casio, Luxottica, The North Face, Ralph Lauren (all 3 NS entities; no open SOs as of 7/27). Note: HexaClad and Nuna show $0 revenue YTD because their 2026 billings to date are deposit invoices posted outside income accounts; their value sits in open orders.',
+      note:'Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Jul 27 2026. Open orders (unbilled, 7/27) are built in; pipeline auto-populates from the weekly Podio upload. Tapestry moved down from Key Accounts (corrected YTD fell below the $800K threshold); Coach and Kate Spade bill as one NetSuite entity. Promoted from Other Active Accounts 7/6/2026: HexaClad, Nuna, Monica Rich Kosann, Casio, Luxottica, The North Face, Ralph Lauren (all 3 NS entities; no open SOs as of 7/27). Note: HexaClad and Nuna show $0 revenue YTD because their 2026 billings to date are deposit invoices posted outside income accounts; their value sits in open orders.',
     },
       grwAccts.map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setGrwAccts), onDel:dl(setGrwAccts)
