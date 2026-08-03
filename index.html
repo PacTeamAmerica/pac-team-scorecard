@@ -236,6 +236,11 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .other-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;cursor:pointer;font-size:11px;color:#888;user-select:none}
 .other-hdr:hover{background:#faf9f6}
 
+/* Exact-value tooltips on abbreviated figures. The dotted underline only appears
+   on hover so the numbers stay clean at rest but are discoverable. */
+.exact{cursor:help}
+.exact:hover{text-decoration:underline dotted currentColor 1px;text-underline-offset:3px}
+
 /* NetSuite staleness notice */
 .ns-stale{font-size:11px;color:#8a5a10;background:#fdf6e8;border:1px solid #f5dfa0;border-radius:8px;padding:10px 13px;margin-bottom:12px;line-height:1.55}
 .ns-stale b{color:#6d4708}
@@ -918,6 +923,14 @@ const fmtShort = v => {
   if (n>=1e3) return '$'+(n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
   return '$'+Math.round(n).toLocaleString();
 };
+// Abbreviated figures ($3.17M) hide the exact number the CEO often wants to read
+// off the page. NUM() renders the short form but carries the full value in a
+// native title tooltip. It returns an ELEMENT, so it can only be used where a
+// child node is valid -- never inside a template literal or a title attribute.
+// Where the figure is already the sole content of an element, prefer adding
+// className:'exact' + title:fmtFull(v) to that element instead of nesting.
+const NUM = v => h('span',{className:'exact',title:fmtFull(v)},fmtShort(v));
+
 const uid = () => Math.random().toString(36).slice(2,7);
 
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
@@ -1191,7 +1204,7 @@ function AccountRow({acc, isT, onChange, onDel, cols, invFallback}) {
         if (!prev25) return h('div',{className:'vs25-lbl',style:{marginTop:6}},'new account \u00b7 no 2025 revenue');
         const pct = Math.round(score/prev25*100);
         const fill = pct>=100 ? '#1D9E75' : pct>=60 ? '#BA7517' : '#b4b2a9';
-        return h('div',{className:'vs25',title:'2026 score (revenue + open orders + wtd pipeline) vs FY2025 revenue of '+fmtShort(prev25)},
+        return h('div',{className:'vs25',title:'2026 score of '+fmtFull(score)+' (revenue + open orders + wtd pipeline) vs FY2025 revenue of '+fmtFull(prev25)},
           h('div',{className:'vs25-bar'},h('i',{style:{width:Math.min(pct,100)+'%',background:fill}})),
           h('div',{className:'vs25-lbl'},h('b',{style:{color:fill}},pct+'%'),' of 2025 (',fmtShort(prev25),')'));
       })()
@@ -1224,7 +1237,7 @@ function AccountRow({acc, isT, onChange, onDel, cols, invFallback}) {
     ),
     h('div',{className:'acell'},
       h('div',{className:'acell-lbl'},'account score'),
-      h('div',{className:'aval-score'},fmtShort(score))
+      h('div',{className:'aval-score exact',title:fmtFull(score)},fmtShort(score))
     ),
     h('button',{className:'del-btn',style:{justifySelf:'center'},onClick:()=>onDel(acc.id),title:'Remove'},'×')
   );
@@ -1256,7 +1269,7 @@ function OtherAccounts({nsOtherOrders, podioOtherClients}) {
       ),
       h('div',{className:'sec-r'},
         h('span',{style:{fontSize:11,color:'#aaa'}}, entries.length+' accounts  ·  ',
-          fmtShort(totalOrd+totalPipe),' total'),
+          NUM(totalOrd+totalPipe),' total'),
         h('span',{className:`sec-chev ${open?'open':''}`},'▼')
       )
     ),
@@ -1267,10 +1280,10 @@ function OtherAccounts({nsOtherOrders, podioOtherClients}) {
           h('div',{style:{display:'flex',gap:12}},
             vals.ord>0 && h('span',{style:{fontSize:11,color:'#185fa5'}},
               h('span',{className:'stag ns-tag',style:{marginRight:3}},'NS'),
-              fmtShort(vals.ord)),
+              NUM(vals.ord)),
             vals.pipe>0 && h('span',{style:{fontSize:11,color:'#0f6e56'}},
               h('span',{className:'stag po-tag',style:{marginRight:3}},'Podio'),
-              fmtShort(vals.pipe))
+              NUM(vals.pipe))
           )
         )
       ),
@@ -1294,7 +1307,7 @@ function Section({title,def,dot,total,open,onToggle,children,onAdd,note,colHead,
         prev25>0 && (() => {
           const pct = Math.round(total/prev25*100);
           const fill = pct>=100 ? '#1D9E75' : pct>=60 ? '#BA7517' : '#b4b2a9';
-          return h('span',{className:'sec-vs',title:'Tier score vs combined FY2025 revenue of '+fmtShort(prev25)},
+          return h('span',{className:'sec-vs',title:'Tier score of '+fmtFull(total)+' vs combined FY2025 revenue of '+fmtFull(prev25)},
             h('span',{className:'b'},h('i',{style:{width:Math.min(pct,100)+'%',background:fill}})),
             h('span',{className:'p',style:{color:fill}},pct+'%'),
             h('span',{className:'n'},'of 2025 \u00b7 ',fmtShort(prev25)));
@@ -1335,10 +1348,11 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
       h('div',{className:'wow-l'},
         h('span',{className:'wow-lbl'},'weighted pipeline vs ',wow.prior.date),
         h('div',{className:'wow-vals'},
-          h('span',{className:'wow-now'},fmtShort(wow.curr.wtd)),
+          h('span',{className:'wow-now exact',title:fmtFull(wow.curr.wtd)},fmtShort(wow.curr.wtd)),
           h('span',{className:'wow-chg '+(up?'wow-up':'wow-dn')},
             (up?'\u25b2 ':'\u25bc '), (up?'+':''), wow.pct.toFixed(1), '%'),
-          h('span',{className:'wow-abs'},'(',(up?'+':'\u2212'),fmtShort(Math.abs(wow.deltaWtd)),')')
+          h('span',{className:'wow-abs exact',title:(up?'+':'\u2212')+fmtFull(Math.abs(wow.deltaWtd))+' vs '+wow.prior.date},
+            '(',(up?'+':'\u2212'),fmtShort(Math.abs(wow.deltaWtd)),')')
         )
       ),
       h('button',{className:'wow-dl',onClick:()=>downloadSnapshot(history,snapshotFromParse(podioData,PODIO_ASOF))},'Download snapshot')
@@ -1353,7 +1367,8 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
           m.code.charAt(0)==='~' ? 'no project #' : m.code),
         h('span',{className:'wow-name'},m.name),
         h('span',{className:'wow-cause '+(m.cause==='unclear'?'wow-amb':'')},CAUSE_LABEL[m.cause]||m.cause),
-        h('span',{className:'wow-amt '+(m.delta>=0?'wow-up':'wow-dn')},
+        h('span',{className:'wow-amt exact '+(m.delta>=0?'wow-up':'wow-dn'),
+          title:(m.delta>=0?'+':'\u2212')+fmtFull(Math.abs(m.delta))},
           (m.delta>=0?'+':'\u2212'),fmtShort(Math.abs(m.delta)))
       ))
     ),
@@ -1604,11 +1619,11 @@ function App() {
       ),
       nsMeta && h('span',{className:'sum-tag'},
         h('strong',null,'Open Orders: '),
-        fmtShort(Object.values(nsData?.byId||{}).reduce((s,v)=>s+v.total,0)),
+        NUM(Object.values(nsData?.byId||{}).reduce((s,v)=>s+v.total,0)),
         ' across ',nsMeta.totalOrders,' SOs'
       ),
       invMeta && h('span',{className:'sum-tag'},
-        h('strong',null,'Revenue YTD: '), fmtShort(invMeta.net),' · ',invMeta.period
+        h('strong',null,'Revenue YTD: '), NUM(invMeta.net),' · ',invMeta.period
       ),
       invFallback && h('span',{className:'sum-tag',style:{borderColor:'#f5dfa0',color:'#854f0b'}},
         '⚠ Revenue YTD = portfolio data (Apr 2025–Mar 2026). Upload NS export to replace'
@@ -1627,24 +1642,24 @@ function App() {
           title:'Open the funnel chart: pipeline \u2192 open orders \u2192 revenue'},'Funnel \u00b7 pipe \u2192 rev \u2197')),
       h('div',{className:'fb-left'},
         h('div',{className:'fb-lbl'},'Projected 2026 revenue · booked + landing'),
-        h('div',{className:'fb-val'},fmtShort(bookedLanding)),
+        h('div',{className:'fb-val exact',title:fmtFull(bookedLanding)},fmtShort(bookedLanding)),
         h('div',{className:'fb-note'},
-          'Revenue YTD ',fmtShort(totalInvoiced),
-          ' + open orders not on hold ',fmtShort(openLanding),
-          ' + pipeline with a PO expected by its product cutoff ',fmtShort(pipeLanding))
+          'Revenue YTD ',NUM(totalInvoiced),
+          ' + open orders not on hold ',NUM(openLanding),
+          ' + pipeline with a PO expected by its product cutoff ',NUM(pipeLanding))
       ),
       h('div',{className:'fb-risk'},
         h('div',{className:'r-lbl'},'At-risk · likely slips to 2027'),
-        h('div',{className:'r-val'},fmtShort(atRisk)),
+        h('div',{className:'r-val exact',title:fmtFull(atRisk)},fmtShort(atRisk)),
         h('div',{className:'r-note'},'On-hold orders + pipeline with no PO by its cutoff')
       ),
       h('div',{className:'fb-seasonal'},
         h('div',{className:'s-lbl'},'Seasonally adjusted 2026 full-year \u00b7 P&L basis'),
         h('div',{className:'s-val'},
-          fmtShort(seasLow),' \u2013 ',fmtShort(seasHigh),
-          h('span',{className:'s-base'},'  \u00b7  base ',fmtShort(seasBase))),
+          NUM(seasLow),' \u2013 ',NUM(seasHigh),
+          h('span',{className:'s-base'},'  \u00b7  base ',NUM(seasBase))),
         h('div',{className:'s-note'},
-          fmtShort(totalInvoiced),' revenue YTD \u00f7 ',(cumShare*100).toFixed(1),
+          NUM(totalInvoiced),' revenue YTD \u00f7 ',(cumShare*100).toFixed(1),
           '%, the share of 2025 revenue recognized by this date. Low end: rest of year repeats 2025. High end: rest of year scales with 2026\u2019s ',
           ((seasGrowth-1)*100).toFixed(0),
           '% YTD growth. PAC TEAM is back-half heavy: Aug + Dec alone were 42% of 2025 revenue. Recomputes daily; converges to actuals by Dec 31.')
@@ -1658,17 +1673,18 @@ function App() {
     h('div',{className:'tiles'},
       h('div',{className:'tile t1'},
         h('div',{className:'tile-lbl'},'key accounts'),
-        h('div',{className:'tile-val'},fmtShort(keyScore)),
+        h('div',{className:'tile-val exact',title:fmtFull(keyScore)},fmtShort(keyScore)),
         h('div',{className:'tile-sub'},keyAccts.length,' holding groups')
       ),
       h('div',{className:'tile t2'},
         h('div',{className:'tile-lbl'},'strategic growth'),
-        h('div',{className:'tile-val'},fmtShort(grwScore)),
+        h('div',{className:'tile-val exact',title:fmtFull(grwScore)},fmtShort(grwScore)),
         h('div',{className:'tile-sub'},grwAccts.length,' accounts')
       ),
       h('div',{className:'tile t3'},
         h('div',{className:'tile-lbl'},'strategic targets'),
-        h('div',{className:'tile-val'},tgtAccts.length?fmtShort(tgtScore):'-'),
+        h('div',{className:'tile-val'+(tgtAccts.length?' exact':''),
+          title:tgtAccts.length?fmtFull(tgtScore):undefined},tgtAccts.length?fmtShort(tgtScore):'-'),
         h('div',{className:'tile-sub'},tgtAccts.length?tgtAccts.length+' prospects':'Add from Podio .CRM')
       ),
       h('div',{className:'tile t4'},
