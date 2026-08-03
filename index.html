@@ -365,7 +365,7 @@ const TARGET_SEED = [
 
 // ── NETSUITE PROJECT CODES (reconciliation key) ──────────────────────────────
 // Every Podio "Project #" found in a NetSuite sales order or invoice/credit memo
-// (2,350 codes; refreshed 7/27/2026 from a live SuiteQL pull of project codes
+// (2,359 codes; refreshed 8/3/2026 from a live SuiteQL pull of project codes
 // carrying real sales-order or invoice lines, merged with the Podio Purchase
 // Orders export where Sales Confirmation # is a NetSuite SO). Any active Podio project whose Project # is in
 // this set has already converted to a NetSuite order/invoice, so its value is
@@ -398,9 +398,10 @@ const PODIO_SEED = {"byId": {"citizen": {"projects": 40, "wtd": 2489599, "contri
 // $5,842,950 unbilled). NOTE: SuiteQL stores sales-order status as a bare
 // letter ('B'), not the 'SalesOrd:B' form used in the saved-search UI.
 const NS_SEED = {"byId": {"seiko": {"orders": 13, "total": 666705.97}, "citizen": {"orders": 31, "total": 1648487.49}, "swatch": {"orders": 16, "total": 543582.99}, "tiffany": {"orders": 110, "total": 412640.75}, "hexaclad": {"orders": 1, "total": 277009.2}, "jewelry": {"orders": 11, "total": 228438.95}, "tapestry": {"orders": 2, "total": 222335.0}, "bedrock": {"orders": 11, "total": 186711.14}, "_other": {"orders": 29, "total": 649030.07}, "nuna": {"orders": 4, "total": 141871.0}, "timex": {"orders": 7, "total": 129333.8}, "northface": {"orders": 17, "total": 84142.83}, "thelios": {"orders": 3, "total": 56352.0}, "mrk": {"orders": 1, "total": 48779.0}, "casio": {"orders": 2, "total": 14720.0}, "ralphlauren": {"orders": 1, "total": 4620.0}, "luxottica": {"orders": 1, "total": 1555.0}}, "otherOrders": {"Diamond Dream Jewelry & Apparel": 183060.88, "Tudor Watch, U.S.A.": 137256.0, "BEN BRIDGE JEWELER": 131150.81, "Nouvel Heritage": 59363.27, "BENARD DESIGN": 55795.9, "J'EVAR": 21481.21, "MOVADO GROUP INC.": 20443.2, "CROWNRING": 17964.0, "Van Cleef & Arpels America": 10108.8, "MIKIMOTO America Co., Ltd.": 5630.0, "Fable": 2760.0, "Davaco, LP": 2056.0, "Marla Aaron Jewelry": 1610.0, "Copper Hill Development, Inc.": 200.0, "Right Time Watches & Jewelry": 150.0}, "totalOrders": 260, "reportDate": "As of 8/3/2026"};
-// Open-order $ on projects currently On Hold in Podio. Re-derived 7/27/2026 by
+// Open-order $ on projects currently On Hold in Podio. Re-derived 8/3/2026 by
 // matching open SO project codes against all On Hold projects in the .Projects
-// export. Re-derived 8/3/2026 from the live open-SO set (2 matches).
+// export, against the live open-SO set (2 matches: DIAD25-368-6624,
+// GRAN25-3904-6900).
 const OPEN_ORDERS_ONHOLD = 22002.51;
 
 // ── 2025 MONTHLY REVENUE (P&L basis) · SEASONAL BASELINE ─────────────────────
@@ -419,7 +420,8 @@ const YTD_ASOF = {label:'Aug 3, 2026', month:7, dayFrac:3/31}; // month is 0-ind
 // ── FY2025 REVENUE BY HOLDING COMPANY (P&L basis) ────────────────────────────
 // Full calendar-year 2025 recognized revenue (income accounts, posted, net of
 // credit memos), rolled up to holding companies. Source: live SuiteQL query,
-// pulled 7/20/2026; FY2025 re-verified unchanged 7/27/2026. Same P&L basis as Revenue YTD. Drives the "% of 2025"
+// pulled 7/20/2026; FY2025 re-verified unchanged 8/3/2026. Same P&L basis as
+// Revenue YTD. Drives the "% of 2025"
 // tracker bar on each account row. Refresh at the monthly NetSuite rebuild.
 // Company FY2025 total (all entities, net): ~$19.06M, ties to SEASONAL_2025.
 const PREV_2025 = {
@@ -565,7 +567,7 @@ function readXLSX(file, cb) {
 const PO_SEED = {codes: ["ACCU19-049-7395", "BELL26-419-7656", "BEN18-024-7193", "BENA26-4026-7201", "BULO21-1939-7019", "BULO21-1939-7319", "BULO21-1939-7643", "BULO23-2804-7293", "BULO23-2804-7377", "BULO23-2804-7446", "BULO23-2804-7684", "BULO23-2804-7747", "BULO24-3049-7605", "BULO24-325-5580", "BULO24-325-7731", "BULO24-3445-7257", "BULO25-3575-6212", "BULO25-3937-7561", "BULO25-3972-7033", "BULO26-4015-7163", "CARA25-3879-7070", "CARA25-3879-7369", "CARA25-3879-7644", "CASI16-343-7241", "CASI16-343-7517", "CASIJA25-3804-6642", "CASIJA26-41-7389", "CITI12-160-7449", "CITI12-160-7560", "CITI20-1515-7016", "CITI20-1515-7321", "CITI20-1515-7354", "CITI20-1515-7583", "CITI20-1515-7642", "CITI22-2167-7258", "CITI23-2535-7467", "CITI23-2535-7619", "CITI23-2535-7640", "CITI23-2535-7685", "CITI23-2932-7737", "CITI25-3542-7682", "CITI25-377-7301", "CITI25-397-7031", "CITI26-4025-7200", "CITI26-4045-7256", "CITI26-4128-7500", "CITI26-413-7513", "CITI26-4162-7602", "COAC17-046-7215", "COAC17-046-7300", "COAC17-046-7485", "CRWN16-367-7413", "CRWN16-367-7595", "CRWN19-1061-7641", "CRWN23-2754-7282", "CRWN26-4087-7365", "FABL26-4185-7650", "GHJ25-369-6413", "GRAN24-324-5568", "GRAN24-3294-5661", "GRAN26-4068-7459", "GSJ22-2121-6769", "GSJ22-2121-6774", "GSJ22-2121-7151", "GSJ22-2121-7383", "GSJ22-2445-6123", "GSJ22-2477-7625", "GSJ23-2688-6927", "GSJ23-2808-6280", "GSJ23-2808-6698", "GSJ23-2808-7069", "GSJ23-2808-7110", "GSJ23-2808-7111", "GSJ23-2808-7701", "GSJ23-2884-6968", "GSJ24-3085-7491", "GSJ24-3289-6973", "GSJ24-351-6087", "GSJ25-3716-6473", "GSJ25-3716-6547", "GSJ25-3716-6810", "GSJ25-3716-6976", "GSJ25-3754-6565", "GSJ25-3755-6566", "GSJ25-3777-6602", "GSJ25-3777-6824", "GSJ25-3824-6676", "GSJ25-3845-6714", "GSJ25-3953-7000", "GSJ25-3981-7059", "GSJ25-401-7152", "GSJ25-4011-7153", "GSJ26-4016-7164", "GSJ26-4022-7191", "GSJ26-4036-7218", "GSJ26-406-7288", "GSJ26-4072-7316", "GSJ26-4084-7360", "GSJ26-4182-7645", "GSJ26-4209-7698", "HAWI14-175-6843", "HAWI14-175-7013", "HAWI14-175-7026", "HAWI14-175-7214", "HAWI14-175-7435", "HAWI14-175-7475", "HAWI14-175-7537", "HAWI14-175-7636", "HAWI14-175-7646", "HAWI14-175-7677", "HAWI24-3094-7430", "HAWI24-3094-7592", "HAWI24-3386-6845", "HAWI24-3386-7511", "HAWI24-3401-7325", "HAWI26-4138-7532", "HAWI26-417-7618", "HEXA24-3064-7349", "LUXO14-221-7206", "LUXO14-221-7388", "LUXO14-221-7652", "MCS16-419-7666", "MIKI19-0532-7432", "MIKI23-2986-7522", "MIKI24-313-6814", "MONI26-4083-7350", "MONI26-4119-7466", "NVLH26-4017-7169", "OBRI24-3329-7477", "OBRI24-3329-7596", "RLFP25-3979-7380", "RLFP25-3979-7394", "RLFP25-3979-7439", "RLFP25-3979-7694", "SEIKJ24-3311-7577", "SEIKJ24-3449-7181", "SEIKJ25-3809-6652", "SEIKJ25-3821-6668", "SEIKJ25-3955-7002", "SEQU22-2009-7584", "SHIN18-278-7351", "SHIN22-2118-7681", "SHIN24-3276-5633", "SHIN26-4102-7400", "TASK25-3865-6783", "TASK25-3865-7591", "TASK25-4009-7149", "TASK26-4019-7171", "TASK26-4019-7174", "TEDD26-4186-7651", "THEL24-3103-5309", "THEL26-4093-7373", "TIME21-169-7586", "TIME21-169-7603", "TIME22-2478-7223", "TIME22-2478-7488", "TIME22-2478-7541", "TIME22-2478-7587", "TIME22-2478-7588", "TIME22-2478-7589", "TIME22-2478-7594", "TIME24-3396-7554", "TIME24-3396-7738", "TJGR20-1416-7271", "TJGR22-2238-7285", "TJGR24-3421-7144", "TJGR25-3805-7398", "TJGR25-3805-7472", "TJGR26-407-7312", "TJGR26-4215-7741", "VAJ25-3789-6619", "VANC25-3958-7006", "VANC26-4136-7526", "VANC26-4152-7569"], records: 192};
 
 const PODIO_ASOF    = '2026-08-03';            // date stamped on the Podio seed
-const NS_ASOF       = '2026-08-03';            // date of the NetSuite pull behind NS_SEED            // date stamped on the built-in seed
+const NS_ASOF       = '2026-08-03';            // date of the NetSuite pull behind NS_SEED
 const SNAPSHOT_URL  = './snapshot-history.json';
 const SNAPSHOT_KEEP = 12;                       // entries retained in the file
 
@@ -586,18 +588,43 @@ function snapshotFromParse(parsed, label) {
 // Classify every project-level movement between two snapshots. A cause is only
 // asserted where the evidence is unambiguous; anything else stays 'unclear' and
 // the note declines to explain it rather than guessing.
+// Index a snapshot's projects for diffing. Two hazards this handles:
+//   1. Projects with no Project # (13 of 148 at the last count). Keying on code
+//      alone collapsed every one of them into a single '' entry, so 12 projects
+//      vanished from the comparison each week. They have no stable identifier, so
+//      they cannot be tracked individually -- instead they are bucketed per client
+//      and their weight summed, which keeps the money visible and attributed to
+//      the right account even though the individual project cannot be named.
+//   2. Duplicate Project #s. new Map() silently keeps only the last, dropping the
+//      others; summing is the honest treatment.
+function indexProjects(list) {
+  const m = new Map();
+  (list||[]).forEach(p => {
+    const key = p.c || ('~' + (p.n || 'unknown'));
+    const prev = m.get(key);
+    if (prev) m.set(key, {...prev, e:(prev.e||0)+(p.e||0), w:(prev.w||0)+(p.w||0),
+                          agg:(prev.agg||1)+1});
+    else m.set(key, {...p, agg:1});
+  });
+  return m;
+}
+
 function diffSnapshots(prior, curr, statusByCode, convertedSet) {
   if (!prior || !curr || !prior.projects || !curr.projects) return null;
-  const P = new Map(prior.projects.map(p=>[p.c,p]));
-  const C = new Map(curr.projects.map(p=>[p.c,p]));
+  const P = indexProjects(prior.projects);
+  const C = indexProjects(curr.projects);
   const moves = [];
 
   P.forEach((p, code) => {
     const c = C.get(code);
     if (c) {
       if (c.w !== p.w) {
+        // A bucket holding more than one project (uncoded, or a duplicate Project #)
+        // can move because its composition changed rather than its estimate, and
+        // the two are indistinguishable from the snapshot alone. Claim no cause.
+        const ambiguous = code.charAt(0) === '~' || (p.agg||1) > 1 || (c.agg||1) > 1;
         moves.push({code, name:p.n, id:p.i, delta:c.w-p.w,
-                    cause: (c.e === p.e) ? 'probability' : 'rescoped'});
+                    cause: ambiguous ? 'unclear' : (c.e === p.e ? 'probability' : 'rescoped')});
       }
       return;
     }
@@ -608,10 +635,13 @@ function diffSnapshots(prior, curr, statusByCode, convertedSet) {
     // SuiteQL pull at the last rebuild. Checking only the first mislabels
     // SuiteQL-only conversions as 'unclear'.
     let cause = 'unclear';
-    if ((convertedSet && convertedSet.has(code)) || NS_PROJECT_CODES.has(code)) cause = 'converted';
+    const synthetic = code.charAt(0) === '~';   // uncoded bucket: no cause is knowable
+    if (synthetic) cause = 'unclear';
+    else if ((convertedSet && convertedSet.has(code)) || NS_PROJECT_CODES.has(code)) cause = 'converted';
     else if (st === 'lost') cause = 'lost';
     else if (st === 'cancelled') cause = 'cancelled';
     else if (st === 'completed' || st === 'won') cause = 'completed';
+    if (synthetic) { cause = 'unclear'; }
     moves.push({code, name:p.n, id:p.i, delta:-p.w, cause});
   });
 
@@ -1077,7 +1107,7 @@ function FunnelModal({onClose, inv, orders, onHold, pipe, pipeLanding, bookedLan
     h('div',{className:'ytd-modal',onClick:e=>e.stopPropagation(),role:'dialog','aria-modal':'true','aria-label':'Commercial funnel: pipeline to open orders to recognized revenue'},
       h('button',{className:'ytd-close',onClick:onClose,'aria-label':'Close'},'\u00d7'),
       h('div',{className:'ytd-head'},h('em',null,'PAC TEAM'),' \u00b7 Commercial Funnel \u00b7 Pipeline \u2192 Orders \u2192 Revenue'),
-      h('div',{className:'ytd-sub'},'The three certainty layers of the scorecard, shown as a flow. Each dollar lives in exactly one stage, so nothing is double counted. Revenue & orders as of ',YTD_ASOF.label,'; pipeline from the 7/27 Podio export.'),
+      h('div',{className:'ytd-sub'},'The three certainty layers of the scorecard, shown as a flow. Each dollar lives in exactly one stage, so nothing is double counted. Revenue & orders as of ',YTD_ASOF.label,'; pipeline from the 8/3 Podio export.'),
       h('div',{className:'fn-flow'},
         h('div',{className:'fn-stage s-pipe'},
           h('span',{className:'fn-tag'},'Stage 1 \u00b7 In play'),
@@ -1319,7 +1349,8 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
       h('span',{className:`sec-chev ${open?'open':''}`,style:{marginLeft:6}},'\u25bc')) : null,
     open && h('div',{className:'wow-list'},
       ranked.map(m => h('div',{key:m.code,className:'wow-row'},
-        h('span',{className:'wow-code'},m.code),
+        h('span',{className:'wow-code'},
+          m.code.charAt(0)==='~' ? 'no project #' : m.code),
         h('span',{className:'wow-name'},m.name),
         h('span',{className:'wow-cause '+(m.cause==='unclear'?'wow-amb':'')},CAUSE_LABEL[m.cause]||m.cause),
         h('span',{className:'wow-amt '+(m.delta>=0?'wow-up':'wow-dn')},
