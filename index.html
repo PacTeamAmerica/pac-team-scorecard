@@ -323,7 +323,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <h1>PAC TEAM &nbsp;·&nbsp; Commercial Scorecard</h1>
       <div class="sub">Upload Podio and NetSuite files each Monday to refresh all metrics</div>
     </div>
-    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite P&L revenue (income accounts), Jan 1–Aug 24 2026 · Open orders: 8/24 · Pipeline: Podio 8/24 · Quotes: 8/17</div>
+    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite P&L revenue (income accounts), Jan 1–Aug 24 2026 · Open orders: 8/24 · Pipeline: Podio 8/24 · Quotes: 8/24</div>
   </div>
 
   <details class="about">
@@ -340,8 +340,8 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       </ul>
       <p>Each account's <strong>score</strong> is the sum of the three. I added the small bar under each account name to show that score against the account's full 2025 revenue: green means last year is already covered.</p>
       <p><strong>The bubble at the top.</strong> <b>Booked + landing</b> is what I realistically expect us to hit in 2026: revenue to date, plus open orders not on hold, plus pipeline with a PO expected in time to produce and ship this year. <b>2027 backlog</b> is work that will carry into next year rather than land in 2026. It is not presumed lost — note it mixes booked and unbooked value: on-hold orders are signed, while the pipeline portion is probability-weighted and not yet committed. The PO deadline depends on the type of work: reorders get more runway than new builds (Packaging reorders until Oct 31, Displays Oct 15, Fixturing Sep 15), everything else uses Aug 31, and Events are judged by their event date. The <b>seasonally adjusted range</b> corrects for our back-loaded year: August and December alone were 42% of 2025 revenue, so a mid-year number always understates where the year lands.</p>
-      <p><strong>How I keep it current.</strong> Each Monday I drop three exports into the panel below (Podio pipeline, NetSuite open orders, NetSuite revenue) and every figure recomputes. Between uploads it runs on the last numbers I built in. I keep accounts in three tiers: Key, Strategic Growth, and Strategic Targets. Everything else rolls up under Other active accounts. The active client count tracks concentration; fewer, deeper relationships is the goal.</p>
-      <p class="about-foot">Fine print: revenue is P&amp;L recognized revenue (income accounts, net of credit memos). Gross billings run higher because they include freight and duty pass-throughs. About &minus;$179K of non-customer adjustments sits in the company total but not in any account row, so the rows sum slightly higher than the total.</p>
+      <p><strong>How I keep it current.</strong> Each Monday I drop the four Podio exports into the panel below — pipeline, purchase orders, quotes, and shipping status — and every figure recomputes. The two NetSuite files refresh at the monthly rebuild. Between uploads it runs on the last numbers I built in. I keep accounts in three tiers: Key, Strategic Growth, and Strategic Targets. Everything else rolls up under Other active accounts. The active client count tracks concentration; fewer, deeper relationships is the goal.</p>
+      <p class="about-foot">Fine print: revenue is P&amp;L recognized revenue (income accounts, net of credit memos). Gross billings run higher because they include freight and duty pass-throughs. About &minus;$0.4M of factory and intercompany adjustments sits in the company total but not in any account row, so the rows sum slightly higher than the total.</p>
     </div>
   </details>
 
@@ -614,11 +614,11 @@ function readXLSX(file, cb) {
 // the panel nags for a fresh upload while this built-in set is still in use.
 const PO_SEED = {"codes":["ACCU19-049-7395","BELL26-419-7656","BEN18-024-7193","BENA26-4026-7201","BULO21-1939-7019","BULO21-1939-7319","BULO21-1939-7643","BULO23-2717-7781","BULO23-2804-7293","BULO23-2804-7377","BULO23-2804-7446","BULO23-2804-7661","BULO23-2804-7684","BULO23-2804-7692","BULO23-2804-7747","BULO24-3049-7605","BULO24-325-5580","BULO24-325-7731","BULO24-3445-7257","BULO25-3575-6212","BULO25-3937-7561","BULO25-3972-7033","BULO26-4015-7163","CARA25-3879-7070","CARA25-3879-7369","CARA25-3879-7644","CASI16-343-7241","CASI16-343-7517","CASI26-4117-7639","CASIJA25-3804-6642","CASIJA26-41-7389","CITI12-160-7449","CITI12-160-7560","CITI16-354-7702","CITI18-141-7703","CITI20-1515-7016","CITI20-1515-7321","CITI20-1515-7354","CITI20-1515-7583","CITI20-1515-7642","CITI22-2167-7258","CITI22-2464-7739","CITI23-2535-7467","CITI23-2535-7614","CITI23-2535-7619","CITI23-2535-7640","CITI23-2535-7685","CITI23-2795-7245","CITI23-2932-7737","CITI24-3147-5412","CITI25-3542-7682","CITI25-377-7301","CITI25-3854-6753","CITI25-397-7031","CITI26-4025-7200","CITI26-4045-7256","CITI26-4128-7500","CITI26-413-7513","CITI26-4162-7602","COAC17-046-7215","COAC17-046-7300","COAC17-046-7485","CRWN16-367-7413","CRWN16-367-7595","CRWN19-1061-7641","CRWN23-2754-7282","CRWN26-4087-7365","FABL26-4185-7650","GHJ25-369-6413","GRAN24-324-5568","GRAN24-3294-5661","GRAN26-4068-7459","GSJ22-2121-6769","GSJ22-2121-6774","GSJ22-2121-7151","GSJ22-2121-7383","GSJ22-2445-6123","GSJ22-2477-7625","GSJ23-2688-6927","GSJ23-2808-6280","GSJ23-2808-6698","GSJ23-2808-7069","GSJ23-2808-7110","GSJ23-2808-7111","GSJ23-2808-7701","GSJ23-2884-6968","GSJ24-3085-7491","GSJ24-3289-6973","GSJ24-351-6087","GSJ25-3716-6473","GSJ25-3716-6547","GSJ25-3716-6810","GSJ25-3716-6976","GSJ25-3754-6565","GSJ25-3755-6566","GSJ25-3777-6602","GSJ25-3777-6824","GSJ25-3824-6676","GSJ25-3845-6714","GSJ25-3953-7000","GSJ25-3981-7059","GSJ25-401-7152","GSJ25-4011-7153","GSJ26-4016-7164","GSJ26-4022-7191","GSJ26-4036-7218","GSJ26-406-7288","GSJ26-4072-7316","GSJ26-4084-7360","GSJ26-4182-7645","GSJ26-4205-7691","GSJ26-4209-7698","GSJ26-4217-7751","HAWI14-175-6843","HAWI14-175-7013","HAWI14-175-7026","HAWI14-175-7214","HAWI14-175-7435","HAWI14-175-7475","HAWI14-175-7537","HAWI14-175-7636","HAWI14-175-7646","HAWI14-175-7677","HAWI24-3094-7430","HAWI24-3094-7592","HAWI24-3386-6845","HAWI24-3386-7511","HAWI24-3401-7325","HAWI26-4088-7368","HAWI26-4138-7532","HAWI26-417-7618","HEXA24-3064-7349","LUXO14-221-7206","LUXO14-221-7388","LUXO14-221-7652","MARL26-4127-7497","MCS16-419-7666","MIKI19-0532-7432","MIKI23-2986-7522","MIKI24-313-6814","MONI26-4083-7350","MONI26-4119-7466","NVLH26-4017-7169","OBRI24-3329-7477","OBRI24-3329-7596","RLFP25-3979-7380","RLFP25-3979-7394","RLFP25-3979-7439","RLFP25-3979-7694","SEIKJ24-3311-7577","SEIKJ24-3449-7181","SEIKJ25-3809-6652","SEIKJ25-3821-6668","SEIKJ25-3955-7002","SEQU22-2009-7584","SHIN18-278-7351","SHIN22-2118-7681","SHIN24-3276-5633","SHIN26-4102-7400","TASK25-3865-6783","TASK25-3865-7591","TASK25-4009-7149","TASK26-4019-7171","TASK26-4019-7174","TEDD26-4186-7651","THEL24-3103-5309","THEL26-4093-7373","TIME21-169-7586","TIME21-169-7603","TIME21-169-7771","TIME22-2478-7223","TIME22-2478-7488","TIME22-2478-7541","TIME22-2478-7587","TIME22-2478-7588","TIME22-2478-7589","TIME22-2478-7594","TIME22-2478-7768","TIME24-3396-7554","TIME24-3396-7738","TJGR20-1416-7271","TJGR22-2238-7285","TJGR24-3421-7144","TJGR25-3805-7398","TJGR25-3805-7472","TJGR26-407-7312","TJGR26-4215-7741","VAJ25-3789-6619","VANC25-3958-7006","VANC26-4131-7514","VANC26-4136-7526","VANC26-4152-7569","VANC26-4214-7732"],"records":213};
 
-// Quote coverage recomputed 8/24 against the 8/24 pipeline from the Quotes to Clients export of 8/17/2026. Coverage
+// Quote coverage from the Quotes to Clients export of 8/24/2026. Coverage
 // is LIVE ONLY: a project counts as covered when a quote is UNDER REVIEW, i.e.
 // our price is with the client right now. Quotes that went quiet are reported
 // separately rather than folded in.
-const QUOTE_SEED = {"live":1019278,"appr":150000,"cold":37250,"never":435290,"liveN":30,"apprN":1,"coldN":11,"neverN":104,"winRate":62,"won":650,"decided":1043,"liveQuotes":57,"asof":"2026-08-17"};
+const QUOTE_SEED = {"live":1044318,"appr":150000,"cold":58500,"never":389000,"liveN":33,"apprN":1,"coldN":14,"neverN":98,"winRate":62,"won":653,"decided":1053,"liveQuotes":57,"asof":"2026-08-24"};
 
 
 // Open orders per PROJECT CODE (unbilled), from the 8/17 SuiteQL pull. The
@@ -751,7 +751,7 @@ function deltaNote(d) {
   const unclear = d.moves.filter(m=>m.cause==='unclear');
   if (unclear.length) {
     const u = unclear.reduce((s,m)=>s+Math.abs(m.delta),0);
-    note += ` ${fmtShort(u)} across ${unclear.length} project${unclear.length>1?'s':''} left the active set without a determinable cause — upload the Purchase Orders export to resolve conversions.`;
+    note += ` ${fmtShort(u)} across ${unclear.length} project${unclear.length>1?'s':''} left the active set without a clear cause — upload the Purchase Orders export so conversions can be identified.`;
   }
   return note;
 }
@@ -1282,7 +1282,7 @@ function YtdModal({onClose, openLanding=0, pipeLanding=0}) {
         h('div',{className:'ytd-stat'},h('div',{className:'l'},'YTD pace vs 2025'),h('div',{className:'v up'},'+',Math.round((growth-1)*100),'%'),h('div',{className:'n'},h('span',{className:'exact',title:fmtFull(ytd26-cal25)},fS(ytd26-cal25)),' ahead')),
         h('div',{className:'ytd-stat'},h('div',{className:'l'},'Seasonal full-year base'),h('div',{className:'v'},fR(ytd26+rem*Math.sqrt(growth))),h('div',{className:'n'},'range ',fR(ytd26+rem),' \u2013 ',fR(ytd26+rem*growth)))),
       h('div',{className:'ytd-foot'},
-        h('b',null,'How to read this.'),' Our revenue is back loaded. 61% of 2025 revenue was recognized after June, and August and December together made up 42% of the year. The shaded fan projects 2026 forward along the 2025 monthly curve, starting from today\u2019s position. The bottom of the range assumes the rest of the year matches 2025 dollar for dollar. The top scales it to our current pace. The dashed line splits the difference using damped growth. The two flat dashed lines are commitment floors: won work is revenue plus open orders not on hold, and booked + landing adds pipeline with a PO expected by its product cutoff. The space between the top floor and the projection fan is the work we still have to sell or convert to hit the seasonal range. One caution on December: part of the 2025 peak came from year-end revenue recognition entries, not shipping volume. Source: live SuiteQL income account postings as of ',YTD_ASOF.label,'. June 2026 includes backdated entries.')
+        h('b',null,'How to read this.'),' Our revenue is back-loaded. 61% of 2025 revenue was recognized after June, and August and December together made up 42% of the year. The shaded fan projects 2026 forward along the 2025 monthly curve, starting from today\u2019s position. The bottom of the range assumes the rest of the year matches 2025 dollar for dollar. The top scales it to our current pace. The dashed line splits the difference using damped growth. The two flat dashed lines are commitment floors: won work is revenue plus open orders not on hold, and booked + landing adds pipeline with a PO expected by its product cutoff. The space between the top floor and the projection fan is the work we still have to sell or convert to hit the seasonal range. One caution on December: part of the 2025 peak came from year-end revenue recognition entries, not shipping volume. Source: live SuiteQL income account postings as of ',YTD_ASOF.label,'. June 2026 includes backdated entries.')
     ));
 }
 
@@ -1359,8 +1359,8 @@ function FunnelModal({onClose, inv, orders, onHold, pipe, pipeLanding, bookedLan
           h('div',{className:'fn-val exact',title:fmtFull(orders)},fS(orders)),
           h('div',{className:'fn-sub'},ordersN,' open sales orders \u00b7 ',h('span',{className:'exact',title:fmtFull(onHold)},fS(onHold)),' of it sits on projects currently On Hold in Podio'),
           h('div',{className:'fn-split'},
-            h('span',null,h('b',null,'Confirmed backlog '),h('span',{className:'exact',title:fmtFull(NS_SEED.confirmed.total)},fS(NS_SEED.confirmed.total)),' \u00b7 ',NS_SEED.confirmed.orders,' SOs built or partly built (status D+F)'),
-            h('span',null,h('b',null,'Awaiting invoice '),h('span',{className:'exact',title:fmtFull(NS_SEED.awaiting.total)},fS(NS_SEED.awaiting.total)),' \u00b7 ',NS_SEED.awaiting.orders,' SOs pending billing (status B+E)')
+            h('span',{title:'NetSuite statuses D (Pending Fulfillment) + F (Partially Fulfilled)'},h('b',null,'Confirmed backlog '),h('span',{className:'exact',title:fmtFull(NS_SEED.confirmed.total)},fS(NS_SEED.confirmed.total)),' \u00b7 ',NS_SEED.confirmed.orders,' SOs booked, build & ship in progress'),
+            h('span',{title:'NetSuite statuses B (Pending Billing) + E (Pending Billing / Partially Fulfilled)'},h('b',null,'Awaiting invoice '),h('span',{className:'exact',title:fmtFull(NS_SEED.awaiting.total)},fS(NS_SEED.awaiting.total)),' \u00b7 ',NS_SEED.awaiting.orders,' SOs fulfilled in NetSuite, billing is the remaining step')
           ),
           h('div',{className:'fn-bar'},h('i',{style:{width:pct(orders)}}))
         ),
@@ -1431,7 +1431,7 @@ function AccountRow({acc, isT, onChange, onDel, cols, invFallback}) {
         if (!prev25) return h('div',{className:'vs25-lbl',style:{marginTop:6}},'new account \u00b7 no 2025 revenue');
         const pct = Math.round(score/prev25*100);
         const fill = pct>=100 ? '#1D9E75' : pct>=60 ? '#BA7517' : '#b4b2a9';
-        return h('div',{className:'vs25',title:'2026 score of '+fmtFull(score)+' (revenue + open orders + wtd pipeline) vs FY2025 revenue of '+fmtFull(prev25)},
+        return h('div',{className:'vs25',title:'2026 score of '+fmtFull(score)+' (revenue + open orders + weighted pipeline) vs FY2025 revenue of '+fmtFull(prev25)},
           h('div',{className:'vs25-bar'},h('i',{style:{width:Math.min(pct,100)+'%',background:fill}})),
           h('div',{className:'vs25-lbl'},h('b',{style:{color:fill}},pct+'%'),' of 2025 (',fmtShort(prev25),')'));
       })()
@@ -1455,7 +1455,7 @@ function AccountRow({acc, isT, onChange, onDel, cols, invFallback}) {
             onChange:e=>onChange(acc.id,'won',e.target.value)})
         ),
     h('div',{className:'acell'},
-      h('div',{className:'acell-lbl'},h('span',{className:'stag po-tag'},'Podio'),' wtd pipeline'),
+      h('div',{className:'acell-lbl'},h('span',{className:'stag po-tag'},'Podio'),' weighted pipeline'),
       h('input',{type:'number',className:'ainp',value:acc.pipe,placeholder:'0',
         onChange:e=>onChange(acc.id,'pipe',e.target.value)}),
       acc.pipeN>0
@@ -1492,7 +1492,7 @@ function OtherAccounts({nsOtherOrders, podioOtherClients}) {
       h('div',{className:'sec-l'},
         h('div',{className:'sec-dot',style:{background:'#d0cec6'}}),
         h('span',{className:'sec-name'},'Other active accounts'),
-        h('span',{className:'sec-def'},'in files but outside tracked scorecard')
+        h('span',{className:'sec-def'},'in your uploads, not yet assigned to a tier')
       ),
       h('div',{className:'sec-r'},
         h('span',{style:{fontSize:11,color:'#aaa'}}, entries.length+' accounts  ·  ',
@@ -1515,7 +1515,7 @@ function OtherAccounts({nsOtherOrders, podioOtherClients}) {
         )
       ),
       h('div',{style:{fontSize:10,color:'#aaa',padding:'8px 16px',borderTop:'1px solid #f5f3ee'}},
-        'These accounts appear in your uploaded files but are not assigned to a scorecard tier. ',
+        'These accounts show up in the uploads but do not sit in a tier above. ',
         'To track them, add them to a section above using "+ add account".'
       )
     )
@@ -1623,7 +1623,7 @@ function ShippingPanel({recon, shipMeta}) {
     h('div',{className:'shp-head'},
       h('div',null,
         h('div',{className:'shp-lbl'},'Open orders \u00b7 by shipping evidence'),
-        h('div',{className:'shp-sub'},'What the Shipping Status app can prove about the ',h('span',{className:'exact',title:fmtFull(tot)},fmtShort(tot)),' awaiting billing \u00b7 billing trigger follows contract terms: EXW at factory pickup, FOB at ETD, delivered terms at final delivery')
+        h('div',{className:'shp-sub'},'What our shipping records prove about the ',h('span',{className:'exact',title:fmtFull(tot)},fmtShort(tot)),' still to be billed. When an order becomes billable depends on its contract terms: EXW at factory pickup, FOB when the shipment departs, delivered terms (DDP/DAP) on final delivery')
       ),
       h('div',{className:'shp-sub'},shipMeta?.name||'')
     ),
@@ -1647,7 +1647,7 @@ function ShippingPanel({recon, shipMeta}) {
           x.age>0 ? h('span',{className:'shp-age'},'  \u00b7  '+x.age+' days past trigger') : null)
       )),
       h('div',{className:'shp-sub',style:{marginTop:6}},
-        'Aging counts days since the billing trigger passed. A code with many small sales orders (e.g. Tiffany\u2019s parent code) can show as billable while some of its orders are still open \u2014 the per-SO join lands with the next NetSuite rebuild.')
+        'Aging counts days since the order became billable. One caveat: a project with many small sales orders under one code (Tiffany is the main case) can read as billable while some of its orders are genuinely still open \u2014 matching at the individual order level is planned for the next monthly rebuild.')
     )
   );
 }
@@ -1695,7 +1695,7 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
       ))
     ),
     (!poMeta || /^Built-in/.test(poMeta.name||'')) && h('div',{className:'wow-hint'},
-      'Purchase Orders is still on the built-in set from the last rebuild. Upload this week\u2019s export so conversions are detected live \u2014 otherwise jobs booked since then cannot be told apart from lost work.')
+      'Purchase Orders is still running on the last rebuild\u2019s data. Upload this week\u2019s export so new bookings are recognized \u2014 without it, a project that converted looks the same as one we lost.')
   );
 }
 
@@ -1725,7 +1725,7 @@ function App() {
   const [open, setOpen] = useState({k:true,g:true,t:false,c:false,o:false});
   const [invFallback, setInvFallback] = useState(false);
   const [quoteData, setQuoteData] = useState(null);
-  const [quoteMeta, setQuoteMeta] = useState({name:'Built-in \u00b7 Quotes to Clients (8/17/2026)',
+  const [quoteMeta, setQuoteMeta] = useState({name:'Built-in \u00b7 Quotes to Clients (8/24/2026)',
     liveQuotes:QUOTE_SEED.liveQuotes, winRate:QUOTE_SEED.winRate});
   const [poCodes, setPoCodes]   = useState(new Set(PO_SEED.codes));
   const [poMeta, setPoMeta]     = useState({name:'Built-in \u00b7 Purchase Orders (8/24/2026)', codes:PO_SEED.codes.length, records:PO_SEED.records});
@@ -1755,7 +1755,7 @@ function App() {
 
   // True while BOTH NetSuite sources are still on their built-in seeds and those
   // seeds predate the Podio seed. Uploading either one clears it. All four sources
-  // are aligned at 8/24/2026 in this build (quotes seed data 8/17), so it is false until the next weekly
+  // are aligned at 8/24/2026 in this build, so it is false until the next weekly
   // Podio upload lands ahead of a NetSuite refresh.
   const nsStale = /^Built-in/.test(nsMeta?.name||'') && /^Built-in/.test(invMeta?.name||'')
                   && PODIO_ASOF > NS_ASOF;
@@ -1929,8 +1929,8 @@ function App() {
 
   const kCols = 'minmax(0,1.6fr) 120px 120px 140px 95px 28px';
   const tCols = 'minmax(0,2fr) 120px 140px 95px 28px';
-  const kHead = ['holding company  /  brands','revenue YTD','open orders','wtd pipeline','score',''];
-  const tHead = ['account','new biz won','wtd pipeline','score',''];
+  const kHead = ['holding company  /  brands','revenue YTD','open orders','weighted pipeline','score',''];
+  const tHead = ['account','new business won','weighted pipeline','score',''];
 
   const filesLoaded = podioMeta||nsMeta;
 
@@ -2012,7 +2012,7 @@ function App() {
         h('strong',null,'Revenue YTD: '), NUM(invMeta.net),' · ',invMeta.period
       ),
       invFallback && h('span',{className:'sum-tag',style:{borderColor:'#f5dfa0',color:'#854f0b'}},
-        '⚠ Revenue YTD = portfolio data (Apr 2025–Mar 2026). Upload NS export to replace'
+        '⚠ Revenue YTD is placeholder data — upload the NetSuite revenue export to replace it'
       )
     ),
 
@@ -2061,9 +2061,9 @@ function App() {
     ) : null,
     (podioMeta?.unconfirmed?.length > 0) ? h('div',{className:'ns-stale'},
       h('b',null,podioMeta.unconfirmed.length,' project',podioMeta.unconfirmed.length>1?'s':'',' claim a PO that NetSuite has not confirmed. '),
-      'The Podio Purchase Orders export records a Sales Confirmation number for ',
+      'Podio records a Sales Confirmation number for ',
       podioMeta.unconfirmed.join(', '),
-      ', but no matching NetSuite order or invoice exists. These stay in weighted pipeline on purpose \u2014 dropping them on the Podio claim alone would delete their value from the Score rather than move it into Open Orders. Confirm the booking in NetSuite, or correct the Sales Confirmation number in Podio.'
+      ', but NetSuite has no matching order or invoice. These stay in pipeline on purpose: removing them on the Podio entry alone would make their value vanish from the Score instead of moving into Open Orders. Either confirm the booking in NetSuite or correct the number in Podio.'
     ) : null,
 
     // ── Quote coverage of pipeline ──
@@ -2115,7 +2115,7 @@ function App() {
       dot:'#1D9E75', total:keyScore, prev25:keyPrev, open:open.k, onToggle:()=>tog('k'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setKeyAccts(p=>[...p,mkBlankAcct()]),
-      note:'Ranked by % of FY2025, highest first. Revenue YTD: NetSuite recognized revenue (income accounts, net of credit memos), Jan 1–Aug 24 2026; ties to the P&L and Finance\u2019s forecast model — by-customer and by-month sums agree to the cent. Open orders are unbilled SO value as of 8/24; pipeline auto-populates from the weekly Podio upload. All fields editable. ✓ All three key accounts clear the $800K threshold on trailing 12 months: Citizen $14,919,692, Seiko $1,041,538 (Grand Seiko America plus Seiko Watch Corporation), Swatch $995,607. Seiko was $844,559 on 7 Aug and is no longer marginal.',
+      note:'Ranked by % of FY2025, highest first. Revenue YTD: NetSuite recognized revenue (income accounts, net of credit memos), Jan 1–Aug 24 2026; ties to the P&L and Finance\u2019s forecast model — by-customer and by-month sums agree to the cent. Open orders are unbilled SO value as of 8/24; pipeline fills in automatically from the weekly Podio upload. All fields editable. ✓ All three key accounts clear the $800K threshold on trailing 12 months: Citizen $14,919,692, Seiko $1,041,538 (Grand Seiko America plus Seiko Watch Corporation), Swatch $995,607. Seiko was $844,559 on 7 Aug and is no longer marginal.',
     },
       rankByPct(keyAccts).map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setKeyAccts), onDel:dl(setKeyAccts)
@@ -2128,7 +2128,7 @@ function App() {
       dot:'#534AB7', total:grwScore, prev25:grwPrev, open:open.g, onToggle:()=>tog('g'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setGrwAccts(p=>[...p,mkBlankAcct()]),
-      note:'Ranked by % of FY2025, highest first; accounts with no 2025 baseline sort last. Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Aug 24 2026. Open orders (unbilled, 8/24) are built in; pipeline auto-populates from the weekly Podio upload. Tapestry moved down from Key Accounts (corrected YTD fell below the $800K threshold); Coach and Kate Spade bill as one NetSuite entity. Promoted from Other Active Accounts 7/6/2026: HexaClad, Nuna, Monica Rich Kosann, Casio, Luxottica, The North Face, Ralph Lauren (all 3 NS entities; no open SOs as of 8/24). Note: HexaClad and Nuna show $0 revenue YTD because their 2026 billings to date are deposit invoices posted outside income accounts; their value sits in open orders.',
+      note:'Ranked by % of FY2025, highest first; accounts with no 2025 baseline sort last. Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Aug 24 2026. Open orders (unbilled, 8/24) are built in; pipeline fills in automatically from the weekly Podio upload. Tapestry moved down from Key Accounts (corrected YTD fell below the $800K threshold); Coach and Kate Spade bill as one NetSuite entity. Promoted from Other Active Accounts on 7/6: HexaClad, Nuna, Monica Rich Kosann, Casio, Luxottica, The North Face, Ralph Lauren. One quirk to know: HexaClad shows $0 revenue this year because its 2026 billings so far are deposit invoices, which post outside income accounts — its money sits in open orders until final billing.',
     },
       rankByPct(grwAccts).map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setGrwAccts), onDel:dl(setGrwAccts)
@@ -2137,11 +2137,11 @@ function App() {
 
     // ── Target Accounts ──
     h(Section,{
-      title:'Strategic target accounts', def:'The twelve \u00b7 per \u201cWho We Sell To\u201d memo, 7/20',
+      title:'Strategic target accounts', def:'Net-new list \u00b7 per \u201cWho We Sell To\u201d memo, 7/20',
       dot:'#BA7517', total:tgtScore, open:open.t, onToggle:()=>tog('t'),
       cols:tCols, colHead:tHead,
       onAdd:()=>setTgtAccts(p=>[...p,mkBlankTgt()]),
-      note:'15 CEO-approved net-new targets (Jun 2026). New biz won + weighted pipeline are entered manually from Podio .CRM → Prospects, seeded at $0 until those figures are added. Formula: New Business Won + Σ(Pipeline × Probability Weight).',
+      note:'Eleven CEO-approved net-new targets (June 2026). These have no revenue history, so their score is simply new business won plus weighted pipeline, entered by hand from the Podio .CRM Prospects app — $0 until we add figures.',
     },
       tgtAccts.length===0
         ? h('div',{className:'empty-msg'},'No strategic targets. Click "+ add account" to add from Podio .CRM')
@@ -2181,7 +2181,7 @@ function App() {
         h('div',{className:'cnt-note'},
           'Pre-loaded: 65 (billing-entity level, trailing 12 months Aug 25 2025–Aug 24 2026, excludes Test Company, Pac Team Japan, Pac Team Switzerland). FY2026 YTD: 57 unique. ',
           'Update when you run the NS invoiced export. ',
-          'Goal: hold flat or decline as strategic account revenue grows and low-value clients are offboarded.'
+          'Goal: hold this flat or let it fall as strategic accounts deepen and low-value clients roll off.'
         )
       )
     ),
