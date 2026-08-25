@@ -339,8 +339,8 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
         <li class="l3"><b>Weighted pipeline</b>: future opportunity from Podio, discounted by probability. 80%+ counts in full, 50&ndash;79% counts at half, below 50% does not count. PTA division only; PTJ and PTNext are booked separately in QuickBooks.</li>
       </ul>
       <p>Each account's <strong>score</strong> is the sum of the three. I added the small bar under each account name to show that score against the account's full 2025 revenue: green means last year is already covered.</p>
-      <p><strong>The bubble at the top.</strong> <b>Booked + landing</b> is what I realistically expect us to hit in 2026: revenue to date, plus open orders not on hold, plus pipeline with a PO expected in time to produce and ship this year. <b>2027 backlog</b> is work that will carry into next year rather than land in 2026. It is not presumed lost — note it mixes booked and unbooked value: on-hold orders are signed, while the pipeline portion is probability-weighted and not yet committed. The PO deadline depends on the type of work: reorders get more runway than new builds (Packaging reorders until Oct 31, Displays Oct 15, Fixturing Sep 15), everything else uses Aug 31, and Events are judged by their event date. The <b>seasonally adjusted range</b> corrects for our back-loaded year: August and December alone were 42% of 2025 revenue, so a mid-year number always understates where the year lands.</p>
-      <p><strong>How I keep it current.</strong> Each Monday I drop the four Podio exports into the panel below — pipeline, purchase orders, quotes, and shipping status — and every figure recomputes. The two NetSuite files refresh at the monthly rebuild. Between uploads it runs on the last numbers I built in. I keep accounts in three tiers: Key, Strategic Growth, and Strategic Targets. Everything else rolls up under Other active accounts. The active client count tracks concentration; fewer, deeper relationships is the goal.</p>
+      <p><strong>The bubble at the top.</strong> <b>Booked + landing</b> is what I realistically expect us to hit in 2026: revenue to date, plus open orders not on hold, plus pipeline with a PO expected in time to produce and ship this year. <b>2027 backlog</b> is work that will carry into next year rather than land in 2026. It is not presumed lost. Note it mixes booked and unbooked value: on-hold orders are signed, while the pipeline portion is probability-weighted and not yet committed. The PO deadline depends on the type of work: reorders get more runway than new builds (Packaging reorders until Oct 31, Displays Oct 15, Fixturing Sep 15), everything else uses Aug 31, and Events are judged by their event date. The <b>seasonally adjusted range</b> corrects for our back-loaded year: August and December alone were 42% of 2025 revenue, so a mid-year number always understates where the year lands.</p>
+      <p><strong>How I keep it current.</strong> Each Monday I drop the four Podio exports into the panel below (pipeline, purchase orders, quotes, and shipping status) and every figure recomputes. The two NetSuite files refresh at the monthly rebuild. Between uploads it runs on the last numbers I built in. I keep accounts in three tiers: Key, Strategic Growth, and Strategic Targets. Everything else rolls up under Other active accounts. The active client count tracks concentration; fewer, deeper relationships is the goal.</p>
       <p class="about-foot">Fine print: revenue is P&amp;L recognized revenue (income accounts, net of credit memos). Gross billings run higher because they include freight and duty pass-throughs. About &minus;$0.4M of factory and intercompany adjustments sits in the company total but not in any account row, so the rows sum slightly higher than the total.</p>
     </div>
   </details>
@@ -751,7 +751,7 @@ function deltaNote(d) {
   const unclear = d.moves.filter(m=>m.cause==='unclear');
   if (unclear.length) {
     const u = unclear.reduce((s,m)=>s+Math.abs(m.delta),0);
-    note += ` ${fmtShort(u)} across ${unclear.length} project${unclear.length>1?'s':''} left the active set without a clear cause — upload the Purchase Orders export so conversions can be identified.`;
+    note += ` ${fmtShort(u)} across ${unclear.length} project${unclear.length>1?'s':''} left the active set without a clear cause. Upload the Purchase Orders export so conversions can be identified.`;
   }
   return note;
 }
@@ -1181,7 +1181,7 @@ function FileZone({label, sub, fileLabel, tag, onFile, loaded, info, pending}) {
 
   return h('div',{
     className:`zone ${loaded?'loaded':''} ${drag?'drag':''}`,
-    title: loaded ? [fileLabel, info].filter(Boolean).join(' \u2014 ') : sub,
+    title: loaded ? [fileLabel, info].filter(Boolean).join(' \u00b7 ') : sub,
     onDragOver:e=>{e.preventDefault();setDrag(true)},
     onDragLeave:()=>setDrag(false),
     onDrop:e=>{e.preventDefault();setDrag(false);const f=e.dataTransfer.files[0];if(f)handleFile(f);}
@@ -1376,9 +1376,9 @@ function FunnelModal({onClose, inv, orders, onHold, pipe, pipeLanding, bookedLan
       h('div',{className:'fn-chart'},h('canvas',{ref:cvs})),
       h('div',{className:'ytd-stats'},
         h('div',{className:'ytd-stat'},h('div',{className:'l'},'2026 booked + landing'),h('div',{className:'v up exact',title:fmtFull(bookedLanding)},fS(bookedLanding)),h('div',{className:'n'},'earned + committed (not on hold) + pipeline with PO by its product cutoff')),
-        h('div',{className:'ytd-stat'},h('div',{className:'l'},'Committed cover'),h('div',{className:'v exact',title:fmtFull(openLanding)},fS(openLanding)),h('div',{className:'n'},'open orders not on hold \u2014 revenue already won, awaiting build & ship')),
-        h('div',{className:'ytd-stat'},h('div',{className:'l'},'Pipeline landing this year'),h('div',{className:'v exact',title:fmtFull(pipeLanding)},fS(pipeLanding)),h('div',{className:'n'},cutoffPassed?'All cutoffs passed \u2014 open pipeline now reads as 2027':'PO expected by its product cutoff (Aug 31 default; reorders get more runway)')),
-        h('div',{className:'ytd-stat'},h('div',{className:'l'},'2027 backlog'),h('div',{className:'v exact',style:{color:'#9a6a12'},title:fmtFull(atRisk)},fS(atRisk)),h('div',{className:'n'},'on-hold orders + pipeline without a PO by its 2026 cutoff \u2014 carries into 2027'))),
+        h('div',{className:'ytd-stat'},h('div',{className:'l'},'Committed cover'),h('div',{className:'v exact',title:fmtFull(openLanding)},fS(openLanding)),h('div',{className:'n'},'open orders not on hold: revenue already won, awaiting build & ship')),
+        h('div',{className:'ytd-stat'},h('div',{className:'l'},'Pipeline landing this year'),h('div',{className:'v exact',title:fmtFull(pipeLanding)},fS(pipeLanding)),h('div',{className:'n'},cutoffPassed?'All cutoffs passed; open pipeline now reads as 2027':'PO expected by its product cutoff (Aug 31 default; reorders get more runway)')),
+        h('div',{className:'ytd-stat'},h('div',{className:'l'},'2027 backlog'),h('div',{className:'v exact',style:{color:'#9a6a12'},title:fmtFull(atRisk)},fS(atRisk)),h('div',{className:'n'},'on-hold orders + pipeline without a PO by its 2026 cutoff; carries into 2027'))),
       h('div',{className:'ytd-foot'},
         h('b',null,'How to read this.'),' The top strip is the funnel: work enters on the left as weighted Podio pipeline, converts to a NetSuite open order when a PO lands, and converts to recognized revenue when it ships and bills. The bars beneath each stage are drawn to the same dollar scale, so the width jump from stage to stage shows how committed the year already is. The waterfall below stacks the three layers into the 2026 booked + landing figure: recognized revenue, plus open orders not on hold, plus the slice of pipeline with a PO expected by its product cutoff. Cutoffs come from the Podio Project Type and Pac Team Product fields: reorders get more runway than new builds (Packaging reorders until Oct 31, Displays Oct 15, Fixturing Sep 15), everything else defaults to Aug 31, and Events are tested against their event date. The amber bar on the right is what likely slips to 2027. Sources: NetSuite income accounts and open SOs (unbilled basis) as of ',YTD_ASOF.label,'; Podio .Projects export 8/24, de-duplicated against NetSuite by Project #.')
     ));
@@ -1598,9 +1598,9 @@ function QuotePanel({coverage, totalPipe, quoteMeta}) {
     (coverage.appr>0) && h('div',{className:'qp-note',style:{borderLeftColor:'#0F6B4F'}},
       h('b',null,'Approved, awaiting PO: '), h('span',{className:'exact',title:fmtFull(coverage.appr)},fmtShort(coverage.appr)),
       ' across ',coverage.apprN,' project',coverage.apprN>1?'s':'',
-      ' \u2014 the client has approved the quote for production but no purchase order is recorded yet. Won on paper, not yet booked. Chase the PO, then make sure the Sales Confirmation # lands in Podio.'),
+      '. The client has approved the quote for production but no purchase order is recorded yet. Won on paper, not yet booked. Chase the PO, then make sure the Sales Confirmation # lands in Podio.'),
     coverage.never>0 && h('div',{className:'qp-note'},
-      'Unquoted pipeline carries weight without a price ever having gone to the client \u2014 the softest part of the forecast.')
+      'Unquoted pipeline carries weight without a price ever having gone to the client. It is the softest part of the forecast.')
   );
 }
 
@@ -1647,7 +1647,7 @@ function ShippingPanel({recon, shipMeta}) {
           x.age>0 ? h('span',{className:'shp-age'},'  \u00b7  '+x.age+' days past trigger') : null)
       )),
       h('div',{className:'shp-sub',style:{marginTop:6}},
-        'Aging counts days since the order became billable. One caveat: a project with many small sales orders under one code (Tiffany is the main case) can read as billable while some of its orders are genuinely still open \u2014 matching at the individual order level is planned for the next monthly rebuild.')
+        'Aging counts days since the order became billable. One caveat: a project with many small sales orders under one code (Tiffany is the main case) can read as billable while some of its orders are genuinely still open. Matching at the individual order level is planned for the next monthly rebuild.')
     )
   );
 }
@@ -1695,7 +1695,7 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
       ))
     ),
     (!poMeta || /^Built-in/.test(poMeta.name||'')) && h('div',{className:'wow-hint'},
-      'Purchase Orders is still running on the last rebuild\u2019s data. Upload this week\u2019s export so new bookings are recognized \u2014 without it, a project that converted looks the same as one we lost.')
+      'Purchase Orders is still running on the last rebuild\u2019s data. Upload this week\u2019s export so new bookings are recognized. Without it, a project that converted looks the same as one we lost.')
   );
 }
 
@@ -2012,7 +2012,7 @@ function App() {
         h('strong',null,'Revenue YTD: '), NUM(invMeta.net),' · ',invMeta.period
       ),
       invFallback && h('span',{className:'sum-tag',style:{borderColor:'#f5dfa0',color:'#854f0b'}},
-        '⚠ Revenue YTD is placeholder data — upload the NetSuite revenue export to replace it'
+        '⚠ Revenue YTD is placeholder data. Upload the NetSuite revenue export to replace it'
       )
     ),
 
@@ -2115,7 +2115,7 @@ function App() {
       dot:'#1D9E75', total:keyScore, prev25:keyPrev, open:open.k, onToggle:()=>tog('k'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setKeyAccts(p=>[...p,mkBlankAcct()]),
-      note:'Ranked by % of FY2025, highest first. Revenue YTD: NetSuite recognized revenue (income accounts, net of credit memos), Jan 1–Aug 24 2026; ties to the P&L and Finance\u2019s forecast model — by-customer and by-month sums agree to the cent. Open orders are unbilled SO value as of 8/24; pipeline fills in automatically from the weekly Podio upload. All fields editable. ✓ All three key accounts clear the $800K threshold on trailing 12 months: Citizen $14,919,692, Seiko $1,041,538 (Grand Seiko America plus Seiko Watch Corporation), Swatch $995,607. Seiko was $844,559 on 7 Aug and is no longer marginal.',
+      note:'Ranked by % of FY2025, highest first. Revenue YTD: NetSuite recognized revenue (income accounts, net of credit memos), Jan 1–Aug 24 2026; ties to the P&L and Finance\u2019s forecast model; by-customer and by-month sums agree to the cent. Open orders are unbilled SO value as of 8/24; pipeline fills in automatically from the weekly Podio upload. All fields editable. ✓ All three key accounts clear the $800K threshold on trailing 12 months: Citizen $14,919,692, Seiko $1,041,538 (Grand Seiko America plus Seiko Watch Corporation), Swatch $995,607. Seiko was $844,559 on 7 Aug and is no longer marginal.',
     },
       rankByPct(keyAccts).map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setKeyAccts), onDel:dl(setKeyAccts)
@@ -2128,7 +2128,7 @@ function App() {
       dot:'#534AB7', total:grwScore, prev25:grwPrev, open:open.g, onToggle:()=>tog('g'),
       cols:kCols, colHead:kHead,
       onAdd:()=>setGrwAccts(p=>[...p,mkBlankAcct()]),
-      note:'Ranked by % of FY2025, highest first; accounts with no 2025 baseline sort last. Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Aug 24 2026. Open orders (unbilled, 8/24) are built in; pipeline fills in automatically from the weekly Podio upload. Tapestry moved down from Key Accounts (corrected YTD fell below the $800K threshold); Coach and Kate Spade bill as one NetSuite entity. Promoted from Other Active Accounts on 7/6: HexaClad, Nuna, Monica Rich Kosann, Casio, Luxottica, The North Face, Ralph Lauren. One quirk to know: HexaClad shows $0 revenue this year because its 2026 billings so far are deposit invoices, which post outside income accounts — its money sits in open orders until final billing.',
+      note:'Ranked by % of FY2025, highest first; accounts with no 2025 baseline sort last. Revenue YTD: NetSuite recognized revenue (income accounts), Jan 1–Aug 24 2026. Open orders (unbilled, 8/24) are built in; pipeline fills in automatically from the weekly Podio upload. Tapestry moved down from Key Accounts (corrected YTD fell below the $800K threshold); Coach and Kate Spade bill as one NetSuite entity. Promoted from Other Active Accounts on 7/6: HexaClad, Nuna, Monica Rich Kosann, Casio, Luxottica, The North Face, Ralph Lauren. One quirk to know: HexaClad shows $0 revenue this year because its 2026 billings so far are deposit invoices, which post outside income accounts, so its money sits in open orders until final billing.',
     },
       rankByPct(grwAccts).map(a=>h(AccountRow,{key:a.id,acc:a,isT:false,cols:kCols,invFallback,
         onChange:ch(setGrwAccts), onDel:dl(setGrwAccts)
@@ -2141,7 +2141,7 @@ function App() {
       dot:'#BA7517', total:tgtScore, open:open.t, onToggle:()=>tog('t'),
       cols:tCols, colHead:tHead,
       onAdd:()=>setTgtAccts(p=>[...p,mkBlankTgt()]),
-      note:'Eleven CEO-approved net-new targets (June 2026). These have no revenue history, so their score is simply new business won plus weighted pipeline, entered by hand from the Podio .CRM Prospects app — $0 until we add figures.',
+      note:'Eleven CEO-approved net-new targets (June 2026). These have no revenue history, so their score is simply new business won plus weighted pipeline, entered by hand from the Podio .CRM Prospects app, and reads $0 until we add figures.',
     },
       tgtAccts.length===0
         ? h('div',{className:'empty-msg'},'No strategic targets. Click "+ add account" to add from Podio .CRM')
