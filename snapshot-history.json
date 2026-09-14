@@ -8928,18 +8928,106 @@
   ]
  },
  {
-  "date": "2026-09-08",
-  "totalActive": 179,
-  "wtd": 1661224,
-  "pipeLanding": 191161,
+  "date": "2026-09-14",
+  "totalActive": 177,
+  "wtd": 1441664,
+  "pipeLanding": 176601,
   "projects": [
+   {
+    "c": "SHIN24-3276-7888",
+    "n": "Shinola",
+    "i": "bedrock",
+    "e": 10000,
+    "p": 75,
+    "w": 5000
+   },
+   {
+    "c": "CITI26-405-7887",
+    "n": "Citizen Watch of America",
+    "i": "citizen",
+    "e": 200000,
+    "p": 10,
+    "w": 0
+   },
+   {
+    "c": "VICT26-4263-7884",
+    "n": "Victorinox Swiss Army",
+    "i": "_other",
+    "e": 0,
+    "p": 75,
+    "w": 0
+   },
+   {
+    "c": "VICT26-4263-7883",
+    "n": "Victorinox Swiss Army",
+    "i": "_other",
+    "e": 0,
+    "p": 75,
+    "w": 0
+   },
+   {
+    "c": "VICT26-4263-7882",
+    "n": "Victorinox Swiss Army",
+    "i": "_other",
+    "e": 0,
+    "p": 75,
+    "w": 0
+   },
+   {
+    "c": "",
+    "n": "PAC TEAM AMERICA",
+    "i": "_other",
+    "e": 0,
+    "p": 100,
+    "w": 0
+   },
+   {
+    "c": "",
+    "n": "Richemont North America, Inc.",
+    "i": "_other",
+    "e": 20000,
+    "p": 50,
+    "w": 10000
+   },
+   {
+    "c": "TOWS15-004-7877",
+    "n": "Towson Watch Company",
+    "i": "_other",
+    "e": 2000,
+    "p": 50,
+    "w": 1000
+   },
+   {
+    "c": "CITI25-3854-7875",
+    "n": "Citizen Watch of America",
+    "i": "citizen",
+    "e": 100000,
+    "p": 75,
+    "w": 50000
+   },
+   {
+    "c": "CITI25-3692-7874",
+    "n": "Citizen Watch Company of Canada",
+    "i": "citizen",
+    "e": 4000,
+    "p": 75,
+    "w": 2000
+   },
+   {
+    "c": "RLFP25-3979-7872",
+    "n": "NODO Design",
+    "i": "_other",
+    "e": 5000,
+    "p": 75,
+    "w": 2500
+   },
    {
     "c": "BULO24-325-7871",
     "n": "Bulova",
     "i": "citizen",
-    "e": 0,
-    "p": 75,
-    "w": 0
+    "e": 32704,
+    "p": 95,
+    "w": 32704
    },
    {
     "c": "TIME22-2478-7870",
@@ -9022,14 +9110,6 @@
     "w": 47500
    },
    {
-    "c": "CITI26-4254-7852",
-    "n": "Citizen Watch of America",
-    "i": "citizen",
-    "e": 0,
-    "p": 75,
-    "w": 0
-   },
-   {
     "c": "TNFE24-3243-7848",
     "n": "The North Face",
     "i": "northface",
@@ -9060,14 +9140,6 @@
     "e": 3000,
     "p": 50,
     "w": 1500
-   },
-   {
-    "c": "TNFE26-425-7805",
-    "n": "The North Face",
-    "i": "northface",
-    "e": 289380,
-    "p": 0,
-    "w": 0
    },
    {
     "c": "MOVA23-2773-7803",
@@ -9102,27 +9174,11 @@
     "w": 100000
    },
    {
-    "c": "TIME26-4207-7792",
-    "n": "Timex",
-    "i": "timex",
-    "e": 0,
-    "p": 0,
-    "w": 0
-   },
-   {
     "c": "TIME26-4244-7791",
     "n": "Timex",
     "i": "timex",
     "e": 8000,
     "p": 10,
-    "w": 0
-   },
-   {
-    "c": "MARC26-4243-7788",
-    "n": "Marcolin USA",
-    "i": "_other",
-    "e": 30000,
-    "p": 0,
     "w": 0
    },
    {
@@ -9134,18 +9190,10 @@
     "w": 2000
    },
    {
-    "c": "CARA25-3879-7784",
-    "n": "Caravelle",
-    "i": "citizen",
-    "e": 53580,
-    "p": 75,
-    "w": 26790
-   },
-   {
     "c": "CITI26-424-7783",
     "n": "Citizen Watch of America",
     "i": "citizen",
-    "e": 50000,
+    "e": 10000,
     "p": 20,
     "w": 0
    },
@@ -9222,22 +9270,6 @@
     "w": 10000
    },
    {
-    "c": "HAWI14-175-7764",
-    "n": "Harry Winston",
-    "i": "swatch",
-    "e": 0,
-    "p": 0,
-    "w": 0
-   },
-   {
-    "c": "CITI25-3854-7760",
-    "n": "Citizen Watch of America",
-    "i": "citizen",
-    "e": 150000,
-    "p": 95,
-    "w": 150000
-   },
-   {
     "c": "VANC26-4131-7759",
     "n": "Van Cleef & Arpels",
     "i": "_other",
@@ -9284,14 +9316,6 @@
     "e": 500,
     "p": 10,
     "w": 0
-   },
-   {
-    "c": "COAC17-046-7752",
-    "n": "Tapestry/Coach",
-    "i": "tapestry",
-    "e": 3475,
-    "p": 90,
-    "w": 3475
    },
    {
     "c": "BULO23-2804-7748",
@@ -9454,14 +9478,6 @@
     "w": 0
    },
    {
-    "c": "CITI25-377-7667",
-    "n": "Citizen Watch of America",
-    "i": "citizen",
-    "e": 10000,
-    "p": 100,
-    "w": 10000
-   },
-   {
     "c": "TIME26-4192-7663",
     "n": "Timex",
     "i": "timex",
@@ -9476,14 +9492,6 @@
     "e": 77000,
     "p": 75,
     "w": 38500
-   },
-   {
-    "c": "TJGR24-3204-7660",
-    "n": "The Jewelry Group",
-    "i": "jewelry",
-    "e": 33000,
-    "p": 60,
-    "w": 16500
    },
    {
     "c": "TJGR24-3204-7659",
@@ -9609,9 +9617,9 @@
     "c": "BULO26-4168-7612",
     "n": "Bulova",
     "i": "citizen",
-    "e": 50000,
-    "p": 75,
-    "w": 25000
+    "e": 27000,
+    "p": 95,
+    "w": 27000
    },
    {
     "c": "JOHN26-4167-7611",
@@ -9758,14 +9766,6 @@
     "w": 0
    },
    {
-    "c": "KATE26-4123-7478",
-    "n": "Kate Spade",
-    "i": "tapestry",
-    "e": 100000,
-    "p": 5,
-    "w": 0
-   },
-   {
     "c": "PTAM26-412-7471",
     "n": "PAC TEAM AMERICA",
     "i": "_other",
@@ -9812,14 +9812,6 @@
     "e": 20000,
     "p": 75,
     "w": 10000
-   },
-   {
-    "c": "BULO26-411-7456",
-    "n": "Bulova",
-    "i": "citizen",
-    "e": 108000,
-    "p": 99,
-    "w": 108000
    },
    {
     "c": "HAWI26-4113-7455",
@@ -9985,9 +9977,9 @@
     "c": "CITI25-4003-7123",
     "n": "Citizen Watch of America",
     "i": "citizen",
-    "e": 25000,
-    "p": 80,
-    "w": 25000
+    "e": 15000,
+    "p": 95,
+    "w": 15000
    },
    {
     "c": "HAWI25-4001-7113",
@@ -10107,14 +10099,6 @@
     "i": "_other",
     "e": 8750,
     "p": 22,
-    "w": 0
-   },
-   {
-    "c": "CITI24-3307-6732",
-    "n": "Citizen Watch of America",
-    "i": "citizen",
-    "e": 0,
-    "p": 0,
     "w": 0
    },
    {
