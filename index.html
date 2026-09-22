@@ -1847,12 +1847,12 @@ const RDR_BUCKETS = {
 function rdrChip(b){ const m=RDR_BUCKETS[b]||RDR_BUCKETS['No shipping data']; return h('span',{className:'rchip '+m.chip}, b.replace(' - ',' ')); }
 function rdrIncoChip(i){ return i ? h('span',{className:'rchip rc-inco'}, RDR_INCONAME[i]||i) : h('span',{style:{color:'#c8c6bf'}},'-'); }
 
-function RadarTable({rows, showBucket}){
+function RadarTable({rows, showBucket, showAge}){
   return h('div',{className:'rtbl-wrap'}, h('div',{className:'rtbl-scroll'},
     h('table',{className:'rtbl'},
       h('thead',null, h('tr',null,
         h('th',null,'Project'), h('th',null,'Account'), h('th',null,'Incoterm'), h('th',null,'Stage'),
-        h('th',null,'Trigger'), h('th',null,'Basis'), showBucket?h('th',null,'Timing'):null, h('th',{className:'num'},'Unbilled'))),
+        h('th',null,'Trigger'), h('th',null,'Basis'), showAge?h('th',{className:'num'},'Days overdue'):null, showBucket?h('th',null,'Timing'):null, h('th',{className:'num'},'Unbilled'))),
       h('tbody',null, rows.map(r => h('tr',{key:r.c},
         h('td',{className:'code'}, r.c),
         h('td',null, r.holding),
@@ -1860,6 +1860,7 @@ function RadarTable({rows, showBucket}){
         h('td',null, r.stage),
         h('td',null, r.trig || h('span',{style:{color:'#c8c6bf'}},'-')),
         h('td',{className:'src'}, r.src ? h('span',{className:r.planned?'rplan':''}, r.src+(r.planned?' · planned':'')) : '-'),
+        showAge ? h('td',{className:'num'}, (r.age!=null? String(r.age) : '-')) : null,
         showBucket ? h('td',null, rdrChip(r.bucket)) : null,
         h('td',{className:'num',style:{fontWeight:600}}, fmtFull(r.unb))
       )))
@@ -1937,7 +1938,7 @@ function RadarPanel({recs, shipMeta, poMap}){
     overdue.length ? h('div',{className:'rflag'},
       h('div',{className:'rflag-h'}, h('div',{className:'t'},'Overdue billing watchlist: trigger has passed, still open'),
         h('div',{className:'n'}, overdue.length+' orders · '+fmtFull(sum(overdue)))),
-      h(RadarTable,{rows:overdue})) : null,
+      h(RadarTable,{rows:overdue, showAge:true})) : null,
     h('div',{style:{marginBottom:14}},
       h('button',{className:'rmore',onClick:()=>setShowAll(o=>!o)}, showAll?'Hide full order list':'Show all '+rows.length+' open orders'),
       showAll ? h('div',{className:'rflag',style:{marginTop:12}},
