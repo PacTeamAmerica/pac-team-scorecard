@@ -314,6 +314,60 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 input[type=number]{-moz-appearance:textfield}
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+
+.tabbar{display:flex;gap:2px;border-bottom:1px solid #e5e3dc;margin-bottom:18px;flex-wrap:wrap}
+.tabbtn{appearance:none;background:none;border:none;font-family:inherit;font-size:13px;font-weight:600;color:#8a8880;padding:9px 16px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px}
+.tabbtn:hover{color:#1a1a18}.tabbtn.on{color:#13694E;border-bottom-color:#1D9E75}
+.rdr-head{margin-bottom:16px}
+.rdr-h1{font-size:19px;font-weight:600;letter-spacing:-.3px;color:#1a1a18}
+.rdr-sub{font-size:12px;color:#8a8880;margin-top:4px;line-height:1.5;max-width:76ch}
+.rtiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.rtile{background:#fff;border:1px solid #e5e3dc;border-radius:10px;padding:13px 15px;border-left:4px solid #d0cec6}
+.rtile.t-total{border-left-color:#13694E}.rtile.t-bill{border-left-color:#1D9E75}
+.rtile.t-ready{border-left-color:#BA7517}.rtile.t-track{border-left-color:#1D9E75}.rtile.t-risk{border-left-color:#a32d2d}
+.rtile .rl{font-size:9.5px;color:#8a8880;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;min-height:2.3em}
+.rtile .rv{font-size:21px;font-weight:600;color:#1a1a18;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.rtile .rn{font-size:10px;color:#a5a39c;margin-top:3px}
+.rcard{background:#fff;border:1px solid #e5e3dc;border-radius:12px;padding:18px;margin-bottom:14px}
+.rcard-h{font-size:13px;font-weight:600;color:#1a1a18;margin-bottom:3px}
+.rcard-s{font-size:11px;color:#8a8880;margin-bottom:13px}
+.rsplit{display:flex;width:100%;height:46px;border-radius:8px;overflow:hidden;border:1px solid #e5e3dc}
+.rseg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:12px;min-width:2px;font-variant-numeric:tabular-nums}
+.rseg span{text-shadow:0 1px 2px rgba(0,0,0,.28);padding:0 6px;white-space:nowrap}
+.rleg{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:14px}
+.rlg{display:flex;gap:8px;align-items:flex-start;font-size:11.5px}
+.rsw{width:12px;height:12px;border-radius:3px;margin-top:2px;flex:none}
+.rlg b{font-weight:600}.rlg .rlv{font-variant-numeric:tabular-nums;font-weight:600}
+.rnote{font-size:11.5px;color:#52514c;margin-top:13px;padding-top:12px;border-top:1px solid #f0ede6;line-height:1.55}
+.rnote b{color:#1a1a18}
+.rwarn{display:flex;gap:11px;background:#fcebeb;border:1px solid #e6b7b7;border-radius:10px;padding:12px 15px;margin-bottom:14px;align-items:flex-start}
+.rwarn .wi{font-weight:700;color:#a32d2d;font-size:18px;line-height:1.1}
+.rwarn .wt{font-size:12.5px;line-height:1.55;color:#52514c}.rwarn .wt b{color:#1a1a18;font-weight:600}
+.rflag{border:1px solid #e5e3dc;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff}
+.rflag-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;background:#faf9f6;border-bottom:1px solid #e5e3dc}
+.rflag-h .t{font-size:13px;font-weight:600;color:#1a1a18}
+.rflag-h .n{font-size:11px;color:#8a8880;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rtbl-wrap{overflow-x:auto}.rtbl-scroll{max-height:360px;overflow-y:auto}
+table.rtbl{width:100%;border-collapse:collapse;font-size:12px}
+table.rtbl th,table.rtbl td{text-align:left;padding:7px 12px;border-bottom:1px solid #f2f0ea;white-space:nowrap}
+table.rtbl th{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:#a5a39c;font-weight:600;position:sticky;top:0;background:#fff}
+table.rtbl td.num,table.rtbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+table.rtbl td.code{font-weight:600;color:#1a1a18}
+table.rtbl td.src{color:#8a8880;font-size:11px}
+table.rtbl tbody tr:hover{background:#faf9f6}
+.rplan{color:#BA7517;font-weight:600}
+.rchip{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap;text-transform:uppercase;letter-spacing:.3px}
+.rc-ready{background:#faeeda;color:#854f0b}.rc-track{background:#dff3ea;color:#0f6e56}
+.rc-risk{background:#fcebeb;color:#a32d2d}.rc-nodata{background:#eeede9;color:#8a8880}
+.rc-inco{background:#eef0ee;color:#52514c;text-transform:none;letter-spacing:0}
+.rmore{background:none;border:1px solid #e5e3dc;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:#52514c;cursor:pointer;font-family:inherit}
+.rmore:hover{border-color:#8a8880}
+.rfoot{font-size:11px;color:#8a8880;line-height:1.6;margin-top:6px}
+@media(max-width:900px){.rtiles{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.rtiles{grid-template-columns:1fr}}
+.shp-note{background:#fff;border:1px solid #e5e3dc;border-left:3px solid #1D9E75;border-radius:12px;padding:13px 16px;margin-bottom:12px;font-size:12.5px;color:#52514c;line-height:1.55}
+.shp-note a{color:#13694E;font-weight:600;text-decoration:none;border-bottom:1px solid #cfe3d9;cursor:pointer}
+.shp-note a:hover{border-bottom-color:#13694E}
 </style>
 </head>
 <body>
@@ -327,7 +381,12 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite P&L revenue (income accounts), Jan 1–Sep 21 2026 · Open orders: 9/21 · Pipeline: Podio 9/21 · Quotes: 9/21</div>
   </div>
 
-  <details class="about">
+  <div class="tabbar" id="rdr-tabbar">
+    <button class="tabbtn on" data-tab="scorecard" onclick="window.__scSetTab&&window.__scSetTab('scorecard')">Commercial Scorecard</button>
+    <button class="tabbtn" data-tab="radar" onclick="window.__scSetTab&&window.__scSetTab('radar')">2026 Revenue Close Radar</button>
+  </div>
+
+  <details class="about" id="sc-about">
     <summary>
       <span>About this scorecard &nbsp;·&nbsp; what it shows and how it works</span>
       <span class="about-chev">▼</span>
@@ -853,18 +912,27 @@ function parsePO(rows) {
   const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
   const pi = headers.findIndex(h=>norm(h)==='projects');
   const si = headers.findIndex(h=>norm(h).indexOf('salesconfirmation')===0);
+  const shi = headers.findIndex(h=>norm(h)==='shippingdatestart');
+  const esi = headers.findIndex(h=>norm(h)==='estimatedbillingdatestart');
   if (pi===-1 || si===-1)
     return {error:'Missing PROJECTS# or Sales Confirmation # column. Make sure this is the Podio Purchase Orders export'};
+  const asISO = v => { const d=(v instanceof Date)?v:new Date(v); return isNaN(d)?null:d.toISOString().slice(0,10); };
   const codes = new Set();
+  const dates = {};                              // Radar: planned ship / est-billing per code
   let records = 0;
   rows.slice(1).forEach(r => {
-    const sc = (r[si]||'').toString().trim();
-    if (!/^SO\d+/i.test(sc)) return;
     const m = (r[pi]==null?'':r[pi].toString()).match(/[A-Za-z]+[0-9]{2}-[0-9]+-[0-9]+/);
-    if (!m) return;
-    codes.add(m[0].toUpperCase()); records++;
+    if (m) {
+      const code = m[0].toUpperCase();
+      const sh = (shi>=0 && r[shi]) ? asISO(r[shi]) : null;
+      const es = (esi>=0 && r[esi]) ? asISO(r[esi]) : null;
+      if (sh || es) { const d = dates[code] || (dates[code]={s:null,e:null});
+        if (sh && (!d.s || sh<d.s)) d.s=sh; if (es && (!d.e || es<d.e)) d.e=es; }
+      const sc = (r[si]||'').toString().trim();
+      if (/^SO\d+/i.test(sc)) { codes.add(code); records++; }
+    }
   });
-  return {codes, records};
+  return {codes, records, dates};
 }
 
 function parsePodio(rows, extraConverted) {
@@ -1014,6 +1082,7 @@ function parseShipping(rows) {
     etd: headers.findIndex(h=>h.trim()==='ETD'), eta: col('ETA'),
     fdd: headers.findIndex(h=>h.trim()==='Final Delivery date to the Client'),
     bd: col('Billing Date'),
+    qc: headers.findIndex(h=>h.trim()==='Date of Last QC Received'), aq: col('All QC Available'),
   };
   if (ci.proj===-1 || ci.status===-1)
     return {error:'Missing Related Project or Shipping Status column. Make sure this is the Shipping Status export'};
@@ -1030,7 +1099,8 @@ function parseShipping(rows) {
     const dv = i => (i>=0 && r[i]) ? asISO(r[i]) : null;
     recs.push({c:m[0].toUpperCase(), r:rank,
       t:(ci.terms>=0?(r[ci.terms]||''):'').toString().trim(),
-      pk:dv(ci.pk), cr:dv(ci.cr), etd:dv(ci.etd), eta:dv(ci.eta), fdd:dv(ci.fdd), bd:dv(ci.bd)});
+      pk:dv(ci.pk), cr:dv(ci.cr), etd:dv(ci.etd), eta:dv(ci.eta), fdd:dv(ci.fdd), bd:dv(ci.bd),
+      qc:(ci.aq>=0 && String(r[ci.aq]||'').trim()==='Yes')?dv(ci.qc):null});
   });
   return {recs, records: recs.length};
 }
@@ -1397,8 +1467,8 @@ function Badge({label}) {
   return h('span',{className:`bdg ${cls}`},label);
 }
 
-// Stack-rank a section by % of FY2025 \u2014 the same figure the row's progress bar
-// shows \u2014 highest first. Accounts with no 2025 baseline (manually added rows, or
+// Stack-rank a section by % of FY2025 - the same figure the row's progress bar
+// shows - highest first. Accounts with no 2025 baseline (manually added rows, or
 // genuinely new accounts where PREV_2025 is 0) have no percentage to rank on, so
 // they hold their existing order at the bottom rather than being treated as 0%.
 // Sorting is live: it re-ranks when a Podio or NetSuite upload changes the scores.
@@ -1705,6 +1775,183 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
   );
 }
 
+
+// ══════════════════════════════════════════════════════════════════════════
+// 2026 REVENUE CLOSE RADAR  ·  forward-looking billability by incoterm trigger
+// Open-order dollars (NS_OPEN_BY_CODE, unbilled by project code) classified by
+// WHEN each can bill in 2026. Billing trigger by incoterm (J. Muscarella spec):
+//   EX WORKS  bills at QC complete / ready for pickup
+//   FOB       bills at vessel loading (ETD)
+//   DDP/DAP/FCA bills at delivery (Final Delivery, else ETA)
+// Confirmed shipping milestones come from the weekly Shipping Status upload;
+// where none exists yet, the Purchase Orders planned ship / est-billing date is
+// used as a (planned, not confirmed) fallback and flagged as such.
+// ══════════════════════════════════════════════════════════════════════════
+const RDR_QC_BY_CODE = {"TJGR26-4215-7741":"2026-09-15","BULO23-2804-7850":"2026-09-19","HEXA24-3064-7349":"2026-08-12","SHIN18-278-7351":"2026-08-03","TIME21-169-7771":"2026-09-03","NVLH26-4017-7169":"2026-09-18","CITI16-354-7702":"2026-09-08","CASI16-343-7517":"2026-08-19","HAWI26-4138-7532":"2026-08-28","BULO24-325-7731":"2026-09-19","VANC26-4136-7526":"2026-09-17","BULO21-1939-7643":"2026-09-18","HAWI14-175-7677":"2026-08-17","CRWN19-1061-7641":"2026-09-18","HAWI26-417-7618":"2026-08-03","HAWI14-175-7636":"2026-08-06","DIAD25-368-6392":"2026-07-06","CRWN26-4087-7365":"2026-08-28","HAWI14-175-7646":"2026-08-26","HAWI24-3094-7592":"2026-08-07","CITI20-1515-7642":"2026-09-18","SHIN26-4102-7400":"2026-08-07","BEN18-024-7193":"2026-08-27","HAWI14-175-7013":"2026-07-09","MIKI24-313-6814":"2026-07-15","TIFF22-2161-7212":"2026-04-16","TIME25-3787-6618":"2026-04-30","TIFF22-2161-7168":"2026-03-24","SHIN24-328-7136":"2026-06-10","TIFF24-3048-5207":"2025-11-11"};   // code -> latest QC-complete date (All QC = Yes), 9/21 seed
+const RDR_PO_BY_CODE = {"BULO24-325-7871":{"e":"2026-12-15","s":"2026-11-16"},"BULO26-4168-7612":{"e":"2026-12-18","s":"2026-11-18"},"BULO26-411-7456":{"e":"2027-01-12","s":"2026-10-12"},"CARA25-3879-7784":{"e":"2026-12-15","s":"2026-11-16"},"CITI25-3854-7760":{"e":"2026-12-04","s":"2026-11-23"},"HAWI14-175-7764":{"e":"2026-10-03","s":"2026-09-30"},"CITI25-377-7667":{"e":"2026-11-26","s":"2026-10-26"},"GRAN26-4196-7671":{"e":"2026-09-10","s":"2026-09-03"},"TJGR25-3805-7804":{"e":"2026-11-13","s":"2026-10-16"},"TJGR26-4247-7795":{"e":"2026-12-04","s":"2026-11-04"},"BULO23-2804-7850":{"e":"2026-10-14","s":"2026-09-24"},"CASI16-343-7517":{"e":"2026-12-01","s":"2026-07-28"},"TIME22-2478-7807":{"e":"2026-10-19","s":"2026-10-12"},"LUXO15-260-7758":{"e":"2026-11-09","s":"2026-10-30"},"CITI26-4166-7610":{"e":"2026-11-20","s":"2026-10-30"},"TIFF24-3048-5207":{"e":"2026-12-01","s":"2026-09-10"},"CASI26-4117-7639":{"e":"2026-12-07","s":"2026-11-06"},"BULO23-2804-7661":{"e":"2026-11-06","s":"2026-09-27"},"CITI22-2464-7739":{"e":"2026-11-16","s":"2026-10-31"},"BULO23-2804-7692":{"e":"2026-11-20","s":"2026-11-20"},"HAWI26-4088-7368":{"e":null,"s":"2026-09-17"},"CITI23-2795-7245":{"e":null,"s":"2026-10-19"},"TJGR26-4086-7364":{"e":"2026-10-10","s":"2026-09-07"},"MARL26-4127-7497":{"e":null,"s":"2026-09-04"},"HAWI26-417-7618":{"e":null,"s":"2026-08-20"},"TIME22-2478-7768":{"e":"2026-10-30","s":"2026-10-15"},"VANC26-4214-7732":{"e":null,"s":"2026-10-12"},"TIME21-169-7771":{"e":null,"s":"2026-09-21"},"CITI18-141-7703":{"e":null,"s":"2026-10-12"},"CITI25-3854-6753":{"e":null,"s":"2026-11-30"},"CITI24-3147-5412":{"e":null,"s":"2026-11-30"},"NVLH26-4017-7169":{"e":null,"s":"2026-08-31"},"CITI16-354-7702":{"e":null,"s":"2026-10-20"},"TJGR26-4215-7741":{"e":null,"s":"2026-10-15"},"CITI23-2932-7737":{"e":null,"s":"2026-09-15"},"CITI26-4025-7200":{"e":null,"s":"2026-11-10"},"HAWI26-4138-7532":{"e":null,"s":"2026-09-30"},"BULO23-2804-7747":{"e":null,"s":"2026-10-01"},"CITI26-4128-7500":{"e":null,"s":"2026-10-15"},"MOVA23-2773-7521":{"e":null,"s":"2026-07-31"},"BULO24-325-7731":{"e":null,"s":"2026-10-30"},"SHIN24-3276-5633":{"e":null,"s":"2026-10-16"},"CITI20-1515-7583":{"e":null,"s":"2026-10-15"},"CARA25-3879-7644":{"e":"2026-10-08","s":"2026-10-08"},"VANC26-4136-7526":{"e":null,"s":"2026-09-15"},"GRAN25-3926-6941":{"e":null,"s":"2026-11-01"},"BULO21-1939-7643":{"e":null,"s":"2026-09-17"},"CITI25-3542-7682":{"e":null,"s":"2026-10-15"},"HAWI14-175-7677":{"e":null,"s":"2026-09-16"},"CITI23-2535-7685":{"e":null,"s":"2026-10-15"},"BULO23-2804-7684":{"e":null,"s":"2026-10-15"},"SHIN22-2118-7681":{"e":null,"s":"2026-09-21"},"CRWN19-1061-7641":{"e":null,"s":"2026-09-07"},"CRWN26-4087-7365":{"e":null,"s":"2026-08-27"},"HAWI24-3094-7592":{"e":null,"s":"2026-08-31"},"HAWI14-175-7646":{"e":null,"s":"2026-09-10"},"CITI20-1515-7642":{"e":null,"s":"2026-08-31"},"HAWI14-175-7636":{"e":null,"s":"2026-08-31"},"SHIN26-4102-7400":{"e":null,"s":"2026-08-10"},"BEN18-024-7193":{"e":null,"s":"2026-08-17"},"SHIN18-278-7351":{"e":null,"s":"2026-08-05"},"HEXA24-3064-7349":{"e":null,"s":"2026-07-30"},"HAWI14-175-7013":{"e":null,"s":"2026-07-30"},"MIKI24-313-6814":{"e":null,"s":"2026-06-11"},"TJGR26-407-7312":{"e":null,"s":"2026-04-22"},"TIME25-3787-6618":{"e":null,"s":"2026-04-06"},"TIFF22-2161-7212":{"e":null,"s":"2027-01-29"},"TIFF22-2161-7168":{"e":null,"s":"2026-03-20"},"DIAD25-368-6624":{"e":null,"s":"2026-01-07"}};   // code -> {s:planned ship, e:est billing}, 9/21 seed
+const RDR_HOLD = {
+  CITI:'Citizen Watch Co.',BULO:'Citizen Watch Co.',CARA:'Citizen Watch Co.',ACCU:'Citizen Watch Co.',FRED:'Citizen Watch Co.',ALPI:'Citizen Watch Co.',
+  GRAN:'Seiko Holdings',GSJ:'Seiko Holdings',SEIK:'Seiko Holdings',SEQU:'Seiko Holdings',SEUK:'Seiko Holdings',
+  HAWI:'The Swatch Group',TIFF:'Tiffany & Co.',THEL:'Thelios',TIME:'Timex Group',TJGR:'The Jewelry Group',
+  SHIN:'Bedrock (Shinola)',BEDR:'Bedrock (Shinola)',HEXA:'HexaClad',CASI:'Casio',LUXO:'Luxottica',PAND:'Pandora',
+  COAC:'Tapestry',KATE:'Tapestry',DIAD:'Diamond Dream',NVLH:'Nouvel Heritage',MARL:'Marla Aaron',CRWN:'CrownRing',
+  VANC:'Van Cleef & Arpels',MIKI:'Mikimoto',MOVA:'Movado',MONI:'Monica Rich Kosann',BEN:'Ben Bridge',BENA:'Benard',
+  FABL:'Fable',TEDD:'Teddy Blake',VICT:'Victorinox'
+};
+function rdrHolding(code){ const p=(code.match(/^[A-Za-z]+/)||[''])[0].toUpperCase(); return RDR_HOLD[p]||'Other'; }
+function rdrIncoterm(t){ t=(t||'').toUpperCase(); if(t.indexOf('EXW')===0)return'EXW'; if(t.indexOf('FOB')===0)return'FOB'; if(t.indexOf('DDP')===0||t.indexOf('DAP')===0||t.indexOf('FCA')===0)return'DDP'; return ''; }
+const RDR_INCONAME = {EXW:'EX WORKS',FOB:'FOB',DDP:'DDP'};
+
+function radarClassify(recs, openByCode, poMap){
+  const today = new Date().toISOString().slice(0,10);
+  const eoy   = new Date().getFullYear()+'-12-31';
+  const RB    = SHIP_STAGES.indexOf('Ready to Bill');
+  const byCode = {}, qcByCode = {};
+  (recs||[]).forEach(x => { (byCode[x.c]=byCode[x.c]||[]).push(x); if(x.qc && (!qcByCode[x.c]||x.qc>qcByCode[x.c])) qcByCode[x.c]=x.qc; });
+  const rows = [];
+  Object.keys(openByCode).forEach(c => {
+    const unb = openByCode[c], its = byCode[c] || [];
+    const qc  = qcByCode[c] || RDR_QC_BY_CODE[c] || null;
+    const po  = (poMap && poMap[c]) || RDR_PO_BY_CODE[c] || {};
+    let inco='', best=-1, trig=null, src=null, planned=false;
+    const pick = (v,s) => { if(v && (!trig || v<trig)){ trig=v; src=s; } };
+    its.forEach(x => { if(x.r>best) best=x.r; const k=rdrIncoterm(x.t); if(k) inco=k;
+      if(k==='EXW'){ pick(qc,'QC complete'); pick(x.pk,'Fwd pickup'); pick(x.cr,'Cargo ready'); }
+      else if(k==='FOB'){ pick(x.etd,'ETD (loaded)'); pick(x.pk,'Fwd pickup'); }
+      else if(k==='DDP'){ pick(x.fdd,'Final delivery'); pick(x.eta,'ETA'); }
+      pick(x.bd,'Podio billing date'); });
+    if(!trig) pick(qc,'QC complete');
+    if(!trig){ planned=true; pick(po.s,'Planned ship date'); pick(po.e,'PO est. billing'); }
+    if(!trig) planned=false;
+    const stage = best>=0 ? SHIP_STAGES[best] : '(none)';
+    const hasData = its.length>0 || qc || po.s || po.e;
+    let bucket;
+    if(!hasData) bucket='No shipping data';
+    else if(best>=RB || (trig && trig<=today)) bucket='Ready to bill / overdue';
+    else if(trig && trig<=eoy) bucket='On track - 2026';
+    else if(trig && trig>eoy)  bucket='Slips to 2027+';
+    else bucket='At risk - timing unconfirmed';
+    rows.push({c, unb, inco, trig, src, stage, bucket, planned, holding:rdrHolding(c),
+      age: (trig && trig<=today) ? Math.floor((new Date(today)-new Date(trig))/86400000) : null});
+  });
+  return rows;
+}
+
+const RDR_BUCKETS = {
+  'Ready to bill / overdue':      {c:'#BA7517', chip:'rc-ready'},
+  'On track - 2026':              {c:'#1D9E75', chip:'rc-track'},
+  'At risk - timing unconfirmed': {c:'#a32d2d', chip:'rc-risk'},
+  'Slips to 2027+':               {c:'#a32d2d', chip:'rc-risk'},
+  'No shipping data':             {c:'#D8D5CD', chip:'rc-nodata'},
+};
+function rdrChip(b){ const m=RDR_BUCKETS[b]||RDR_BUCKETS['No shipping data']; return h('span',{className:'rchip '+m.chip}, b.replace(' - ',' ')); }
+function rdrIncoChip(i){ return i ? h('span',{className:'rchip rc-inco'}, RDR_INCONAME[i]||i) : h('span',{style:{color:'#c8c6bf'}},'-'); }
+
+function RadarTable({rows, showBucket}){
+  return h('div',{className:'rtbl-wrap'}, h('div',{className:'rtbl-scroll'},
+    h('table',{className:'rtbl'},
+      h('thead',null, h('tr',null,
+        h('th',null,'Project'), h('th',null,'Account'), h('th',null,'Incoterm'), h('th',null,'Stage'),
+        h('th',null,'Trigger'), h('th',null,'Basis'), showBucket?h('th',null,'Timing'):null, h('th',{className:'num'},'Unbilled'))),
+      h('tbody',null, rows.map(r => h('tr',{key:r.c},
+        h('td',{className:'code'}, r.c),
+        h('td',null, r.holding),
+        h('td',null, rdrIncoChip(r.inco)),
+        h('td',null, r.stage),
+        h('td',null, r.trig || h('span',{style:{color:'#c8c6bf'}},'-')),
+        h('td',{className:'src'}, r.src ? h('span',{className:r.planned?'rplan':''}, r.src+(r.planned?' · planned':'')) : '-'),
+        showBucket ? h('td',null, rdrChip(r.bucket)) : null,
+        h('td',{className:'num',style:{fontWeight:600}}, fmtFull(r.unb))
+      )))
+    )
+  ));
+}
+
+function RadarPanel({recs, shipMeta, poMap}){
+  const [showAll, setShowAll] = useState(false);
+  const rows  = radarClassify(recs, NS_OPEN_BY_CODE, poMap);
+  const total = rows.reduce((s,r)=>s+r.unb,0);
+  const grp   = k => rows.filter(r=>r.bucket===k);
+  const sum   = a => a.reduce((s,r)=>s+r.unb,0);
+  const ready=grp('Ready to bill / overdue'), track=grp('On track - 2026');
+  const risk=[...grp('At risk - timing unconfirmed'),...grp('Slips to 2027+')], nodata=grp('No shipping data');
+  const billable = sum(ready)+sum(track);
+  const plannedBillable = [...ready,...track].filter(r=>r.planned).reduce((s,r)=>s+r.unb,0);
+  const segs = [
+    {k:'Ready to bill / overdue', v:sum(ready), n:ready.length, c:'#BA7517'},
+    {k:'On track - 2026',         v:sum(track), n:track.length, c:'#1D9E75'},
+    {k:'At risk - timing unconfirmed', v:sum(risk), n:risk.length, c:'#a32d2d'},
+    {k:'No shipping data',        v:sum(nodata), n:nodata.length, c:'#D8D5CD'},
+  ];
+  const overdue = ready.filter(r=>r.age!==null && r.age>=0).sort((a,b)=>b.unb-a.unb);
+  const bigRisk = risk.slice().sort((a,b)=>b.unb-a.unb)[0];
+  const allRows = rows.slice().sort((a,b)=>b.unb-a.unb);
+  const money = v => fmtShort(v);
+
+  return h(React.Fragment, null,
+    h('div',{className:'rdr-head'},
+      h('div',{className:'rdr-h1'},'2026 Revenue Close Radar'),
+      h('div',{className:'rdr-sub'},
+        'This tab takes the open orders and asks when each one can be billed in 2026. The trigger depends on the contract terms: ',
+        h('b',null,'EX WORKS'),' bills when QC is complete and the goods are ready for pickup, ',h('b',null,'FOB'),' bills when the shipment is loaded (ETD), and ',h('b',null,'delivered terms'),' bill on final delivery. ',
+        'Confirmed dates come from the Shipping Status file. Where an order is still in production, I date it from the Purchase Orders planned ship or billing date and mark it ',
+        h('span',{className:'rplan'},'planned'),'. Open-order dollars are NetSuite unbilled by project code, as of ',NS_ASOF,'.')
+    ),
+    h('div',{className:'rtiles'},
+      h('div',{className:'rtile t-total'}, h('div',{className:'rl'},'Total open unbilled'), h('div',{className:'rv'},money(total)), h('div',{className:'rn'},rows.length+' project codes')),
+      h('div',{className:'rtile t-bill'},  h('div',{className:'rl'},'Billable in 2026'), h('div',{className:'rv'},money(billable)), h('div',{className:'rn'},total?Math.round(100*billable/total)+'% of open book':'')),
+      h('div',{className:'rtile t-ready'}, h('div',{className:'rl'},'Ready to bill / overdue'), h('div',{className:'rv'},money(sum(ready))), h('div',{className:'rn'},ready.length+' orders · trigger passed')),
+      h('div',{className:'rtile t-track'}, h('div',{className:'rl'},'On track for 2026'), h('div',{className:'rv'},money(sum(track))), h('div',{className:'rn'},track.length+' orders · by Dec 31')),
+      h('div',{className:'rtile t-risk'},  h('div',{className:'rl'},'At risk on timing'), h('div',{className:'rv'},money(sum(risk))), h('div',{className:'rn'},risk.length+' orders in production')),
+    ),
+    h('div',{className:'rcard'},
+      h('div',{className:'rcard-h'},'Billability of the open order book'),
+      h('div',{className:'rcard-s'}, money(total)+' open unbilled, split by 2026 billing-trigger timing'),
+      h('div',{className:'rsplit'}, segs.map(s => s.v>0 ? h('div',{key:s.k,className:'rseg',
+        style:{flex:s.v,background:s.c},title:s.k+': '+fmtFull(s.v)+' · '+s.n+' orders'},
+        (s.v/total>0.07)?h('span',null,money(s.v)):null) : null)),
+      h('div',{className:'rleg'}, segs.map(s => h('div',{key:s.k,className:'rlg'},
+        h('span',{className:'rsw',style:{background:s.c}}),
+        h('span',null, h('b',null,s.k.replace(' - ',' ')), h('br'),
+          h('span',{className:'rlv'},fmtFull(s.v)),' · ',s.n,' orders · ',total?Math.round(100*s.v/total)+'%':'0%'))
+      )),
+      plannedBillable>0 ? h('div',{className:'rnote'},
+        'Of the ',h('b',null,money(billable)),' billable in 2026, ',
+        h('b',{className:'rplan'},money(plannedBillable)),' rests on ',h('span',{className:'rplan'},'planned'),
+        ' Purchase Order dates: orders in production with no confirmed shipping milestone yet. The other ',
+        h('b',null,money(billable-plannedBillable)),' is confirmed by an actual QC or shipping date.') : null
+    ),
+    bigRisk ? h('div',{className:'rwarn'},
+      h('div',{className:'wi'},'!'),
+      h('div',{className:'wt'},
+        h('b',null,bigRisk.c+', '+bigRisk.holding+' ('+money(bigRisk.unb)+', '+(RDR_INCONAME[bigRisk.inco]||bigRisk.inco||'no incoterm')+')'),
+        ' is the largest open order with no billing trigger of any kind. It is ',
+        (bigRisk.stage&&bigRisk.stage!=='(none)'?bigRisk.stage.toLowerCase():'in production'),
+        ' with no QC, ship, or billing date on file. Its timing is the biggest single swing in the 2026 number: a confirmed production or ship date moves ',
+        total?Math.round(100*sum(risk)/total):0,'% of the open book off at risk.')
+    ) : null,
+    risk.length ? h('div',{className:'rflag'},
+      h('div',{className:'rflag-h'}, h('div',{className:'t'},'At risk: in production, no confirmed or planned date'),
+        h('div',{className:'n'}, risk.length+' orders · '+fmtFull(sum(risk)))),
+      h(RadarTable,{rows:risk.slice().sort((a,b)=>b.unb-a.unb)})) : null,
+    overdue.length ? h('div',{className:'rflag'},
+      h('div',{className:'rflag-h'}, h('div',{className:'t'},'Overdue billing watchlist: trigger has passed, still open'),
+        h('div',{className:'n'}, overdue.length+' orders · '+fmtFull(sum(overdue)))),
+      h(RadarTable,{rows:overdue})) : null,
+    h('div',{style:{marginBottom:14}},
+      h('button',{className:'rmore',onClick:()=>setShowAll(o=>!o)}, showAll?'Hide full order list':'Show all '+rows.length+' open orders'),
+      showAll ? h('div',{className:'rflag',style:{marginTop:12}},
+        h('div',{className:'rflag-h'}, h('div',{className:'t'},'All open orders'), h('div',{className:'n'}, rows.length+' orders · '+fmtFull(total))),
+        h(RadarTable,{rows:allRows, showBucket:true})) : null
+    ),
+    h('div',{className:'rfoot'},
+      h('b',null,'How this is built. '),'NetSuite open-order dollars are unbilled by project code, as of ',NS_ASOF,', refreshed at the monthly rebuild. ',
+      'Shipping status, incoterm, QC and milestone dates come from the Shipping Status export, and planned ship or billing dates from the Purchase Orders export. Both refresh on the Monday uploads. ',
+      'Ready or overdue means the trigger date is on or before today, or the order is at Ready to Bill stage or later. On track means the trigger falls on or before Dec 31. ',
+      'At risk means an open order with no trigger date of any kind, still in production. No shipping data means there is no Podio record to time it. These figures show billing readiness, not a revenue guarantee.')
+  );
+}
+
 function App() {
   const [podioMeta, setPodioMeta] = useState({name:'Built-in · .Projects (9/21/2026)', totalActive:PODIO_SEED.totalActive, removedInNS:PODIO_SEED.removedInNS, removedDiv:PODIO_SEED.removedDiv||0, extWtd:PODIO_SEED.extWtd||0, eventN:PODIO_SEED.eventN||0, unconfirmed:PODIO_SEED.unconfirmed||[]});
   const [nsMeta, setNsMeta] = useState({name:'Built-in · Open SO (9/21/2026)', totalOrders:NS_SEED.totalOrders, reportDate:NS_SEED.reportDate});
@@ -1737,6 +1984,8 @@ function App() {
   const [poMeta, setPoMeta]     = useState({name:'Built-in \u00b7 Purchase Orders (9/21/2026)', codes:PO_SEED.codes.length, records:PO_SEED.records});
   const [shipData, setShipData] = useState(null);   // parsed Shipping Status upload
   const [shipMeta, setShipMeta] = useState({name:'Built-in \u00b7 Shipping Status (9/21/2026)', records:SHIP_SEED_RECS.length});
+  const [tab, setTab] = useState('scorecard');
+  const [poDates, setPoDates] = useState(null);   // Radar: live PO planned dates
   const [podioRows, setPodioRows] = useState(null);   // kept so a later PO upload can re-parse
   const [history, setHistory]   = useState(null);
   const [histErr, setHistErr]   = useState('');
@@ -1791,6 +2040,14 @@ function App() {
     () => shipBuckets(shipData ? shipData.recs : SHIP_SEED_RECS, NS_OPEN_BY_CODE),
     [shipData]);
 
+  // Tab wiring: static HTML tab bar drives React state; About + active pill sync.
+  useEffect(() => { window.__scSetTab = setTab; }, []);
+  useEffect(() => {
+    const a = document.getElementById('sc-about'); if (a) a.hidden = (tab !== 'scorecard');
+    document.querySelectorAll('#rdr-tabbar .tabbtn').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+    try { window.scrollTo(0,0); } catch(e){}
+  }, [tab]);
+
   // Week-over-week movement against the most recent committed snapshot.
   const wow = useMemo(() => {
     if (!history || !history.length) return null;
@@ -1837,6 +2094,7 @@ function App() {
     if (parsed.error) { alert('Purchase Orders parse error: '+parsed.error); return; }
     setPoMeta({name, codes:parsed.codes.size, records:parsed.records});
     setPoCodes(parsed.codes);
+    setPoDates(parsed.dates||{});
     if (podioRows) {                       // re-run pipeline with live conversions
       const re = parsePodio(podioRows, parsed.codes);
       if (!re.error) {
@@ -1941,6 +2199,8 @@ function App() {
   const filesLoaded = podioMeta||nsMeta;
 
   return h(React.Fragment,null,
+    tab==='radar' && h(RadarPanel,{recs: shipData ? shipData.recs : SHIP_SEED_RECS, shipMeta, poMap: poDates || RDR_PO_BY_CODE}),
+    h('div',{style:{display: tab==='scorecard' ? null : 'none'}},
 
     // ── Upload Panel ──
     h('div',{className:'upload-panel'},
@@ -2076,7 +2336,10 @@ function App() {
     h(QuotePanel,{coverage, totalPipe, quoteMeta}),
 
     // ── Shipping reconciliation ──
-    h(ShippingPanel,{recon:shipRecon, shipMeta}),
+    h('div',{className:'shp-note'},
+      'Open-order billing timing now lives on the ',
+      h('a',{onClick:()=>setTab('radar')},'2026 Revenue Close Radar'),
+      ' tab: what can bill in 2026 by incoterm trigger, the overdue billing watchlist, and what is still in production.'),
 
     // ── Week-over-week ──
     h(WowPanel,{wow, history, histErr, podioData, poMeta}),
@@ -2198,6 +2461,7 @@ function App() {
       pipeProjects:podioMeta?.totalActive||0,
       pipeContrib:Object.values(podioData?.byId||{}).reduce((sm,v)=>sm+(v.contributing||0),0),
       ordersN:nsMeta?.totalOrders||0, invPeriod:invMeta?.period||'', cutoffPassed}) : null
+    )
   );
 }
 
