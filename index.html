@@ -320,11 +320,11 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .tabbtn:hover{color:#1a1a18}.tabbtn.on{color:#13694E;border-bottom-color:#1D9E75}
 .rdr-head{margin-bottom:16px}
 .rdr-h1{font-size:19px;font-weight:600;letter-spacing:-.3px;color:#1a1a18}
-.rdr-sub{font-size:12px;color:#8a8880;margin-top:4px;line-height:1.5;max-width:76ch}
+.rdr-sub{font-size:12px;color:#8a8880;margin-top:4px;line-height:1.5}
 .rtiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
 .rtile{background:#fff;border:1px solid #e5e3dc;border-radius:10px;padding:13px 15px;border-left:4px solid #d0cec6}
 .rtile.t-total{border-left-color:#13694E}.rtile.t-bill{border-left-color:#1D9E75}
-.rtile.t-ready{border-left-color:#BA7517}.rtile.t-track{border-left-color:#1D9E75}.rtile.t-risk{border-left-color:#a32d2d}
+.rtile.t-ready{border-left-color:#BA7517}.rtile.t-track{border-left-color:#1D9E75}.rtile.t-risk{border-left-color:#a32d2d}.rtile.t-slip{border-left-color:#534AB7}
 .rtile .rl{font-size:9.5px;color:#8a8880;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;min-height:2.3em}
 .rtile .rv{font-size:21px;font-weight:600;color:#1a1a18;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
 .rtile .rn{font-size:10px;color:#a5a39c;margin-top:3px}
@@ -360,6 +360,9 @@ table.rtbl tbody tr:hover{background:#faf9f6}
 .rc-ready{background:#faeeda;color:#854f0b}.rc-track{background:#dff3ea;color:#0f6e56}
 .rc-risk{background:#fcebeb;color:#a32d2d}.rc-nodata{background:#eeede9;color:#8a8880}
 .rc-inco{background:#eef0ee;color:#52514c;text-transform:none;letter-spacing:0}
+.rc-slip{background:#eeedfe;color:#534ab7}
+.rwarn-slip{background:#f2f1fd;border-color:#c9c4ef}
+.rwarn-slip .wi{color:#534ab7}
 .rmore{background:none;border:1px solid #e5e3dc;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:#52514c;cursor:pointer;font-family:inherit}
 .rmore:hover{border-color:#8a8880}
 .rfoot{font-size:11px;color:#8a8880;line-height:1.6;margin-top:6px}
@@ -1801,6 +1804,10 @@ const RDR_HOLD = {
 function rdrHolding(code){ const p=(code.match(/^[A-Za-z]+/)||[''])[0].toUpperCase(); return RDR_HOLD[p]||'Other'; }
 function rdrIncoterm(t){ t=(t||'').toUpperCase(); if(t.indexOf('EXW')===0)return'EXW'; if(t.indexOf('FOB')===0)return'FOB'; if(t.indexOf('DDP')===0||t.indexOf('DAP')===0||t.indexOf('FCA')===0)return'DDP'; return ''; }
 const RDR_INCONAME = {EXW:'EX WORKS',FOB:'FOB',DDP:'DDP'};
+// Manual overrides: known scheduling that the Podio dates do not yet carry (AM-confirmed).
+const RDR_OVERRIDE = {
+  'CITI23-2535-7614': {bucket:'Slips to 2027+', src:'Confirmed 2027 (AM)', trig:null, note:'Ships in 4 containers through 2027, with the final container potentially in January 2028.'},
+};
 
 function radarClassify(recs, openByCode, poMap){
   const today = new Date().toISOString().slice(0,10);
@@ -1831,7 +1838,9 @@ function radarClassify(recs, openByCode, poMap){
     else if(trig && trig<=eoy) bucket='On track - 2026';
     else if(trig && trig>eoy)  bucket='Slips to 2027+';
     else bucket='At risk - timing unconfirmed';
-    rows.push({c, unb, inco, trig, src, stage, bucket, planned, holding:rdrHolding(c),
+    const ov = RDR_OVERRIDE[c];
+    if(ov){ if(ov.bucket) bucket=ov.bucket; if(ov.src) src=ov.src; if('trig' in ov) trig=ov.trig; planned=false; }
+    rows.push({c, unb, inco, trig, src, stage, bucket, planned, holding:rdrHolding(c), note:(ov&&ov.note)||null,
       age: (trig && trig<=today) ? Math.floor((new Date(today)-new Date(trig))/86400000) : null});
   });
   return rows;
@@ -1841,7 +1850,7 @@ const RDR_BUCKETS = {
   'Ready to bill / overdue':      {c:'#BA7517', chip:'rc-ready'},
   'On track - 2026':              {c:'#1D9E75', chip:'rc-track'},
   'At risk - timing unconfirmed': {c:'#a32d2d', chip:'rc-risk'},
-  'Slips to 2027+':               {c:'#a32d2d', chip:'rc-risk'},
+  'Slips to 2027+':               {c:'#534AB7', chip:'rc-slip'},
   'No shipping data':             {c:'#D8D5CD', chip:'rc-nodata'},
 };
 function rdrChip(b){ const m=RDR_BUCKETS[b]||RDR_BUCKETS['No shipping data']; return h('span',{className:'rchip '+m.chip}, b.replace(' - ',' ')); }
@@ -1852,7 +1861,7 @@ function RadarTable({rows, showBucket, showAge}){
     h('table',{className:'rtbl'},
       h('thead',null, h('tr',null,
         h('th',null,'Project'), h('th',null,'Account'), h('th',null,'Incoterm'), h('th',null,'Stage'),
-        h('th',null,'Trigger'), h('th',null,'Basis'), showAge?h('th',{className:'num'},'Days overdue'):null, showBucket?h('th',null,'Timing'):null, h('th',{className:'num'},'Unbilled'))),
+        h('th',null,'Trigger'), h('th',null,'Trigger source'), showAge?h('th',{className:'num'},'Days overdue'):null, showBucket?h('th',null,'Timing'):null, h('th',{className:'num'},'Unbilled'))),
       h('tbody',null, rows.map(r => h('tr',{key:r.c},
         h('td',{className:'code'}, r.c),
         h('td',null, r.holding),
@@ -1875,16 +1884,18 @@ function RadarPanel({recs, shipMeta, poMap}){
   const grp   = k => rows.filter(r=>r.bucket===k);
   const sum   = a => a.reduce((s,r)=>s+r.unb,0);
   const ready=grp('Ready to bill / overdue'), track=grp('On track - 2026');
-  const risk=[...grp('At risk - timing unconfirmed'),...grp('Slips to 2027+')], nodata=grp('No shipping data');
+  const risk=grp('At risk - timing unconfirmed'), slips=grp('Slips to 2027+'), nodata=grp('No shipping data');
   const billable = sum(ready)+sum(track);
   const plannedBillable = [...ready,...track].filter(r=>r.planned).reduce((s,r)=>s+r.unb,0);
   const segs = [
     {k:'Ready to bill / overdue', v:sum(ready), n:ready.length, c:'#BA7517'},
     {k:'On track - 2026',         v:sum(track), n:track.length, c:'#1D9E75'},
     {k:'At risk - timing unconfirmed', v:sum(risk), n:risk.length, c:'#a32d2d'},
+    {k:'Slips to 2027+',          v:sum(slips), n:slips.length, c:'#534AB7'},
     {k:'No shipping data',        v:sum(nodata), n:nodata.length, c:'#D8D5CD'},
   ];
   const overdue = ready.filter(r=>r.age!==null && r.age>=0).sort((a,b)=>b.unb-a.unb);
+  const bigSlip = slips.slice().sort((a,b)=>b.unb-a.unb)[0];
   const bigRisk = risk.slice().sort((a,b)=>b.unb-a.unb)[0];
   const allRows = rows.slice().sort((a,b)=>b.unb-a.unb);
   const money = v => fmtShort(v);
@@ -1903,7 +1914,9 @@ function RadarPanel({recs, shipMeta, poMap}){
       h('div',{className:'rtile t-bill'},  h('div',{className:'rl'},'Billable in 2026'), h('div',{className:'rv'},money(billable)), h('div',{className:'rn'},total?Math.round(100*billable/total)+'% of open book':'')),
       h('div',{className:'rtile t-ready'}, h('div',{className:'rl'},'Ready to bill / overdue'), h('div',{className:'rv'},money(sum(ready))), h('div',{className:'rn'},ready.length+' orders · trigger passed')),
       h('div',{className:'rtile t-track'}, h('div',{className:'rl'},'On track for 2026'), h('div',{className:'rv'},money(sum(track))), h('div',{className:'rn'},track.length+' orders · by Dec 31')),
-      h('div',{className:'rtile t-risk'},  h('div',{className:'rl'},'At risk on timing'), h('div',{className:'rv'},money(sum(risk))), h('div',{className:'rn'},risk.length+' orders in production')),
+      (sum(slips)>0
+        ? h('div',{className:'rtile t-slip'}, h('div',{className:'rl'},'Slips to 2027 or later'), h('div',{className:'rv'},money(sum(slips))), h('div',{className:'rn'},slips.length+(slips.length===1?' order':' orders')+' · confirmed 2027'))
+        : h('div',{className:'rtile t-risk'}, h('div',{className:'rl'},'At risk on timing'), h('div',{className:'rv'},money(sum(risk))), h('div',{className:'rn'},risk.length+' orders in production'))),
     ),
     h('div',{className:'rcard'},
       h('div',{className:'rcard-h'},'Billability of the open order book'),
@@ -1922,7 +1935,14 @@ function RadarPanel({recs, shipMeta, poMap}){
         ' Purchase Order dates: orders in production with no confirmed shipping milestone yet. The other ',
         h('b',null,money(billable-plannedBillable)),' is confirmed by an actual QC or shipping date.') : null
     ),
-    bigRisk ? h('div',{className:'rwarn'},
+    bigSlip ? h('div',{className:'rwarn rwarn-slip'},
+      h('div',{className:'wi'},'!'),
+      h('div',{className:'wt'},
+        h('b',null,bigSlip.c+', '+bigSlip.holding+' ('+money(bigSlip.unb)+', '+(RDR_INCONAME[bigSlip.inco]||bigSlip.inco||'no incoterm')+')'),
+        ' is confirmed to bill in 2027, not 2026. ', bigSlip.note||'',
+        ' At ',total?Math.round(100*bigSlip.unb/total):0,'% of the open book it is the single largest open order, so setting it aside is what leaves the 2026 picture clean: only ',
+        money(sum(risk)),' of open value now has genuinely unconfirmed 2026 timing.')
+    ) : (bigRisk ? h('div',{className:'rwarn'},
       h('div',{className:'wi'},'!'),
       h('div',{className:'wt'},
         h('b',null,bigRisk.c+', '+bigRisk.holding+' ('+money(bigRisk.unb)+', '+(RDR_INCONAME[bigRisk.inco]||bigRisk.inco||'no incoterm')+')'),
@@ -1930,7 +1950,11 @@ function RadarPanel({recs, shipMeta, poMap}){
         (bigRisk.stage&&bigRisk.stage!=='(none)'?bigRisk.stage.toLowerCase():'in production'),
         ' with no QC, ship, or billing date on file. Its timing is the biggest single swing in the 2026 number: a confirmed production or ship date moves ',
         total?Math.round(100*sum(risk)/total):0,'% of the open book off at risk.')
-    ) : null,
+    ) : null),
+    slips.length ? h('div',{className:'rflag'},
+      h('div',{className:'rflag-h'}, h('div',{className:'t'},'Confirmed to slip to 2027 or later'),
+        h('div',{className:'n'}, slips.length+' orders · '+fmtFull(sum(slips)))),
+      h(RadarTable,{rows:slips.slice().sort((a,b)=>b.unb-a.unb)})) : null,
     risk.length ? h('div',{className:'rflag'},
       h('div',{className:'rflag-h'}, h('div',{className:'t'},'At risk: in production, no confirmed or planned date'),
         h('div',{className:'n'}, risk.length+' orders · '+fmtFull(sum(risk)))),
@@ -1949,7 +1973,7 @@ function RadarPanel({recs, shipMeta, poMap}){
       h('b',null,'How this is built. '),'NetSuite open-order dollars are unbilled by project code, as of ',NS_ASOF,', refreshed at the monthly rebuild. ',
       'Shipping status, incoterm, QC and milestone dates come from the Shipping Status export, and planned ship or billing dates from the Purchase Orders export. Both refresh on the Monday uploads. ',
       'Ready or overdue means the trigger date is on or before today, or the order is at Ready to Bill stage or later. On track means the trigger falls on or before Dec 31. ',
-      'At risk means an open order with no trigger date of any kind, still in production. No shipping data means there is no Podio record to time it. These figures show billing readiness, not a revenue guarantee.')
+      'At risk means an open order with no trigger date of any kind, still in production. Slips to 2027+ marks orders confirmed to bill next year or later. No shipping data means there is no Podio record to time it. These figures show billing readiness, not a revenue guarantee.')
   );
 }
 
