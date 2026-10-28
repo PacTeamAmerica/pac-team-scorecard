@@ -1,0 +1,71 @@
+{
+ "net": 13930552,
+ "MONTHLY": [
+  1599015,
+  1085708,
+  1287307,
+  1086308,
+  721991,
+  3696353,
+  1559847,
+  1007122,
+  819906,
+  1066995
+ ],
+ "openTot": 9318207.64,
+ "totalO": 144,
+ "confO": 7,
+ "confT": 331721.2,
+ "awaO": 137,
+ "awaT": 8986486.44,
+ "headlineWtd": 2157840,
+ "cov": {
+  "live": 1393558,
+  "appr": 215532,
+  "cold": 105750,
+  "never": 443000
+ },
+ "N": {
+  "liveN": 42,
+  "apprN": 3,
+  "coldN": 22,
+  "neverN": 127
+ },
+ "liveQuotes": 69,
+ "winRate": 64,
+ "won": 712,
+ "decided": 1115,
+ "pipeLanding": 37900,
+ "onhold": 0,
+ "unconfirmed": [
+  "TASK26-4236-7776"
+ ],
+ "shipRecs": 458,
+ "poCodes": 247,
+ "poRecords": 274,
+ "score": 25406600,
+ "nsCodes": 2528,
+ "added": 5,
+ "clientTrailing": 69,
+ "clientFY": 64,
+ "invById": {
+  "citizen": 8804236.08,
+  "seiko": 985975.65,
+  "timex": 589412.08,
+  "jewelry": 558316.51,
+  "swatch": 575023.1,
+  "nuna": 260644,
+  "tapestry": 259206.6,
+  "northface": 234104,
+  "casio": 227247.6,
+  "jaffe": 188651,
+  "mrk": 180557,
+  "thelios": 163722.2,
+  "bedrock": 148009.79,
+  "tiffany": 116453.85,
+  "ralphlauren": 51576.02,
+  "luxottica": 51215.5
+ },
+ "cycle": "10/25",
+ "cycleLabel": "Oct 25, 2026"
+}
