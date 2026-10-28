@@ -1,0 +1,62 @@
+# PAC TEAM GROUP — Commercial Scorecard
+# https://pacteamamerica.github.io/pac-team-scorecard/
+#
+# Internal commercial reporting. Contains revenue, backlog, pipeline and
+# customer-concentration figures. Shareable by link, not for public indexing.
+#
+# ─────────────────────────────────────────────────────────────────────────
+# READ THIS BEFORE RELYING ON THIS FILE
+#
+# This is a GitHub Pages *project* site, so this file is served at
+#     https://pacteamamerica.github.io/pac-team-scorecard/robots.txt
+# Crawlers only consult robots.txt at the DOMAIN root:
+#     https://pacteamamerica.github.io/robots.txt
+# which is served from a repository named "pacteamamerica.github.io".
+#
+# So this file documents intent and covers the few crawlers that check
+# subdirectories. It is NOT what keeps the scorecard out of search results.
+#
+# What actually does that is the tag already in index.html:
+#     <meta name="robots" content="noindex, nofollow">
+# Keep that tag through every rebuild. It is the real control, it works on a
+# project site, and unlike robots.txt it is honoured per page.
+#
+# If you ever want domain-level enforcement, this same file has to live at the
+# root of a repo named pacteamamerica.github.io. Note that creating that repo
+# also publishes a site at the domain root, so check with whoever owns the
+# GitHub org first.
+# ─────────────────────────────────────────────────────────────────────────
+
+# Default: no crawling of anything under this path.
+User-agent: *
+Disallow: /
+
+# Named explicitly because some operators honour their own token even when
+# they are inconsistent about the wildcard above. Not exhaustive, and a
+# crawler that ignores robots.txt ignores this too.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+# No sitemap is published on purpose. Publishing one would advertise the
+# pages this file is asking crawlers to leave alone.
