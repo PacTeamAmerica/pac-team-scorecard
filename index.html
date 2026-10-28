@@ -386,7 +386,12 @@ table.rtbl tbody tr:hover{background:#faf9f6}
 
   <div class="tabbar" id="rdr-tabbar">
     <button class="tabbtn on" data-tab="scorecard" onclick="window.__scSetTab&&window.__scSetTab('scorecard')">Commercial Scorecard</button>
+    <button class="tabbtn" data-tab="ceo" onclick="window.__scSetTab&&window.__scSetTab('ceo')">CEO Scorecard</button>
+    <button class="tabbtn" data-tab="cov" onclick="window.__scSetTab&&window.__scSetTab('cov')">Coverage &amp; Attainment</button>
+    <button class="tabbtn" data-tab="conc" onclick="window.__scSetTab&&window.__scSetTab('conc')">Concentration Risk</button>
     <button class="tabbtn" data-tab="radar" onclick="window.__scSetTab&&window.__scSetTab('radar')">2026 Revenue Close Radar</button>
+    <button class="tabbtn" data-tab="funnel" onclick="window.__scSetTab&&window.__scSetTab('funnel')">Funnel &amp; Velocity</button>
+    <button class="tabbtn" data-tab="dq" onclick="window.__scSetTab&&window.__scSetTab('dq')">Data Integrity</button>
   </div>
 
   <details class="about" id="sc-about">
@@ -1979,6 +1984,442 @@ function RadarPanel({recs, shipMeta, poMap}){
 }
 
 
+const OPPS_SEED = {
+  asof: '2026-10-25', basis: 'PTA division only',
+  total2026: 248, engaged2026: 103, meeting2026: 19, allTime: 3234,
+  intake: [ {s:'Not Contacted', v:144, d:'No outreach yet'},
+            {s:'Contacted', v:84, d:'Outreach started'},
+            {s:'Meeting', v:19, d:'Live conversation / meeting'},
+            {s:'Abandoned', v:1, d:'Dropped'} ],
+  outcomes: [ {s:'Project', v:131}, {s:'Won', v:1}, {s:'Lost', v:106}, {s:'Abandoned', v:39} ],
+  quarters: [ {q:'Q1', v:79}, {q:'Q2', v:79}, {q:'Q3', v:74}, {q:'Q4 (partial)', v:16} ],
+  topAccounts: [ ['Grand Seiko',160],['The Jewelry Group',74],['Thelios',59],['SWC - Grand Seiko',59],
+                 ['Citizen Watch of America',41],['Movado Group',39],['Eataly USA',26],['Mikimoto',25],
+                 ['Tudor Watch, U.S.A.',25],['Marla Aaron Jewelry',24] ],
+};
+function OppsFunnelPanel({seed}) {
+  const S = seed || OPPS_SEED;
+  const PAL = ['#1D9E75','#46B29D','#D89A3E','#b4452f'];
+  const mx = Math.max.apply(null, S.intake.map(x=>x.v));
+  const qmx = Math.max.apply(null, S.quarters.map(x=>x.v));
+  const kpi = (n,k)=>h('div',{style:{flex:'1',minWidth:'150px',border:'1px solid var(--line,#e4e9e6)',borderRadius:'12px',padding:'16px 18px'}},
+    h('div',{style:{fontSize:'26px',fontWeight:700,letterSpacing:'-.02em'}},n),
+    h('div',{style:{fontSize:'12.5px',color:'var(--mut,#5c6b63)',marginTop:'3px'}},k));
+  const head = t=>h('div',{style:{fontSize:'13px',letterSpacing:'.06em',textTransform:'uppercase',color:'var(--mut,#5c6b63)',margin:'30px 0 6px',fontWeight:600}},t);
+  const note = t=>h('div',{style:{fontSize:'12.5px',color:'var(--mut,#5c6b63)',margin:'0 0 14px'}},t);
+  return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
+    h('div',{style:{fontSize:'12px',letterSpacing:'.09em',textTransform:'uppercase',color:'var(--mut,#5c6b63)',fontWeight:600}},'Business Development · PTA division'),
+    h('h2',{style:{fontSize:'24px',margin:'4px 0 2px',letterSpacing:'-.01em'}},'Opportunity Funnel'),
+    h('div',{style:{color:'var(--mut,#5c6b63)',fontSize:'14px',marginBottom:'24px'}},'Podio Jobs & Opportunities app, PTA only · snapshot '+S.asof),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'8px'}},
+      kpi(S.total2026, 'PTA opportunities created in 2026 YTD'),
+      kpi(S.engaged2026, '2026 opps engaged (Contacted + Meeting)'),
+      kpi(S.meeting2026, '2026 opps in Meeting stage'),
+      kpi(S.allTime.toLocaleString(), 'Total PTA opps in app, all-time since 2018')),
+    head('2026 intake by current stage (PTA)'),
+    note(['PTA opportunities ', h('b',{key:'b'},'created in 2026'), ' ('+S.total2026+' total), shown at the stage they sit in today.']),
+    S.intake.map((x,i)=>h('div',{key:x.s,style:{display:'grid',gridTemplateColumns:'150px 1fr 230px',alignItems:'center',gap:'16px',margin:'9px 0'}},
+      h('div',{style:{fontWeight:600,fontSize:'14px'}},x.s),
+      h('div',{style:{position:'relative',background:'#f2f5f3',borderRadius:'7px',height:'34px',overflow:'hidden'}},
+        h('div',{style:{height:'100%',borderRadius:'7px 0 0 7px',width:Math.max(Math.round(100*x.v/mx),4)+'%',background:PAL[i%PAL.length]}}),
+        h('span',{style:{position:'absolute',right:'12px',top:'50%',transform:'translateY(-50%)',fontWeight:700,fontSize:'14px'}},x.v)),
+      h('div',{style:{fontSize:'12.5px',color:'var(--mut,#5c6b63)'}},x.d))),
+    head('Conversion outcomes — PTA, cumulative all cohorts since 2018'),
+    note(['These stages are populated by earlier cohorts. ', h('b',{key:'b'},'No 2026-created opp has reached Project / Won / Lost yet'), ' — recent conversions move into the scorecard pipeline once a PO lands, so the opps app under-shows them.']),
+    h('div',{style:{display:'flex',gap:'10px',flexWrap:'wrap'}}, S.outcomes.map(x=>h('div',{key:x.s,style:{border:'1px solid var(--line,#e4e9e6)',borderRadius:'999px',padding:'7px 14px',fontSize:'13px',color:'var(--mut,#5c6b63)'}},h('b',{style:{color:'var(--ink,#17201c)'}},x.v),' '+x.s))),
+    h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'40px',marginTop:'6px'}},
+      h('div',null, head('2026 intake by quarter (PTA)'),
+        h('div',{style:{display:'flex',alignItems:'flex-end',gap:'22px',height:'130px',paddingTop:'10px'}},
+          S.quarters.map(x=>h('div',{key:x.q,style:{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'flex-end',flex:'1'}},
+            h('div',{style:{width:'46px',background:'#13694E',borderRadius:'5px 5px 0 0',height:Math.round(90*x.v/qmx)+'px'}}),
+            h('div',{style:{fontWeight:700,marginTop:'7px',fontSize:'14px'}},x.v),
+            h('div',{style:{fontSize:'12px',color:'var(--mut,#5c6b63)',marginTop:'1px'}},x.q))))),
+      h('div',null, head('Top PTA accounts in active engagement (all-time)'),
+        h('table',{style:{width:'100%',borderCollapse:'collapse',fontSize:'13.5px'}},
+          h('tbody',null, S.topAccounts.map(a=>h('tr',{key:a[0]},
+            h('td',{style:{padding:'6px 2px',borderBottom:'1px solid var(--line,#e4e9e6)'}},a[0]),
+            h('td',{style:{padding:'6px 2px',borderBottom:'1px solid var(--line,#e4e9e6)',textAlign:'right',fontWeight:600}},a[1]))))))),
+    h('div',{style:{marginTop:'30px',fontSize:'12px',color:'var(--mut,#5c6b63)',borderTop:'1px solid var(--line,#e4e9e6)',paddingTop:'14px'}},
+      'Source: Podio Jobs & Opportunities export, '+S.asof+', filtered to Division = PTA. The 2026 intake funnel counts opportunities by Created on in 2026 at their current stage; the conversion-outcomes strip and the active-engagement table are cumulative all-time snapshots, not 2026-scoped. Separate from the commercial scorecard quote win rate (64%).')
+  );
+}
+
+
+// ===== Phase 1 CRO tabs: shared helpers + seeds + panels =====
+const _M='var(--mut,#5c6b63)', _L='var(--line,#e4e9e6)', _INK='var(--ink,#17201c)', _GRN='#13694E', _AMB='#BA7517', _RED='#b4452f';
+function _eyebrow(t){return h('div',{style:{fontSize:'12px',letterSpacing:'.09em',textTransform:'uppercase',color:_M,fontWeight:600}},t);}
+function _title(t){return h('h2',{style:{fontSize:'24px',margin:'4px 0 2px',letterSpacing:'-.01em'}},t);}
+function _sub(t){return h('div',{style:{color:_M,fontSize:'14px',marginBottom:'22px'}},t);}
+function _head(t){return h('div',{style:{fontSize:'13px',letterSpacing:'.06em',textTransform:'uppercase',color:_M,margin:'28px 0 6px',fontWeight:600}},t);}
+function _note(t){return h('div',{style:{fontSize:'12.5px',color:_M,margin:'0 0 14px',maxWidth:'860px'}},t);}
+function _kpi(n,k,accent){return h('div',{style:{flex:'1',minWidth:'160px',border:'1px solid '+_L,borderRadius:'12px',padding:'16px 18px',borderTop:'3px solid '+(accent||_GRN)}},
+  h('div',{style:{fontSize:'26px',fontWeight:700,letterSpacing:'-.02em'}},n),
+  h('div',{style:{fontSize:'12.5px',color:_M,marginTop:'3px'}},k));}
+function _bar(label,val,disp,maxv,color,right){const pct=Math.max(Math.round(100*val/maxv),2);
+  return h('div',{key:label,style:{display:'grid',gridTemplateColumns:'190px 1fr 150px',alignItems:'center',gap:'14px',margin:'8px 0'}},
+    h('div',{style:{fontWeight:600,fontSize:'13.5px'}},label),
+    h('div',{style:{position:'relative',background:'#f2f5f3',borderRadius:'7px',height:'30px',overflow:'hidden'}},
+      h('div',{style:{height:'100%',borderRadius:'7px 0 0 7px',width:pct+'%',background:color}}),
+      h('span',{style:{position:'absolute',right:'10px',top:'50%',transform:'translateY(-50%)',fontWeight:700,fontSize:'13px'}},disp)),
+    h('div',{style:{fontSize:'12.5px',color:_M}},right||''));}
+const fM=v=>'$'+(Math.abs(v)>=1e6?(v/1e6).toFixed(2)+'M':Math.round(v/1e3)+'K');
+const fMw=v=>'$'+(v/1e6).toFixed(v%1e6===0?0:1)+'M';  // whole-million labels: plan and band bounds
+
+// COVERAGE / ATTAINMENT, re-cut 26 Oct 2026 to the COO's Q4 definitions.
+// The official measure is CEO #2, TTM revenue (rolling 12M) against a $18-21M
+// band. The $22M figure is Joseph's internal calendar-2026 plan and is labelled
+// as such throughout; it is NOT a COO scorecard target. Gross margin has been
+// pulled out of the headline because CEO #1 is underlying OPERATING margin
+// (ex one-offs, Finance-fed), which is a different measure from the booked
+// PO-level gross margin this file can see.
+const COVERAGE_SEED={plan:22000000, ttm:20060000, ttmLo:18000000, ttmHi:21000000,
+  gmBookedPO:17.4, revYTD:13930552, confirmed:331721, awaiting:8986486,
+  openUnb:9318208, wtd:2157840, asof:'2026-10-25', runRate:385858, weeksLeft:9.5};
+function CoveragePanel({seed}){const S=seed||COVERAGE_SEED;
+  const inBand=S.ttm>=S.ttmLo&&S.ttm<=S.ttmHi;
+  const attain=S.revYTD/S.plan, gap=S.plan-S.revYTD;
+  const covB=S.openUnb/gap, covP=S.wtd/gap, covT=(S.openUnb+S.wtd)/gap;
+  const won=S.revYTD+S.openUnb;
+  const landing=S.revYTD+S.runRate*S.weeksLeft;
+  const mx=Math.max(S.revYTD,gap,S.openUnb,S.wtd);
+  const bandPct=Math.round(100*(S.ttm-S.ttmLo)/(S.ttmHi-S.ttmLo));
+  return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
+    _eyebrow('CEO metric #2 · TTM revenue'), _title('Coverage & Attainment'),
+    _sub('Official measure: trailing-twelve-month revenue against the COO’s '+fMw(S.ttmLo)+'–'+fMw(S.ttmHi)+' band · snapshot '+S.asof),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
+      _kpi(fM(S.ttm), 'TTM revenue vs band '+fMw(S.ttmLo)+'–'+fMw(S.ttmHi)+' · '+(inBand?'in band':'out of band'), inBand?_GRN:_RED),
+      _kpi(fM(S.openUnb), 'Open-order backlog carried forward', '#2FA98A'),
+      _kpi(covT.toFixed(2)+'x', 'Backlog + weighted pipeline vs the calendar-plan gap', _GRN),
+      _kpi(fM(landing), 'Calendar-2026 landing at the current run rate', _AMB)),
+    _head('The official number first'),
+    _note(['CEO #2 is ',h('b',{key:'b'},'TTM revenue, banded '+fMw(S.ttmLo)+'–'+fMw(S.ttmHi)),', fed by Sales + Ops aggregate. We are at '+fM(S.ttm)+', '+bandPct+'% of the way up the band, so the metric reads green and the instruction is hold flat with 2025. Everything below this line is internal planning detail, not a CEO scorecard target.']),
+    _head('Internal calendar-2026 plan — context only'),
+    _note(['The '+fMw(S.plan)+' figure is ',h('b',{key:'b'},'our internal calendar-year plan'),', not a COO metric. Against it we are at '+(100*attain).toFixed(0)+'% with '+fM(gap)+' to go and roughly '+S.weeksLeft+' weeks left. At the current '+'$'+Math.round(S.runRate/1000)+'K/week revenue run rate the calendar year lands near '+fM(landing)+'. Reporting '+fMw(S.plan)+' as a target would therefore show red against a number nobody above this file is holding us to — which is exactly why the TTM band leads.']),
+    _bar('Recognized YTD', S.revYTD, fM(S.revYTD), mx, _GRN, (100*attain).toFixed(0)+'% of internal plan'),
+    _bar('Gap to internal plan', gap, fM(gap), mx, _AMB, 'remaining'),
+    _bar('Open-order backlog', S.openUnb, fM(S.openUnb), mx, '#2FA98A', covB.toFixed(2)+'x the gap'),
+    _bar('Weighted pipeline', S.wtd, fM(S.wtd), mx, '#b4b2a9', '+'+covP.toFixed(2)+'x cushion'),
+    _head('Read'),
+    _note('Earned revenue plus open-order backlog is '+fM(won)+' \u2014 which is also the commit figure, since confirmed plus awaiting-invoice is the whole open book. With backlog at '+covB.toFixed(2)+'x the calendar gap, the binding constraint is how much of it invoices before Dec 31 — a billing-velocity question owned with Ops and Finance, not a demand question. The Revenue Close Radar tab carries that analysis.'),
+    _head('Why gross margin is not on this tab'),
+    _note(['Booked gross margin at PO level is '+S.gmBookedPO.toFixed(1)+'%. That is ',h('b',{key:'b'},'not'),' CEO #1. CEO #1 is underlying operating margin excluding one-offs on a TTM basis, target ≥ 5% floor building toward 8%, fed by Ops GM plus Finance opex — it carries overhead and one-off exclusions this file cannot see. Quoting the PO-level number against a 10% goal invites a false green, so it is reported here as reference only and the CEO cell stays Finance-fed.']));
+}
+
+// CONCENTRATION, re-cut 26 Oct 2026 to the COO's definitions. The official
+// measure is CEO #4, top-5 PARENT concentration as a % of TTM revenue, with a
+// declining target: baseline 78%, <=70% by Dec 2027. CEO #5 (Weeks of Work in
+// Hand, band 14-22) and CEO #7 (backlog composition, % non-Citizen of the
+// forward book) both live on this tab because all three are the same question
+// asked three ways: how dependent is the forward book on one customer.
+const CONC_SEED={asof:'2026-10-25',
+  // CEO #4 - TTM parent basis (the official one)
+  ttmTotal:20060000, top5Share:78.2, top5Base:78, top5Target:70, top5TargetBy:'Dec 2027',
+  parents:[['Citizen Watch Co.',12430000,62.0],['Seiko Holdings Group',1350000,6.8],['Timex Group',640000,3.2],['The Swatch Group',630000,3.2],['Tapestry',620000,3.1],['The Jewelry Group',610000,3.0]],
+  // CEO #5 - Weeks of Work in Hand
+  wwih:24.1, wwihLo:14, wwihHi:22, wkRunRate:385858, backlog:9318208,
+  // CEO #7 - backlog composition
+  bkNonCitPct:30.2, bkCitPct:69.8, bkNonCit:2812000,
+  // supporting: FY2026 invoiced view (what the rest of the file uses)
+  hhi:3799, citInvShare:61, citPipeShare:40, invTotal:14513956,
+  holdings:[['Citizen Watch Co.',8804236,61],['Seiko Holdings Group',985976,7],['Timex Group',589412,4],['The Swatch Group',575023,4],['The Jewelry Group',558317,4],['Tudor Watch',265796,2],['Nuna',260644,2],['Tapestry',259207,2],['All other accounts',2215345,15]],
+  trend:[['Aug 24',44],['Aug 31',57],['Sep 4',56],['Sep 14',64],['Sep 21',65],['Oct 13',51],['Oct 19',49],['Oct 25',60]]};
+function ConcentrationPanel({seed}){const S=seed||CONC_SEED; const mx=S.holdings[0][1];
+  const pmax=S.parents[0][1];
+  const wIn=S.wwih>=S.wwihLo&&S.wwih<=S.wwihHi;
+  return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
+    _eyebrow('CEO metrics #4, #5, #7 · concentration, work in hand, backlog mix'), _title('Concentration Risk'),
+    _sub('Top-5 parent share of TTM revenue, weeks of work in hand, and the non-Citizen share of the forward book · snapshot '+S.asof),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
+      _kpi(S.top5Share.toFixed(1)+'%','#4 Top-5 parent share of TTM · target ≤'+S.top5Target+'% by '+S.top5TargetBy, S.top5Share>S.top5Base?_RED:_AMB),
+      _kpi(S.wwih.toFixed(1)+' wk','#5 Weeks of work in hand · band '+S.wwihLo+'–'+S.wwihHi+' · '+(wIn?'in band':'above band'), wIn?_GRN:_RED),
+      _kpi(S.bkNonCitPct.toFixed(1)+'%','#7 Non-Citizen share of forward book · rising trend', _AMB),
+      _kpi((100-S.citPipeShare)+'%','Non-Citizen share of weighted pipeline · leads #7', (100-S.citPipeShare)>=S.bkNonCitPct?_GRN:_AMB)),
+    _head('CEO #4 — top-5 parent concentration, % of TTM revenue'),
+    _note(['The official basis is ',h('b',{key:'b'},'parent (holding company) level on trailing-twelve-month revenue'),', not FY-to-date by billing entity. On that basis the top five parents are '+S.top5Share.toFixed(1)+'% of '+fM(S.ttmTotal)+'. The COO’s stated baseline is '+S.top5Base+'%, so we are sitting on the baseline and the metric is not yet declining. Reaching ≤'+S.top5Target+'% by '+S.top5TargetBy+' means growing the denominator: holding top-5 revenue where it is, it takes '+fM(S.ttmTotal*S.top5Share/100/(S.top5Target/100)-S.ttmTotal)+' of added non-top-5 revenue — a '+Math.round(100*(S.ttmTotal*S.top5Share/100/(S.top5Target/100)-S.ttmTotal)/(S.ttmTotal*(100-S.top5Share)/100))+'% increase in the non-top-5 book over roughly five quarters. Shrinking Citizen instead would hit the ratio and miss CEO #2.']),
+    S.parents.map((a,i)=>_bar((i+1)+'. '+a[0], a[1], fM(a[1]), pmax, a[0].indexOf('Citizen')===0?_RED:'#2FA98A', a[2].toFixed(1)+'%'+(i<5?' (in top 5)':''))),
+    h('div',{style:{display:'flex',alignItems:'center',gap:'10px',margin:'14px 0 0',padding:'12px 14px',border:'1px solid '+_L,borderRadius:'10px',background:'#fafbfa'}},
+      h('div',{style:{fontSize:'22px',fontWeight:700,color:_RED}},S.top5Share.toFixed(1)+'%'),
+      h('div',{style:{fontSize:'13px',color:_M}},'now · baseline '+S.top5Base+'% · ',h('b',{key:'t',style:{color:_GRN}},'target ≤'+S.top5Target+'% by '+S.top5TargetBy),' — an '+(S.top5Share-S.top5Target).toFixed(1)+'-point gap to close over roughly five quarters')),
+    _head('CEO #5 — Weeks of Work in Hand'),
+    _note(['WWiH = open-order backlog ÷ weekly revenue run rate = '+fM(S.backlog)+' ÷ $'+Math.round(S.wkRunRate).toLocaleString()+' = ',h('b',{key:'b'},S.wwih.toFixed(1)+' weeks'),'. The band is '+S.wwihLo+'–'+S.wwihHi+', so we are '+(S.wwih-S.wwihHi).toFixed(1)+' weeks above it. Above-band is not a demand problem — it means work is arriving faster than it is being converted to revenue, which is the same billing-and-throughput finding the Revenue Close Radar shows from the cash side. Run rate is TTM revenue ÷ 52.']),
+    _head('CEO #7 — backlog composition, % non-Citizen of the forward book'),
+    _note(['Of '+fM(S.backlog)+' in open orders, '+fM(S.bkNonCit)+' ('+S.bkNonCitPct.toFixed(1)+'%) is non-Citizen and '+S.bkCitPct.toFixed(1)+'% is Citizen. The COO notes this metric ',h('b',{key:'b'},'leads #4 by 6–12 months'),': today’s backlog mix is next year’s revenue mix. At 30% non-Citizen the forward book is still more concentrated than the 38% non-Citizen share of TTM revenue, so on current bookings concentration gets slightly worse before it gets better. Weighted pipeline at '+(100-S.citPipeShare)+'% non-Citizen is the leading indicator ahead of that.']),
+    h('div',{style:{display:'flex',gap:'0',height:'34px',borderRadius:'8px',overflow:'hidden',margin:'4px 0 10px',border:'1px solid '+_L}},
+      h('div',{style:{width:S.bkCitPct+'%',background:_RED,color:'#fff',fontSize:'12px',fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center'}},'Citizen '+S.bkCitPct.toFixed(1)+'%'),
+      h('div',{style:{width:S.bkNonCitPct+'%',background:'#2FA98A',color:'#fff',fontSize:'12px',fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center'}},'non-Citizen '+S.bkNonCitPct.toFixed(1)+'%')),
+    _head('Non-Citizen share of weighted pipeline — trend (leads #7)'),
+    _note('A rising line means new business is diversifying away from Citizen. This is the earliest of the three signals: pipeline mix leads backlog mix, which leads revenue mix. Goal line 60%.'),
+    h('div',{style:{display:'flex',alignItems:'flex-end',gap:'14px',height:'120px',paddingTop:'10px',borderBottom:'1px solid '+_L}},
+      S.trend.map(t=>h('div',{key:t[0],style:{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'flex-end',flex:'1'}},
+        h('div',{style:{width:'38px',background:t[1]>=60?_GRN:_AMB,borderRadius:'4px 4px 0 0',height:Math.round(t[1])+'px'}}),
+        h('div',{style:{fontWeight:700,marginTop:'6px',fontSize:'13px'}},t[1]+'%'),
+        h('div',{style:{fontSize:'11px',color:_M}},t[0])))),
+    _head('Supporting view — FY2026 invoiced by holding company'),
+    _note(['This is the fiscal-year-to-date, billing-entity-rolled view the rest of the scorecard uses. It is not CEO #4 and should not be quoted as it: it runs Jan 1 to today rather than trailing twelve months. HHI of '+S.hhi.toLocaleString()+' is well above the 2,500 “highly concentrated” line.']),
+    S.holdings.map(a=>_bar(a[0], a[1], fM(a[1]), mx, a[0].indexOf('Citizen')===0?_RED:(a[0].indexOf('other')>=0?'#b4b2a9':'#2FA98A'), a[2]+'%')),
+    _note('Source: CEO #4 and #5 from live SuiteQL TTM invoiced revenue (Oct 26 2025 – Oct 25 2026) rolled to parent, intercompany and test entities excluded; CEO #7 from NetSuite open orders bucketed by project-code prefix; pipeline mix from the weekly Podio upload. HHI = sum of squared percentage shares.'));
+}
+
+const VELO_SEED={asof:'2026-10-25', openTot:9318208, billable:1502798, motion:546208, production:6719355, uncovered:549847,
+  wavgAge:40, ageBuckets:[['0–30 days',408217],['31–60 days',226194],['61–90 days',0],['90+ days',173096],['Ready-to-bill, no dated trigger',695292]],
+  offenders:[['TIFF24-3048-5207',303510,null,'Completed (parent code)'],['HEXA24-3064-7349',283348,null,'Ready to Bill'],['HAWI14-175-7013',234701,5,'Ready to Bill'],['CASI16-343-7517',183795,58,'Completed'],['DIAD25-368-6392',171661,95,'Completed'],['HAWI14-175-7646',73409,15,'Ready to Bill'],['SHIN24-3276-5633',64829,9,'Ready to Bill']]};
+function VelocityPanel({seed}){const S=seed||VELO_SEED;
+  const stages=[['Billable now',S.billable,_GRN],['Shipping in motion',S.motion,'#2FA98A'],['Still in production',S.production,'#b4b2a9'],['No shipping record',S.uncovered,_AMB]];
+  const abmax=Math.max.apply(null,S.ageBuckets.map(x=>x[1]));
+  return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
+    _eyebrow('Cash \u00b7 Backlog to cash & plan coverage'), _title('Backlog to Cash'),
+    _sub('Reframes open orders by how close each unbilled dollar is to invoiceable · snapshot '+S.asof),
+    (function(){var C=COVERAGE_SEED,K=CONC_SEED,g=C.plan-C.revYTD;return h('div',{style:{border:'1px solid '+_L,borderRadius:'12px',padding:'14px 16px',margin:'4px 0 18px',background:'#fafbfa'}},h('div',{style:{fontSize:'13px',letterSpacing:'.06em',textTransform:'uppercase',color:_M,fontWeight:600,marginBottom:'8px'}},'Why this sits under the Radar'),h('div',{style:{fontSize:'13.5px',lineHeight:'1.55'}},'Weeks of work in hand is ',h('b',null,K.wwih.toFixed(1)+' weeks'),' against a '+K.wwihLo+'\u2013'+K.wwihHi+' band (CEO #5), which says the forward book is large and slow rather than small. This is the same fact from the cash side: open-order backlog of ',h('b',null,fM(S.openTot)),' is ',h('b',null,(S.openTot/g).toFixed(2)+'x'),' the gap to the internal '+fMw(C.plan)+' calendar plan, yet only ',h('b',null,fM(S.billable)),' (',Math.round(100*S.billable/S.openTot),'%) is billable today. Closing the calendar year is a question of how much of this invoices before Dec 31, not whether demand exists. The aging below is the watch list.'));})(),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
+      _kpi(fM(S.billable),'Billable now (invoice-ready)', S.billable>900000?_AMB:_GRN),
+      _kpi(S.wavgAge+' d','Dollar-weighted age of billable', S.wavgAge>60?_RED:_AMB),
+      _kpi(Math.round(100*S.billable/S.openTot)+'%','of open orders billable now', _GRN),
+      _kpi(Math.round(100*S.production/S.openTot)+'%','still in production (incl. $2.17M Bulova)', '#b4b2a9')),
+    _head('Where the '+fM(S.openTot)+' of open orders sits'),
+    _note('Only the "billable now" slice is cash you can pull this week. "Still in production" is dominated by the $2.17M Bulova order that has not shipped. This is the distinction the flat open-orders number hides.'),
+    stages.map(x=>_bar(x[0],x[1],fM(x[1]),S.openTot,x[2],Math.round(100*x[1]/S.openTot)+'%')),
+    _head('Aging of the billable-now bucket'),
+    _note(['Dollar-weighted average age is '+S.wavgAge+' days. The ',h('b',{key:'b'},'90+ day'),' slice and the large "ready-to-bill, no dated trigger" slice are the collection targets — revenue earned and shippable but not yet invoiced.']),
+    S.ageBuckets.map(x=>_bar(x[0],x[1],fM(x[1]),abmax,x[0].indexOf('90+')>=0?_RED:(x[0].indexOf('no dated')>=0?_AMB:'#2FA98A'),'')),
+    _head('Worst offenders — invoice these first'),
+    h('table',{style:{width:'100%',borderCollapse:'collapse',fontSize:'13.5px',marginTop:'4px'}},
+      h('tbody',null, S.offenders.map(o=>h('tr',{key:o[0]},
+        h('td',{style:{padding:'6px 2px',borderBottom:'1px solid '+_L,fontWeight:600}},o[0]),
+        h('td',{style:{padding:'6px 2px',borderBottom:'1px solid '+_L,textAlign:'right',fontVariantNumeric:'tabular-nums'}},fM(o[1])),
+        h('td',{style:{padding:'6px 2px',borderBottom:'1px solid '+_L,textAlign:'right',color:(o[2]&&o[2]>60)?_RED:_M}},o[2]!=null?o[2]+' d':'—'),
+        h('td',{style:{padding:'6px 2px',borderBottom:'1px solid '+_L,color:_M}},o[3]))))),
+    _note('Source: NetSuite open orders joined to the Podio Shipping Status evidence by project code. Billing trigger follows contract terms (EXW/FOB/DDP). Per-code, not per-SO: a parent code with many small orders can read billable while some orders are genuinely open.'));
+}
+
+
+// ===== Phase 2 tabs: Data Quality, Calibration, Sales Velocity =====
+const DQ_SEED={asof:'2026-10-25', po2026:428, blankSC:103, nonSO:83, poNoSC:46,
+  active:328, noPO:101, stalePO:85, noEst:66, noProb:35, qTot:2550, qNoProj:36};
+function DataQualityPanel({seed}){const S=seed||DQ_SEED;
+  const badSC=S.blankSC+S.nonSO;
+  const row=(label,n,den,impact,sev)=>h('div',{key:label,style:{display:'grid',gridTemplateColumns:'1fr 90px 1fr',alignItems:'center',gap:'14px',margin:'7px 0',paddingBottom:'7px',borderBottom:'1px solid '+_L}},
+    h('div',{style:{fontWeight:600,fontSize:'13.5px'}},label),
+    h('div',{style:{textAlign:'right',fontWeight:700,fontSize:'15px',color:sev}},n+(den?' / '+den:'')),
+    h('div',{style:{fontSize:'12px',color:_M}},impact));
+  return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
+    _eyebrow('Data governance · Source hygiene'), _title('Data Quality'),
+    _sub('Dirty Podio records that distort the scorecard, to fix at source · snapshot '+S.asof),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
+      _kpi(badSC+' / '+S.po2026, 'POs with unusable Sales Confirmation # ('+Math.round(100*badSC/S.po2026)+'% of 2026 POs)', _RED),
+      _kpi(S.noPO+' / '+S.active, 'Active projects with no projected PO date', _RED),
+      _kpi(S.noEst, 'Active projects with no estimate', _AMB),
+      _kpi(S.qNoProj, 'Quotes with no Project # (parser skips)', _AMB)),
+    _head('Purchase Orders — conversion detection breaks here'),
+    _note('Dedup reads the Sales Confirmation #. When it is blank or not an SO number, a converted project is invisible and keeps counting in pipeline (or sits in the amber banner). Of '+S.po2026+' POs created in 2026:'),
+    row('Blank Sales Confirmation #', S.blankSC, null, 'Conversion undetectable; project lingers in pipeline', _RED),
+    row('SC # present but not SO-format', S.nonSO, null, 'e.g. a PTA number or free text; fails the SO regex', _AMB),
+    row('Client price in PO AMOUNT, SC AMOUNT blank', S.poNoSC, null, 'Understates New PO $ measurable each week', _AMB),
+    _head('Active projects — landing model & new-opp $ break here'),
+    _note('The landing model (will a PO arrive in time to ship in 2026) needs a projected PO date; the EOS new-opportunity-$ measurable needs an estimate. Of '+S.active+' active PTA projects:'),
+    row('No projected PO date', S.noPO, null, 'Invisible to the 2026-landing model', _RED),
+    row('Projected PO date stale (>30 days past)', S.stalePO, null, 'Counted as overdue / drops from landing', _AMB),
+    row('No estimate value', S.noEst, null, 'Zero-weighted; understates pipeline & new-opp $', _AMB),
+    row('No probability', S.noProb, null, 'Treated as <50% and excluded from weighted pipeline', _AMB),
+    _head('Recommended fix order'),
+    _note('1) The '+badSC+' bad SC#s are the highest ROI — they corrupt the dedup that protects the Score. 2) The '+S.noPO+' missing PO dates blind the 2026-landing view. 3) Required-field validation in Podio on these four fields would eliminate the whole class. This panel refreshes weekly so you can track the counts down.'));
+}
+
+const CALIB_SEED={asof:'2026-10-25', cutoff:'2026-09-21', n:245,
+  bands:[['Under 50%',140,25,23,92,18,52,0.0,0.20],
+         ['50–79%',92,38,15,39,41,72,0.5,0.45],
+         ['80%+',13,8,2,3,62,80,1.0,0.65]]};
+function CalibrationPanel({seed}){const S=seed||CALIB_SEED;
+  const cell=(t,b,al)=>h('td',{style:{padding:'8px 6px',borderBottom:'1px solid '+_L,textAlign:al||'left',fontWeight:b?700:400}},t);
+  return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
+    _eyebrow('Forecast integrity · Probability calibration'), _title('Probability Calibration'),
+    _sub('Did past-snapshot probabilities predict actual conversion? · projects first seen on/before '+S.cutoff+', outcome as of '+S.asof),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
+      _kpi('1.0x → 0.62', '80%+ deals: assumed weight vs realized conversion', _RED),
+      _kpi('0x → 0.18', 'Sub-50% deals: excluded, but 18% actually convert', _AMB),
+      _kpi(S.n, 'Projects in the calibration cohort', _GRN)),
+    _head('Realized conversion by probability band'),
+    _note(['Each band shows how projects at that self-reported probability actually resolved. ',h('b',{key:'b'},'The current step-function weights are miscalibrated at both ends'),': 80%+ is weighted 1.0 but converts ~62%, and sub-50% is excluded entirely yet converts ~18%. "Win-of-decided" strips out still-open deals and is the cleaner ultimate-win estimate.']),
+    h('table',{style:{width:'100%',borderCollapse:'collapse',fontSize:'13px',marginTop:'4px'}},
+      h('thead',null,h('tr',{style:{color:_M,fontSize:'11.5px',textTransform:'uppercase',letterSpacing:'.04em'}},
+        ['Band','n','Converted','Dropped','Still open','Realized conv %','Win of decided %','Current weight','Suggested weight'].map((t,i)=>h('td',{key:i,style:{padding:'6px',borderBottom:'1px solid '+_L,textAlign:i?'right':'left'}},t)))),
+      h('tbody',null, S.bands.map(b=>h('tr',{key:b[0]},
+        cell(b[0],true), cell(b[1],false,'right'), cell(b[2],false,'right'), cell(b[3],false,'right'), cell(b[4],false,'right'),
+        cell(b[5]+'%',false,'right'), cell(b[6]+'%',false,'right'),
+        cell(b[7].toFixed(2),false,'right'), h('td',{style:{padding:'8px 6px',borderBottom:'1px solid '+_L,textAlign:'right',fontWeight:700,color:_GRN}},b[8].toFixed(2)))))),
+    _head('Recommendation'),
+    _note('Replace the 0 / 0.5 / 1.0 step with calibrated weights near 0.20 / 0.45 / 0.65, which would lower weighted pipeline modestly but make it defensible. Caveats: the 80%+ cell has a small sample (n=13), and still-open deals may yet convert, so realized-conversion is a floor. This is a first read from 12 snapshots; it tightens as the weekly series grows. Do not swap the live weights until you have ~6 more weeks — track this tab first.'));
+}
+
+const SVEL_SEED={asof:'2026-10-25', lagMed:15, lagMean:41, within14:48, matched:684,
+  monthly:[['Jan',54],['Feb',38],['Mar',97],['Apr',93],['May',62],['Jun',72],['Jul',63],['Aug',62],['Sep',63],['Oct',67]],
+  contactedToMeeting:34, meetingToProject:25,
+  stages:[['Contacted',903],['Meeting',390],['Project',131],['Won',1],['Lost',106]]};
+function SalesVelocityPanel({seed}){const S=seed||SVEL_SEED;
+  const qmax=Math.max.apply(null,S.monthly.map(x=>x[1]));
+  return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
+    _eyebrow('Velocity · Speed through the funnel'), _title('Sales Velocity'),
+    _sub('How fast quotes turn into POs and opportunities advance · snapshot '+S.asof),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
+      _kpi(S.lagMed+' days', 'Median quote → PO lag ('+S.matched+' matched)', _GRN),
+      _kpi(S.within14+'%', 'Quotes converting within 14 days', _GRN),
+      _kpi(S.lagMean+' days', 'Mean lag (right-skewed by slow deals)', _AMB),
+      _kpi(S.contactedToMeeting+'%', 'Contacted → Meeting advance rate', _AMB)),
+    _head('Quotes issued per month (2026)'),
+    _note('Volume leads revenue by the quote→PO lag plus production and shipping, so a sustained dip shows up in revenue a quarter later. Spring peak (Mar–Apr), steady ~60–70 since.'),
+    h('div',{style:{display:'flex',alignItems:'flex-end',gap:'12px',height:'130px',paddingTop:'10px',borderBottom:'1px solid '+_L}},
+      S.monthly.map(m=>h('div',{key:m[0],style:{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'flex-end',flex:'1'}},
+        h('div',{style:{width:'100%',maxWidth:'40px',background:_GRN,borderRadius:'4px 4px 0 0',height:Math.round(95*m[1]/qmax)+'px'}}),
+        h('div',{style:{fontWeight:700,marginTop:'6px',fontSize:'12.5px'}},m[1]),
+        h('div',{style:{fontSize:'11px',color:_M}},m[0])))),
+    _head('Opportunity funnel advance rates (PTA, cumulative)'),
+    _note(['Of opps that got past first contact, '+S.contactedToMeeting+'% reached a meeting and '+S.meetingToProject+'% of those became a project. ',h('b',{key:'b'},'Meeting → Project is the leakiest stage'),' and the best place to add conversion. These are cumulative-snapshot ratios, not a single cohort, so read them as directional.']),
+    h('div',{style:{display:'flex',gap:'10px',flexWrap:'wrap',marginTop:'4px'}},
+      S.stages.map(x=>h('div',{key:x[0],style:{border:'1px solid '+_L,borderRadius:'10px',padding:'10px 16px',minWidth:'110px'}},
+        h('div',{style:{fontSize:'20px',fontWeight:700}},x[1].toLocaleString()),
+        h('div',{style:{fontSize:'12px',color:_M}},x[0])))),
+    _note('Source: Quotes-to-Clients SENT DATE matched to Purchase Orders Created-on by project code (median lag); Jobs & Opportunities stage counts, PTA. Quote→PO median of '+S.lagMed+'d matches the historical 632-project benchmark.'));
+}
+
+
+// ===== CEO SCORECARD tab =====
+// PAC's live position against the four scorecards the COO issued 21 Oct 2026
+// (PacTeam_Scorecards_Q4.xlsx, Nov 2 baseline). Metric wording and goal bands
+// are reproduced verbatim from that workbook; the "our number" column is what
+// this file and live SuiteQL can actually produce as of the snapshot date.
+// Status vocabulary:
+//   live     - we can populate this cell now, from this scorecard
+//   finance  - Finance-fed; outside what this file can see (CEO #1, #3)
+//   blocked  - we cannot populate it yet, and the note says what unblocks it
+const CEO_SEED={asof:'2026-10-25', baseline:'Nov 2 2026', issued:'21 Oct 2026',
+ceo:[
+ [1,'Underlying operating margin (ex one-offs) — TTM %','Target: ≥ 5% (floor); build toward 8%','Ops GM + Fin opex','—','finance',
+  'Finance-fed. Booked gross margin at PO level is 17.4%, but that is a different measure: it carries no overhead and no one-off exclusions. Do not substitute it. Unblocked by Finance Rock #2 (segment P&Ls, mid-November).'],
+ [2,'TTM revenue (rolling 12M)','Band: $18–21M (hold flat with 2025)','Sales + Ops aggregate','$20.06M','live',
+  'In band. Live SuiteQL, invoices Oct 26 2025 – Oct 25 2026, intercompany and test entities excluded. Sits 69% of the way up the band.'],
+ [3,'Cash net of LOC (Fri close)','$ — real liquidity','Finance','—','finance',
+  'Finance-fed from the Friday close. Nothing in the commercial data speaks to it.'],
+ [4,'Top-5 parent concentration % of TTM rev','Declining — baseline 78%, target ≤ 70% by Dec 2027','Sales mix','78.2%','live',
+  'On the baseline, not yet declining. Computed at parent level on TTM revenue, which is the COO’s basis. Our independently computed 78.2% lands on his stated 78% baseline, which is a useful mutual validation of the method.'],
+ [5,'Weeks of Work in Hand (WWiH)','Band: 14–22 weeks','Sales + Ops throughput','24.1 wk','live',
+  'Above band by 2.1 weeks. Backlog $9.32M ÷ weekly run rate $385,858 (TTM revenue ÷ 52). Above-band means work is arriving faster than it converts to revenue — the throughput finding, not a demand problem.'],
+ [6,'Non-Citizen revenue growth rate % (YoY)','Rising trend — the transformation KPI','Sales','level only','blocked',
+  'Cannot publish a growth rate. The prior TTM period has $16.2M of income posted on journal entries with no customer attached, so prior-year non-Citizen revenue is not attributable and any YoY number would be fiction. The LEVEL is sound: non-Citizen is $7.63M, 38.0% of TTM revenue. Recommend forward-only tracking from the Nov 2 baseline, and unblocking the history with Finance Rock #2 (segment P&Ls).'],
+ [7,'Backlog composition — % non-Citizen of forward book','Rising trend — leads #4 by 6–12M','Sales pipeline mix','30.2%','live',
+  '$2.81M of $9.32M open orders. Below the 38% non-Citizen share of TTM revenue, so on current bookings concentration gets slightly worse before it improves. Weighted pipeline at 60% non-Citizen is the leading signal ahead of it.'],
+ [8,'New logos won L12M + repeat-order rate','Both rising — new logos becoming programmatic','Sales','14 + 78%','live',
+  '14 new parent-level logos first invoiced in the trailing twelve months (John Hardy, Fable, Copper Hill, Bell & Ross, Davaco, Obrists, Penny Preville, Nouvel Heritage, Lumma, Dior, Monica Rich Kosann, Victorinox, Frederick Goldman, CD Peacock). Repeat-order rate 78% book-wide (53 of 68 external billing entities placed ≥ 2 invoices in the TTM); 8 of the 14 new logos placed a second order, 57%. Caveat: NetSuite first-transaction dates cluster at the mid-2024 migration cutover, so new-logo detection is only valid from 2025 forward.']],
+sales:[
+ [1,'Non-Citizen revenue this week ($)','$ — directional KPI','CEO #6','$184,272','live','NS',
+  'Week ending 10/23. Eight-week total $1,011,292, which is 53.1% of the $1,904,474 invoiced over the same weeks. Source: NetSuite invoices by week, Citizen parent excluded.'],
+ [2,'Orders won this week — split: Q4 revenue conversion / 2027 backlog build / cancellation','$ and count, split 3 ways','CEO #1, #2, #4','$15,392 / 6 orders','live','NS+Podio',
+  'Week ending 10/23: $1,692 converts to Q4 revenue, $13,700 builds 2027 backlog, $0 cancelled. Eight-week picture is the headline finding: $4,546,866 won across 102 orders, of which only $359,941 (8%) lands as 2026 revenue and $4,186,925 (92%) is 2027 backlog.'],
+ [3,'New-logo pipeline value (non-Citizen)','$','CEO #6, #7','$70,000 wtd','live','Podio',
+  'Weighted $70,000 across 16 active projects; unweighted estimate value $291,000. Defined as active PTA pipeline for clients with no NetSuite invoice history at all, Citizen excluded. 13 of the 16 weight to zero for want of an estimate or a probability — see Data Integrity. Podio-sourced, so excluded from the official scorecard until Sales Rock #1 reconciles the methodology.'],
+ [4,'New/expansion account meetings held','Count — activity KPI','CEO #8','—','blocked','Podio',
+  'Blocked. The Podio Jobs & Opportunities app records a stage of "Meeting" but no date the meeting was held, so a weekly count cannot be derived. Unblocked by adding a "Meeting held date" field to that app — one field, and both this metric and #6 come online.'],
+ [5,'Proposals / estimates issued ($ and count)','$ and count','CEO #2','29 / $1,142,132','live','Podio',
+  'Week ending 10/23. Eight-week total 132 proposals worth $5,195,822. Proposal count has been climbing (13 → 29 over eight weeks), which is the healthiest leading signal in the set. Podio-sourced — excluded until Sales Rock #1.'],
+ [6,'Cycle time — first meeting to first order','Days — trend','CEO #2','—','blocked','Podio',
+  'Blocked by the same missing field as #4. The nearest available proxy is quote → PO lag, median 15 days across 684 matched projects, which is on the Funnel & Velocity tab — but it starts at the quote, not the first meeting, so it is not this metric.'],
+ [7,'New logos won this week','Count','CEO #8','0','live','NS',
+  'Week ending 10/23: none. One in the last eight weeks. At that rate the new-logo engine is not yet programmatic, which is what CEO #8 is designed to surface.']],
+weeks:[['9/4',17762,309361,20,244835,64527,13,496569,0],
+ ['9/11',68660,350336,7,9266,341070,14,345087,0],
+ ['9/18',227237,79783,6,10806,68977,12,588316,0],
+ ['9/25',129190,2502727,16,49063,2453664,13,367037,0],
+ ['10/2',122297,51440,12,22078,29362,14,199462,0],
+ ['10/9',13635,658239,15,9797,648442,15,902383,0],
+ ['10/16',248239,579588,20,12404,567184,22,1154836,1],
+ ['10/23',184272,15392,6,1692,13700,29,1142132,0]]};
+
+function _chip(status){
+  const map={live:['Live',_GRN,'#eaf5f0'],finance:['Finance-fed','#6b7a72','#f1f3f2'],blocked:['Blocked',_RED,'#fbeeea']};
+  const c=map[status]||map.live;
+  return h('span',{style:{display:'inline-block',padding:'2px 9px',borderRadius:'999px',fontSize:'11px',fontWeight:700,letterSpacing:'.03em',color:c[1],background:c[2],border:'1px solid '+c[1]+'33',whiteSpace:'nowrap'}},c[0]);
+}
+function CeoScorecardPanel({seed}){const S=seed||CEO_SEED;
+  const td=st=>({padding:'10px 8px',borderBottom:'1px solid '+_L,verticalAlign:'top',fontSize:'13px',...(st||{})});
+  const th=t=>h('td',{key:t,style:{padding:'7px 8px',borderBottom:'1px solid '+_L,color:_M,fontSize:'11px',textTransform:'uppercase',letterSpacing:'.05em',fontWeight:600}},t);
+  const liveN=S.ceo.filter(r=>r[5]==='live').length, finN=S.ceo.filter(r=>r[5]==='finance').length, blkN=S.ceo.filter(r=>r[5]==='blocked').length;
+  const sLive=S.sales.filter(r=>r[5]==='live').length, sBlk=S.sales.filter(r=>r[5]==='blocked').length;
+  return h('div',{style:{maxWidth:'1060px',margin:'0 auto',padding:'8px 4px 40px'}},
+    _eyebrow('COO scorecards · Q4 2026, '+S.baseline+' baseline'), _title('CEO Scorecard — live position'),
+    _sub('Where PAC stands against the eight CEO metrics and the seven Sales metrics as the COO defined them on '+S.issued+' · snapshot '+S.asof),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
+      _kpi(liveN+' of 8','CEO metrics this scorecard can populate now', _GRN),
+      _kpi(finN,'CEO metrics that are Finance-fed (#1, #3)', '#6b7a72'),
+      _kpi(blkN,'CEO metric blocked on data (#6, non-Citizen YoY)', _RED),
+      _kpi(sLive+' of 7','Sales metrics live · '+sBlk+' blocked on one Podio field', sBlk?_AMB:_GRN)),
+    _head('CEO Scorecard — Ash ↔ CEO, reviewed weekly'),
+    _note(['Metric wording and goal bands are verbatim from the COO’s workbook. Three of the five Performance metrics are ours (#2, #4, #5) and all three Power metrics are ours to feed, though #6 has no publishable history yet. ',h('b',{key:'b'},'Two of the five we can report read amber or red'),': top-5 concentration is sitting on its baseline rather than declining, and weeks of work in hand is 2.1 weeks above its band.']),
+    h('table',{style:{width:'100%',borderCollapse:'collapse',marginTop:'4px'}},
+      h('thead',null,h('tr',null,['#','Metric','Goal / target band','Fed by','Our number','Status'].map(th))),
+      h('tbody',null, S.ceo.map(r=>[
+        h('tr',{key:'r'+r[0]},
+          h('td',{style:td({fontWeight:700,color:_M,width:'24px'})},r[0]),
+          h('td',{style:td({fontWeight:600,maxWidth:'260px'})},r[1]),
+          h('td',{style:td({color:_M,fontSize:'12.5px',maxWidth:'190px'})},r[2]),
+          h('td',{style:td({color:_M,fontSize:'12px',whiteSpace:'nowrap'})},r[3]),
+          h('td',{style:td({fontWeight:700,fontSize:'15px',whiteSpace:'nowrap'})},r[4]),
+          h('td',{style:td()},_chip(r[5]))),
+        h('tr',{key:'n'+r[0]},h('td',{colSpan:6,style:{padding:'0 8px 12px 32px',borderBottom:'1px solid '+_L,color:_M,fontSize:'12.5px',lineHeight:'1.55'}},r[6]))
+      ]))),
+    _head('Sales Scorecard — Joseph, weekly L10'),
+    _note(['Five of the seven can be populated from the Monday exports plus the NetSuite pull. ',h('b',{key:'b'},'Two are blocked by a single missing Podio field'),' — a "Meeting held date" on the Jobs & Opportunities app — and adding it brings both online. The COO’s rule that Podio-sourced measures are excluded until Sales Rock #1 reconciles the methodology is noted per row in the Source column.']),
+    h('table',{style:{width:'100%',borderCollapse:'collapse',marginTop:'4px'}},
+      h('thead',null,h('tr',null,['#','Metric','Goal','Feeds','Latest week','Status','Source'].map(th))),
+      h('tbody',null, S.sales.map(r=>[
+        h('tr',{key:'s'+r[0]},
+          h('td',{style:td({fontWeight:700,color:_M,width:'24px'})},r[0]),
+          h('td',{style:td({fontWeight:600,maxWidth:'250px'})},r[1]),
+          h('td',{style:td({color:_M,fontSize:'12.5px'})},r[2]),
+          h('td',{style:td({color:_M,fontSize:'12px',whiteSpace:'nowrap'})},r[3]),
+          h('td',{style:td({fontWeight:700,fontSize:'14px',whiteSpace:'nowrap'})},r[4]),
+          h('td',{style:td()},_chip(r[5])),
+          h('td',{style:td({color:_M,fontSize:'11.5px',whiteSpace:'nowrap'})},r[6])),
+        h('tr',{key:'sn'+r[0]},h('td',{colSpan:7,style:{padding:'0 8px 12px 32px',borderBottom:'1px solid '+_L,color:_M,fontSize:'12.5px',lineHeight:'1.55'}},r[7]))
+      ]))),
+    _head('Weekly series — the grid to paste into the COO workbook'),
+    _note('Eight weeks of Friday-close history, reconstructed so the Nov 2 baseline does not start from an empty sheet. Columns match the Sales Scorecard rows: non-Citizen revenue (#1), orders won and their Q4-revenue / 2027-backlog split (#2), proposals issued (#5), new logos (#7).'),
+    h('div',{style:{overflowX:'auto'}},
+      h('table',{style:{width:'100%',borderCollapse:'collapse',fontSize:'12.5px',marginTop:'4px',minWidth:'760px'}},
+        h('thead',null,h('tr',null,['Week','Non-Citizen rev','Orders won $','#','→ Q4 rev','→ 2027 backlog','Proposals #','Proposals $','New logos'].map(th))),
+        h('tbody',null, S.weeks.map(w=>h('tr',{key:w[0]},
+          h('td',{style:td({fontWeight:700,whiteSpace:'nowrap'})},w[0]),
+          [1,2,3,4,5,6,7,8].map(i=>h('td',{key:i,style:td({textAlign:'right',fontVariantNumeric:'tabular-nums'})},
+            (i===3||i===6||i===8)?w[i].toLocaleString():'$'+Math.round(w[i]).toLocaleString()))))),
+        h('tfoot',null,h('tr',null,
+          h('td',{style:td({fontWeight:700})},'8-week total'),
+          [1,2,3,4,5,6,7,8].map(i=>h('td',{key:i,style:td({textAlign:'right',fontWeight:700,fontVariantNumeric:'tabular-nums'})},
+            (function(){const v=S.weeks.reduce((a,w)=>a+w[i],0);return (i===3||i===6||i===8)?v.toLocaleString():'$'+Math.round(v).toLocaleString();})())))))),
+    _head('What to say in the room'),
+    _note(['Of the eight CEO metrics, six are green or populatable and the two that are not tell the same story from two directions: ',h('b',{key:'b'},'the forward book is large and slow, not small'),'. WWiH above band and 92% of eight weeks of orders landing in 2027 are the same fact. The one metric that genuinely cannot be reported, non-Citizen YoY growth, is blocked by a Finance data gap rather than a sales one, and the level (38% of TTM) is reportable in the meantime.']),
+    _note('Sources: CEO #2, #4, #5, #7, #8 from live SuiteQL at the snapshot date, parent-rolled, intercompany and test entities excluded. Sales #1, #2, #7 from NetSuite by week. Sales #3, #5 from the weekly Podio exports. CEO #1, #3 are Finance-fed and shown as pending by design, not as gaps in this file.'));
+}
+
+
+function ExecStrip(){
+  // The three COO CEO metrics this file owns and can read today, in his words
+  // and against his bands. The internal calendar plan sits underneath as
+  // context, explicitly labelled, so nobody reads it as a scorecard target.
+  const C=COVERAGE_SEED, K=CONC_SEED;
+  const ttmIn=C.ttm>=C.ttmLo&&C.ttm<=C.ttmHi;
+  const wIn=K.wwih>=K.wwihLo&&K.wwih<=K.wwihHi;
+  const attain=C.revYTD/C.plan;
+  return h('div',{style:{border:'1px solid '+_L,borderRadius:'12px',padding:'14px 16px',margin:'0 0 18px',background:'#fafbfa'}},
+    h('div',{style:{fontSize:'11px',letterSpacing:'.09em',textTransform:'uppercase',color:_M,fontWeight:600,marginBottom:'10px'}},
+      'CEO scorecard — the three metrics this file feeds'),
+    h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap'}},
+      _kpi(fM(C.ttm),'#2 TTM revenue · band '+fMw(C.ttmLo)+'–'+fMw(C.ttmHi)+' · '+(ttmIn?'in band':'out of band'), ttmIn?_GRN:_RED),
+      _kpi(K.top5Share.toFixed(1)+'%','#4 Top-5 parent share of TTM · target ≤'+K.top5Target+'% by '+K.top5TargetBy, K.top5Share>K.top5Base?_RED:_AMB),
+      _kpi(K.wwih.toFixed(1)+' wk','#5 Weeks of work in hand · band '+K.wwihLo+'–'+K.wwihHi+' · '+(wIn?'in band':'above band'), wIn?_GRN:_RED)),
+    h('div',{style:{marginTop:'11px',paddingTop:'10px',borderTop:'1px solid '+_L,fontSize:'12.5px',color:_M,lineHeight:'1.55'}},
+      'Internal context, not a CEO metric: calendar-2026 revenue is ',h('b',null,fM(C.revYTD)),' against the ',
+      h('b',null,fMw(C.plan)),' internal calendar plan (',(100*attain).toFixed(0),'%), with ',h('b',null,fM(K.backlog)),
+      ' of backlog behind it. Full detail on the Coverage & Attainment and Concentration Risk tabs; the CEO Scorecard tab shows all eight metrics with status.'));
+}
+
+
 // ===== REVENUE TIMING — when the open book actually invoices =====
 // Added 28 Oct 2026 after the controller flagged ~$4M of 2027 revenue that this
 // file was reporting as 2026. The old model had no concept of invoice timing on
@@ -2295,7 +2736,16 @@ function App() {
 
   return h(React.Fragment,null,
     tab==='radar' && h(RadarPanel,{recs: shipData ? shipData.recs : SHIP_SEED_RECS, shipMeta, poMap: poDates || RDR_PO_BY_CODE}),
+    tab==='radar' && h(VelocityPanel,{seed: VELO_SEED}),
+    tab==='funnel' && h(OppsFunnelPanel,{seed: OPPS_SEED}),
+    tab==='ceo' && h(CeoScorecardPanel,{seed: CEO_SEED}),
+    tab==='cov' && h(CoveragePanel,{seed: COVERAGE_SEED}),
+    tab==='conc' && h(ConcentrationPanel,{seed: CONC_SEED}),
+    tab==='dq' && h(DataQualityPanel,{seed: DQ_SEED}),
+    tab==='dq' && h(CalibrationPanel,{seed: CALIB_SEED}),
+    tab==='funnel' && h(SalesVelocityPanel,{seed: SVEL_SEED}),
     h('div',{style:{display: tab==='scorecard' ? null : 'none'}},
+    h(ExecStrip,{}),
 
     // ── Upload Panel ──
     h('div',{className:'upload-panel'},
