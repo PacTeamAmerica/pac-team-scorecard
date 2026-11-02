@@ -1,5 +1,5 @@
 {
- "net": 13930552,
+ "net": 14176813,
  "MONTHLY": [
   1599015,
   1085708,
@@ -10,14 +10,29 @@
   1559847,
   1007122,
   819906,
-  1066995
+  1313256
  ],
- "openTot": 9318207.64,
- "totalO": 144,
+ "openTot": 9401656.69,
+ "totalO": 145,
  "confO": 7,
- "confT": 331721.2,
- "awaO": 137,
- "awaT": 8986486.44,
+ "confT": 495372.2,
+ "awaO": 138,
+ "awaT": 8906284.49,
+ "clientTrailing": 69,
+ "clientFY": 64,
+ "cycle": "11/02",
+ "cycleLabel": "Nov 2, 2026",
+ "nsAsof": "2026-11-02",
+ "podioAsof": "2026-10-25",
+ "dated27Other": 1395440,
+ "bklg27Lo": 4289332,
+ "bklg27Hi": 5070320,
+ "undated": 617295,
+ "undatedCodes": 16,
+ "overdue": 1443765,
+ "overdueCodes": 17,
+ "podioStaleExposure": 153438.5,
+ "podioStalePct": 1.63,
  "headlineWtd": 2157840,
  "cov": {
   "live": 1393558,
@@ -43,11 +58,8 @@
  "shipRecs": 458,
  "poCodes": 247,
  "poRecords": 274,
- "score": 25406600,
  "nsCodes": 2528,
  "added": 5,
- "clientTrailing": 69,
- "clientFY": 64,
  "invById": {
   "citizen": 8804236.08,
   "seiko": 985975.65,
@@ -66,6 +78,5 @@
   "ralphlauren": 51576.02,
   "luxottica": 51215.5
  },
- "cycle": "10/25",
- "cycleLabel": "Oct 25, 2026"
+ "score": 25736309.689999998
 }
