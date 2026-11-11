@@ -1,5 +1,5 @@
 {
- "net": 14644237,
+ "net": 14788737,
  "MONTHLY": [
   1599015,
   1085708,
@@ -11,30 +11,30 @@
   1007122,
   819906,
   1776513,
-  4167
+  148667
  ],
- "openTot": 8785578.18,
- "totalO": 140,
- "confT": 545102.2,
- "confO": 8,
- "awaT": 8240475.98,
+ "openTot": 8766721.51,
+ "totalO": 141,
+ "confT": 692386.5,
+ "confO": 9,
+ "awaT": 8074335.01,
  "awaO": 132,
  "clientTrailing": 71,
- "clientFY": 66,
- "cycle": "11/09",
- "cycleLabel": "Nov 9, 2026",
- "nsAsof": "2026-11-05",
- "podioAsof": "2026-11-09",
- "quotesAsof": "2026-11-09",
- "poAsof": "2026-11-09",
- "shipAsof": "2026-11-09",
+ "clientFY": 67,
+ "cycle": "11/11",
+ "cycleLabel": "Nov 11, 2026",
+ "nsAsof": "2026-11-09",
+ "podioAsof": "2026-11-11",
+ "quotesAsof": "2026-11-11",
+ "poAsof": "2026-11-11",
+ "shipAsof": "2026-11-11",
  "svelAsof": "2026-11-04",
- "ttm": 20321551,
- "runRate": 390799,
- "wwih": 22.5,
- "top5Share": 79.3,
- "bkNonCitPct": 28.7,
- "bkNonCit": 2525680,
+ "ttm": 20465591,
+ "runRate": 393569,
+ "wwih": 22.3,
+ "top5Share": 79.8,
+ "bkNonCitPct": 29.2,
+ "bkNonCit": 2563804,
  "scoreBasis": "category",
  "catWeights": {
   "Commit": 0.43,
@@ -48,8 +48,8 @@
  },
  "headlineWtd": 2257548,
  "headlineWtdProb": 2091660,
- "score": 25687363,
- "scoreOnProbability": 25521475,
+ "score": 25813007,
+ "scoreOnProbability": 25647119,
  "dated27Other": 1530930,
  "bklg27Lo": 4934946,
  "bklg27Hi": 5421234,
@@ -80,7 +80,7 @@
  },
  "N": {
   "liveN": 43,
-  "apprN": 6,
+  "apprN": 3,
   "coldN": 21,
   "neverN": 125
  },
@@ -91,34 +91,33 @@
  "poCodes": 260,
  "poRecords": 288,
  "shipRecs": 479,
- "totalActive": 195,
- "removedInNS": 131,
- "removedDiv": 56,
+ "totalActive": 192,
+ "removedInNS": 135,
+ "removedDiv": 55,
  "pipeLanding": 0,
  "unconfirmed": [
   "CITI24-3252-8089",
-  "TJGR26-4301-8073",
   "TASK26-4236-7776"
  ],
  "invById": {
-  "citizen": 9126405.08,
-  "seiko": 985975.65,
+  "citizen": 9315155.38,
+  "seiko": 1006457.65,
   "swatch": 898113.95,
-  "timex": 592499.08,
-  "jewelry": 560500.51,
+  "timex": 601259.08,
+  "jewelry": 560752.51,
   "tapestry": 265311.6,
-  "nuna": 260644.0,
-  "northface": 234104.0,
+  "nuna": 260644,
+  "northface": 234104,
   "casio": 227247.6,
-  "jaffe": 188651.0,
-  "mrk": 184329.0,
+  "jaffe": 188651,
+  "mrk": 184329,
   "bedrock": 181622.72,
   "thelios": 163722.2,
   "tiffany": 117823.37,
   "luxottica": 61535.5,
   "ralphlauren": 51576.02
  },
- "nsCodes": 2538,
+ "nsCodes": 2542,
  "tabs": [
   "board",
   "accounts",
@@ -127,13 +126,13 @@
   "ceo",
   "dq"
  ],
- "builtAt": "2026-11-09",
+ "builtAt": "2026-11-11",
  "heldN": 39,
  "heldV": 1459238,
  "onHoldRule": "On Hold carries HOLD_FACTOR 0.5 of its category weight. Podio halves the stage probability on pause and lets the category follow Stage (Master Reference v1.9 4.3/4.4), so the pause is discounted once. Replaces the 4 Nov zero rule, which double-discounted it. Chosen by JM 5 Nov 2026.",
  "sourcesBehind": {
   "svelAsof": "the matched-pair population needs the Jobs & Opportunities export, which is not one of the weekly files",
-  "nsAsof": "NetSuite refreshes on its own cadence, not with the weekly Podio build; this build does not query it"
+  "nsAsof": "no NetSuite pull was dropped in data/ for this cycle, so the revenue and open-order figures are the ones from the last pull that was"
  },
  "heldW": 270636,
  "heldWFull": 541272,
@@ -157,20 +156,7 @@
    "note": "matches the documented Podio pause discount"
   }
  ],
- "nsRestated": [
-  {
-   "month": "Sep",
-   "from": 819907,
-   "to": 819906,
-   "delta": -1
-  },
-  {
-   "month": "Oct",
-   "from": 1670956,
-   "to": 1776513,
-   "delta": 105557
-  }
- ],
+ "nsRestated": [],
  "noProbActivePTA": 83,
  "consolidation": {
   "date": "2026-11-05",
@@ -201,5 +187,5 @@
   ],
   "seedsMerged": "COVERAGE_SEED and CONC_SEED now derive from one METRICS object; the four CEO display strings are expressions, not literals"
  },
- "heldAsof": "2026-11-09"
+ "heldAsof": "2026-11-11"
 }
