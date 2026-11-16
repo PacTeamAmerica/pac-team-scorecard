@@ -2510,6 +2510,7 @@ function BoardPanel({ board, act, meta, onTab }) {
   // from the app looked tidier and threw "setDrill is not defined" at runtime,
   // because the app never had one.
   const [drill, setDrill] = useState(null);
+  const [meet, setMeet] = useState(null);
   const openDrill = (title, subtitle, filt) =>
     setDrill({ title: title, subtitle: subtitle, rows: DRILL_RECS.filter(filt) });
   const money = v => (Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M'
@@ -2781,7 +2782,13 @@ function BoardPanel({ board, act, meta, onTab }) {
     stat('Meetings held or booked' + (M.lastWeekOf ? ', week of ' + span(M.lastWeekOf, M.lastWeekEnd) : ' last week'),
       String(M.heldLastWeek != null ? M.heldLastWeek : M.heldThisWeek),
       M.bookedNextWeek + ' booked for next week · ' + M.booked + ' booked, ' + M.pursuing + ' pursuing in all',
-      null, null, _GRN),
+      null,
+      (M.lastWeekRows && M.lastWeekRows.length)
+        ? (() => setMeet({title:'Meetings held or booked',
+             subtitle:'Week of ' + span(M.lastWeekOf, M.lastWeekEnd),
+             rows:M.lastWeekRows}))
+        : null,
+      _GRN),
     stat('Implied bookings from that week', money(Q.implied),
       'those quotes at the measured ' + Q.winRate + '% win rate, landing about ' + Q.impliedBy,
       null, null, '#1D9E75'));
@@ -2935,6 +2942,8 @@ function BoardPanel({ board, act, meta, onTab }) {
     exports_,
     drill ? h(DrillModal, { title: drill.title, subtitle: drill.subtitle,
       rows: drill.rows, onClose: () => setDrill(null) }) : null,
+    meet ? h(MeetingModal, { title: meet.title, subtitle: meet.subtitle,
+      rows: meet.rows, onClose: () => setMeet(null) }) : null,
     h('div', { style: { marginTop: '26px', fontSize: '11.5px', color: _M,
         borderTop: '1px solid ' + _L, paddingTop: '13px', lineHeight: 1.55 } },
       'This board is a roll-up. Every figure is computed by the same code that produces the detail '
@@ -3120,6 +3129,68 @@ const DRILL_COLS = [
   {h:'On hold',         w:10, get:r=>r.h ? 'yes' : ''},
   {h:'Counts in Score', w:14, get:r=>r.h ? 'half, held' : 'yes'},
 ];
+
+// Meetings do not fit the project drill: no job code, no estimate, no category.
+// They get their own table rather than being forced through DrillModal with
+// half its columns blank, and the same .xlsx download, because a count a reader
+// cannot open is a number they have to take on trust.
+const MEET_COLS = [
+  {h:'Date',            w:12, get:r=>r.d || ''},
+  {h:'Account',         w:30, get:r=>r.a || ''},
+  {h:'Status',          w:10, get:r=>r.s || ''},
+  {h:'Type',            w:22, get:r=>r.t || ''},
+  {h:'Account Manager', w:20, get:r=>r.am || ''},
+  {h:'Client seniority',w:16, get:r=>r.sen || ''},
+  {h:'Purpose',         w:60, get:r=>r.p || ''},
+  {h:'Outcome',         w:30, get:r=>r.o || ''},
+  {h:'Value at stake',  w:15, get:r=>r.v || 0},
+  {h:'Confidence',      w:12, get:r=>r.cf || ''},
+];
+
+function MeetingModal({title, subtitle, rows, onClose}) {
+  const stake = rows.reduce((t, r) => t + (r.v || 0), 0);
+  const noVal = rows.filter(r => !r.v).length;
+  const safe = (title || 'meetings').replace(/[^A-Za-z0-9]+/g, '_').slice(0, 60);
+  const th = c => h('th', {key:c, style:{position:'sticky', top:0, background:'#fff',
+    textAlign:(c === 'at stake' ? 'right' : 'left'), padding:'7px 6px',
+    borderBottom:'1px solid ' + _L, fontSize:'10.5px', textTransform:'uppercase',
+    letterSpacing:'.05em', color:_M, whiteSpace:'nowrap'}}, c);
+  const td = (v, extra) => h('td', Object.assign({style:Object.assign(
+    {padding:'7px 6px', borderBottom:'1px solid ' + _L}, extra || {})}), v);
+  return h('div', {className:'ytd-overlay', onClick:onClose},
+    h('div', {className:'ytd-modal', onClick:e=>e.stopPropagation(), role:'dialog',
+        'aria-modal':'true', 'aria-label':title, style:{maxWidth:'1040px'}},
+      h('button', {className:'ytd-close', onClick:onClose, 'aria-label':'Close'}, '\u00d7'),
+      h('div', {className:'ytd-head'}, title),
+      h('div', {className:'ytd-sub'}, subtitle,
+        rows.length ? ' \u00b7 ' + rows.length + ' meeting' + (rows.length === 1 ? '' : 's') : '',
+        stake ? ' \u00b7 $' + Math.round(stake).toLocaleString() + ' at stake' : ''),
+      rows.length
+        ? h('div', {style:{maxHeight:'58vh', overflow:'auto', marginTop:'12px'}},
+            h('table', {style:{width:'100%', borderCollapse:'collapse', fontSize:'12.5px'}},
+              h('thead', null, h('tr', null,
+                ['date','account','status','type','AM','seniority','purpose','outcome','at stake'].map(th))),
+              h('tbody', null, rows.map((r, i) => h('tr', {key:i},
+                td(r.d, {whiteSpace:'nowrap', fontFamily:'ui-monospace,monospace', fontSize:'11.5px'}),
+                td(r.a, {fontWeight:600}),
+                td(r.s),
+                td(r.t, {color:_M}),
+                td(r.am, {color:_M}),
+                td(r.sen, {color:_M}),
+                td(r.p, {color:_M, maxWidth:'320px'}),
+                td(r.o, {color:_M}),
+                td(r.v ? '$' + Math.round(r.v).toLocaleString() : '\u2014',
+                   {textAlign:'right', color:r.v ? _INK : '#c3c9c5'}))))))
+        : h('div', {style:{marginTop:'16px', fontSize:'13px', color:_M}},
+            'No meetings were held or booked in this window.'),
+      h('div', {style:{marginTop:'14px', display:'flex', gap:'12px', alignItems:'center',
+          flexWrap:'wrap'}},
+        rows.length ? h('button', {className:'fb-chip',
+          onClick:()=>drillXlsx(rows, MEET_COLS, 'PAC_TEAM_' + safe + '.xlsx')},
+          'Download \u00b7 .xlsx \u2193') : null,
+        noVal ? h('span', {style:{fontSize:'11.5px', color:_AMB}},
+          noVal + ' of these carry no Value at Stake, so the window cannot be totalled') : null)));
+}
 
 function DrillModal({title, subtitle, rows, onClose}) {
   const money = v => '$' + Math.round(v).toLocaleString();
