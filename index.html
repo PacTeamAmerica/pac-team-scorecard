@@ -381,7 +381,7 @@ table.rtbl tbody tr:hover{background:#faf9f6}
       <h1>PAC TEAM &nbsp;·&nbsp; Commercial Scorecard</h1>
       <div class="sub">Rebuilds itself each week from the Podio exports and publishes only if all five checks pass · NetSuite refreshes on its own cadence</div>
     </div>
-    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite P&L revenue (income accounts), Jan 1–Nov 5 2026 · Open orders: 11/05 · Pipeline: Podio 11/05 · Quotes: 11/05</div>
+    <div id="last-updated" style="font-size:11px;color:#aaa;text-align:right;padding-top:4px">Revenue YTD: NetSuite P&amp;L revenue (income accounts), Jan 1–Nov 16 2026 · Open orders: 11/16 · Pipeline: Podio 11/16 · Quotes: 11/16</div>
   </div>
 
   <div class="tabbar" id="rdr-tabbar">
@@ -2263,6 +2263,51 @@ function PipelinePanel({seed}) {
   const c1 = S.new.v/gapLo, c2 = S.new.v/gapHi;
   const covLo = Math.min(c1,c2), covHi = Math.max(c1,c2);
 
+  // Methodology lives in one disclosure at the foot of the tab rather than
+  // beside every figure. It was beside every figure while the category basis
+  // was being argued and needed defending; that argument is settled and the
+  // page now states numbers and keeps the derivation one click away.
+  const [how, setHow] = useState(false);
+  const [held, setHeld] = useState(false);
+  const disc = (openState, set, label, body) => h('div',{style:{margin:'10px 0 16px',maxWidth:'860px'}},
+    h('button',{onClick:()=>set(!openState),
+      style:{background:'none',border:'none',padding:0,cursor:'pointer',font:'inherit',
+        fontSize:'12.5px',color:_M,display:'flex',alignItems:'center',gap:'7px'}},
+      h('span',{style:{display:'inline-block',width:'9px',transition:'transform .15s',
+        transform:openState?'rotate(90deg)':'none'}},'▸'),
+      h('span',{style:{borderBottom:'1px dotted '+_L}},label)),
+    openState ? h('div',{style:{fontSize:'12.5px',color:_M,lineHeight:1.6,
+      marginTop:'9px',paddingLeft:'16px',borderLeft:'2px solid '+_L}}, body) : null);
+
+  // The order-date bands. The first one is the point of the panel: work whose
+  // own expected order date has already gone by.
+  const PB = S.poBands || [];
+  const pbMax = Math.max.apply(null, PB.map(b=>b.v).concat([1]));
+  const PBC = {'overdue':_RED, 'undated':'#b4b2a9'};
+  const poRow = b => h('div',{key:b.b,style:{display:'grid',
+      gridTemplateColumns:'128px 1fr 118px 92px 52px',alignItems:'center',gap:'10px',margin:'6px 0'}},
+    h('div',{style:{fontSize:'12.5px',fontWeight:b.b==='overdue'?700:500,
+      color:b.b==='overdue'?_RED:_INK}}, b.b),
+    h('div',{style:{background:'#f2f5f3',borderRadius:'5px',height:'22px',overflow:'hidden'}},
+      h('div',{style:{height:'100%',width:Math.max(2,Math.round(100*b.v/pbMax))+'%',
+        background:PBC[b.b]||_GRN,borderRadius:'5px 0 0 5px'}})),
+    h('div',{style:{fontSize:'13px',textAlign:'right',fontWeight:600}},money(b.v)),
+    h('div',{style:{fontSize:'12px',textAlign:'right',color:_M}},money(b.w)+' wtd'),
+    h('div',{style:{fontSize:'11.5px',color:_M,textAlign:'right'}},
+      h('a',{style:LINK,title:'Show these '+b.n+' records',
+        onClick:()=>open('Projected PO date: '+b.b,
+          'Forward records whose projected PO date falls in this band',
+          r=>poBandOf(r.pd)===b.b)}, b.n)));
+  const poBandOf = d => {
+    if (!d || !/^\d{4}/.test(d)) return 'undated';
+    if (d < S.asof) return 'overdue';
+    const y = +d.slice(0,4), c = +S.asof.slice(0,4);
+    return y===c ? 'rest of '+c : y===c+1 ? String(c+1) : String(c+2)+'+';
+  };
+  const ovd = PB.find(b=>b.b==='overdue') || {n:0,v:0,w:0};
+  const nxt = PB.find(b=>b.b===String(+S.asof.slice(0,4)+1)) || {n:0,v:0,w:0};
+  const poSer = S.poSeries || [];
+
   return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
     _eyebrow('Pipeline · the forward book'),
     _title('Pipeline by Forecast Category'),
@@ -2271,50 +2316,40 @@ function PipelinePanel({seed}) {
     h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'8px'}},
       _kpi(money(S.unwtd), S.n+' records in the forward book', _GRN),
       _kpi(money(S.flat), 'Weighted on measured category rates', _GRN),
-      _kpi(money(S.aged), 'Same book, adjusted for how long each deal has sat', _AMB),
-      _kpi(S.noProb+' of '+S.n, 'Carry no probability at all', _RED)),
+      _kpi(money(ovd.v), ovd.n+' past their own projected PO date', _RED),
+      _kpi(money(S.stalledV), S.stalledN+' in Commit 90+ days with no PO', _RED)),
 
     _head('The forward book'),
-    _note('The category is set by a Podio flow from stage and status, not typed by a person, so it is the most reliable field set available.'),
-    (S.recatN ? _note('Ageing note. On 4 November the Podio rule that forced every paused project into '
-      + 'Pipeline was removed, so a paused project now keeps the category its stage earned. '
-      + S.recatN+' records worth '+money(S.recatV)+' moved category that day without the work itself '
-      + 'changing. Their age below is time in the forward book, not time in this category, which is '
-      + 'the right reading for chasing a stall: resetting them to nil would have dropped the oldest '
-      + 'held work off this list on the day it became visible.') : null),
-    h('div',{style:{fontSize:'12.5px',color:_M,margin:'0 0 14px',maxWidth:'860px',
-        padding:'9px 12px',border:'1px solid rgba(186,117,23,.35)',borderRadius:'8px',
-        background:'rgba(186,117,23,.07)',lineHeight:1.55}},
-      h('b',{style:{color:'#8a6d1f'}},'On Hold work counts at half weight. '),
-      h('a',{style:LINK,onClick:()=>open('On Hold','Held work, counted at half its category weight',r=>!!r.h)},
-        S.heldN+' of the '+S.n+' records, worth '+money(S.heldV)+' of estimate'),
-      ', are On Hold, contributing '+money(S.heldW)+' against '+money(S.heldWFull)+' at full rate. '
-      + 'Podio discounts a pause by halving the stage probability and letting the forecast category '
-      + 'follow the stage, so a paused project keeps the category its work earned and is counted for '
-      + 'less. This is the same discount on the category basis, applied once rather than twice. '
-      + 'Held work stays listed and flagged rather than hidden, because a pause is usually temporary.'),
     stack,
     catTable,
+    h('div',{style:{fontSize:'12.5px',color:_M,margin:'10px 0 0',maxWidth:'860px'}},
+      money(S.fullV)+' across '+S.fullN+' active PTA forward records. ',
+      money(S.unwtd)+' of it is Score-eligible; the other '+money(S.exclV)
+      + ' is already counted in open orders or sits outside PTA. ',
+      h('a',{style:LINK,onClick:()=>setHow(!how)},'How the weights are measured')),
 
-    _head('How this reconciles to the Score'),
-    _note('Two numbers circulate for "the pipeline" and they are not the same. A direct read of the export gives '+money(S.fullV)+' across '+S.fullN+' active PTA forward records. The Score cannot use all of it.'),
-    reconTable,
-    _note('The '+S.exclN+' excluded records are projects whose Sales Confirmation # is corroborated in NetSuite, so their '+money(S.exclV)+' is already counted in Open Orders, plus any outside the PTA division. Counting them here as well would inflate the Score twice over. Won is excluded on the same principle: '+S.won.poPct+'% of its '+S.won.n+' records already carry a Purchase Order and its '+money(S.won.v)+' has already converted.'),
-    _note('Weights come from 63 weekly archive snapshots between Jun 2025 and Nov 2026, measured as conversion within 120 days of entering the category among deals observed a full 120 days. Commit holds at 41–43% either side of the May 2026 flow deployment, so its history is usable. Pipeline is the weakest of the three: the flow moved its record count from 63 to 395, so the bucket is broader than the history that measured it, and it is due for re-measurement in Q1 2027.'),
-
-    _head('How long the book has been sitting'),
-    _note('Age is days in the current unbroken spell in the category, read from the weekly snapshot series. Commit conversion falls from 48% at entry to 15% once a deal has been there 90 days, so the bands below are not cosmetic. A "+" means the deal was already in the category when the archive begins on 23 Jun 2025, so its age is a floor.'),
-    h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'26px'}},
-      ['Commit','Best Case','Pipeline'].map(ageRows)),
+    disc(held, setHeld, 'On Hold work counts at half weight · '
+        + S.heldN+' records, '+money(S.heldV),
+      [h('span',{key:'a'},'They contribute '+money(S.heldW)+' against '+money(S.heldWFull)
+        + ' at full rate. Podio discounts a pause by halving the stage probability and letting '
+        + 'the forecast category follow the stage, so a paused project keeps the category its '
+        + 'work earned and is counted for less. This is the same discount on the category basis, '
+        + 'applied once rather than twice. Held work stays listed and flagged rather than hidden, '
+        + 'because a pause is usually temporary. '),
+       h('a',{key:'b',style:LINK,onClick:()=>open('On Hold','Held work, counted at half its category weight',r=>!!r.h)},
+         'Show the '+S.heldN+' held records')]),
 
     h('div',{style:{display:'flex',alignItems:'baseline',justifyContent:'space-between',
-        margin:'28px 0 6px',gap:'12px'}},
+        margin:'30px 0 6px',gap:'12px'}},
       h('div',{style:{fontSize:'13px',letterSpacing:'.06em',textTransform:'uppercase',
-        color:_M,fontWeight:600}},'Commit past 90 days with no Purchase Order'),
+        color:_M,fontWeight:600}},'The call list · Commit past 90 days with no Purchase Order'),
       h('button',{className:'fb-chip',onClick:()=>open('Stalled Commit',
         'In Commit more than 90 days with no Purchase Order',
         r=>r.f==='Commit' && !r.po && r.a>90 && r.e>0)},'All '+S.stalledN+' records ↓')),
-    _note('This is the call list. '+S.stalledN+' records worth '+money(S.stalledV)+' have been in Commit more than 90 days without a PO. Every 2026 production cutoff closed on 31 October, so none of this can be produced and invoiced this year whenever the PO lands. A deal in Commit for three months with no order is not a commitment.'),
+    _note(S.stalledN+' records worth '+money(S.stalledV)+' have been in Commit more than 90 days '
+      + 'without a PO. Every 2026 production cutoff closed on 31 October, so none of this can be '
+      + 'produced and invoiced this year whenever the PO lands. A deal in Commit for three months '
+      + 'with no order is not a commitment.'),
     h('table',{style:{width:'100%',borderCollapse:'collapse',fontSize:'13.5px'}},
       h('thead',null,h('tr',null,['job code','client','estimate','in commit','type']
         .map((x,i)=>h('th',{key:x,style:{textAlign:i<2?'left':'right',padding:'7px 6px',
@@ -2322,63 +2357,31 @@ function PipelinePanel({seed}) {
           letterSpacing:'.05em',color:_M}},x)))),
       h('tbody',null,callRows)),
 
-    _head('Where the category and the probability field disagree'),
-    _note(S.noProb+' of '+S.n+' forward records carry no probability at all, which is why the category drives the weighting and the probability field does not. The shaded cell is the live problem: Commit records with no probability set, which the CEO formula would exclude from the Score entirely.'),
-    matrix,
+    _head('When this book becomes orders'),
+    _note('By projected PO date, which is when the work is expected to be ordered. That is the '
+      + 'date that turns pipeline into backlog, and it leads the invoicing date by the '
+      + 'manufacturing cycle: '+money(S.d27.v)+' carries a 2027 invoicing date, but most of it is '
+      + 'work expected to be ordered this year. The first band is the one to work.'),
+    h('div',{style:{border:'1px solid '+_L,borderRadius:'12px',padding:'14px 16px 10px'}},
+      PB.map(poRow)),
+    h('div',{style:{fontSize:'12.5px',color:_M,margin:'10px 0 0',maxWidth:'860px',lineHeight:1.55}},
+      h('b',{style:{color:_RED}},money(ovd.v)+' across '+ovd.n+' records is already past its own '
+        + 'projected PO date. '),
+      'That is a forecast that has quietly failed rather than a deal that is late: the date was '
+      + 'set by the team and the order has not arrived. ',
+      h('b',{style:{color:_INK}},money(nxt.v)+' across '+nxt.n+' records is expected to be ordered '
+        + 'in '+(+S.asof.slice(0,4)+1)+'. '),
+      poSer.length > 1
+        ? 'Week over week, that figure was '+money(poSer[poSer.length-2].v)+' last build.'
+        : 'Week-over-week tracking of that figure starts with this build: the weekly archive began '
+          + 'carrying the projected PO date on 16 November 2026, so no earlier week can be '
+          + 'reconstructed.'),
 
-    _head('On Hold, week by week'),
-    _note('On the watchlist since August and not previously on this page. What is plotted is the '
-      + 'estimate value of the held book, not its weighted contribution: until 4 November a Podio '
-      + 'flow forced every paused project into the Pipeline category, so a weighted line would '
-      + 'roughly triple on that date from the relabel alone and read as something the business did. '
-      + 'Estimate value does not depend on the category, so it means the same thing either side of '
-      + 'the change.'),
-    (function(){
-      const H = HELD_SEED, pts = H.series.filter(s=>s.d >= H['break']);
-      if (pts.length < 2) return null;
-      const W = 860, HT = 150, PX = 46, PY = 14;
-      const vs = pts.map(p=>p.v), lo = 0;
-      // Round the top of the scale up to a clean step so the gridlines read
-      // $500k / $1m rather than $1154k / $2309k.
-      const raw = Math.max.apply(null, vs) * 1.12;
-      const step = Math.pow(10, Math.floor(Math.log10(raw))) / 2;
-      const hi = Math.ceil(raw / step) * step;
-      const xs = i => PX + i * (W - PX - 12) / (pts.length - 1);
-      const ys = v => PY + (HT - PY - 26) * (1 - (v - lo) / (hi - lo || 1));
-      const line = pts.map((p,i)=>(i?'L':'M')+xs(i).toFixed(1)+' '+ys(p.v).toFixed(1)).join(' ');
-      const ri = pts.findIndex(p=>p.d >= H.relabel);
-      const aug = pts.findIndex(p=>p.d >= '2026-08-31');
-      return h('div',{style:{border:'1px solid '+_L,borderRadius:'12px',padding:'12px 14px 8px',marginBottom:'14px'}},
-        h('svg',{viewBox:'0 0 '+W+' '+HT,style:{width:'100%',height:'auto',display:'block'},
-                 role:'img','aria-label':'On Hold book estimate value by week since '+H['break']},
-          [0, hi/2, hi].map((g,gi)=>h('g',{key:'g'+gi},
-            h('line',{x1:PX,x2:W-12,y1:ys(g),y2:ys(g),stroke:_L,strokeWidth:1}),
-            h('text',{x:PX-6,y:ys(g)+3.5,textAnchor:'end',fontSize:9,fill:_M},
-              g ? (g>=1e6 ? '$'+(g/1e6).toFixed(g%1e6?1:0)+'m' : '$'+Math.round(g/1000)+'k') : '0'))),
-          ri >= 0 ? h('g',null,
-            h('line',{x1:xs(ri),x2:xs(ri),y1:PY,y2:HT-26,stroke:_AMB,strokeWidth:1,strokeDasharray:'3 3'}),
-            h('text',{x:xs(ri)+(xs(ri) > W*0.62 ? -5 : 5),y:PY+9,fontSize:9,fill:_AMB,
-                       textAnchor:(xs(ri) > W*0.62 ? 'end' : 'start')},'4 Nov category change')) : null,
-          h('path',{d:line,fill:'none',stroke:_GRN,strokeWidth:2}),
-          pts.map((p,i)=>h('circle',{key:'c'+i,cx:xs(i),cy:ys(p.v),r:(i===pts.length-1||i===aug)?3.5:2,
-            fill:(ri>=0&&i>=ri)?_AMB:_GRN})),
-          _monthTicks(pts, xs, 40).map((t,i)=>h('g',{key:'mt'+i},
-            h('line',{x1:t.x,x2:t.x,y1:HT-26,y2:HT-22,stroke:_L,strokeWidth:1}),
-            h('text',{x:t.x,y:HT-10,fontSize:9,fill:_M,textAnchor:'middle'},t.label)))),
-        h('div',{style:{fontSize:'12.5px',color:_M,lineHeight:1.55,marginTop:'6px'}},
-          h('b',{style:{color:_INK}},'Up '+money(H.since.delta)+', '+H.since.pct+'%, since 31 August. '),
-          'The held book was '+money(H.since.v)+' then and is '+money(H.series[H.series.length-1].v)
-          + ' now across '+H.curN+' PTA records, having peaked at '+money(H.peak.v)+' on '+H.peak.d+'. ',
-          h('a',{style:LINK,onClick:()=>open('On Hold','Held records in the Score book, counted at half their category weight',r=>!!r.h)},
-            H.scoreN+' of those records, worth '+money(H.scoreV)+', are in the Score book'),
-          ' and contribute '+money(H.curW)+' against '+money(H.curWFull)+' at full category rate. '
-          + 'The rest are already counted in open orders or sit outside PTA. '
-          + 'Figures before 18 May 2026 are left off: the flow deployment and the hygiene sweep that '
-          + 'followed it changed what the categories mean, and the held book reads $7.1m before it, '
-          + 'which would show as a collapse rather than a change of regime.')); })(),
+    _head('How long the book has been sitting'),
+    h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'26px'}},
+      ['Commit','Best Case','Pipeline'].map(ageRows)),
 
     _head('Coverage against the 2027 goal'),
-    _note('Split before publishing, because a 3x coverage benchmark assumes net-new deal flow and PAC TEAM is heavily reorder-driven. '+S.rec.n+' of the '+S.n+' forward records, worth '+money(S.rec.v)+', are reorders of programmes that already have a completed or PO-carrying instance. Those do not need pipeline coverage; they need the programme retained. The coverage ratio below therefore runs on the net-new half only.'),
     h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'10px'}},
       h('div',{style:{flex:'1',minWidth:'160px',cursor:'pointer'},
           onClick:()=>open('Net-new forward book','Programmes with no completed or PO-carrying sibling',
@@ -2390,21 +2393,50 @@ function PipelinePanel({seed}) {
         _kpi(money(S.rec.v), S.rec.n+' reorder records of established programmes ↓', '#1D9E75')),
       _kpi(covLo.toFixed(2)+'x – '+covHi.toFixed(2)+'x', 'Net-new coverage of the gap, against a 3x benchmark', _RED)),
     h('div',{style:{fontSize:'12.5px',color:_M,margin:'0 0 14px',maxWidth:'860px'}},
-      'Separately, ',
-      h('a',{style:LINK,onClick:()=>open('Dated into 2027','Forward records with a 2027 estimated invoicing date',
-        r=>(r.d||'').slice(0,4)>='2027')}, S.d27.n+' records worth '+money(S.d27.v)),
-      ' are already dated into 2027, and ',
-      h('a',{style:LINK,onClick:()=>open('No invoicing date','Forward records with no estimated invoicing date',
-        r=>!r.d)}, S.undated.n+' worth '+money(S.undated.v)),
-      ' carry no invoicing date at all.'),
-    _note('Goal '+k(S.goal[0])+' to '+k(S.goal[1])+', less 2027 backlog already booked of '+k(S.bklg27[0])+' to '+k(S.bklg27[1])+', leaves '+k(gapLo)+' to '+k(gapHi)+' of net-new revenue to find. Against that, '+money(S.new.v)+' of net-new pipeline is coverage of '+covLo.toFixed(2)+'x to '+covHi.toFixed(2)+'x. A 3x benchmark would want '+k(3*gapLo)+' to '+k(3*gapHi)+'. Read this as an early signal rather than a verdict: the 2027 goal is not set, and the reorder half of the business books without ever appearing as pipeline. Separately, '+S.d27.n+' records worth '+money(S.d27.v)+' are already dated into 2027, and '+S.undated.n+' worth '+money(S.undated.v)+' carry no invoicing date at all.'),
+      'Goal '+k(S.goal[0])+' to '+k(S.goal[1])+', less '+k(S.bklg27[0])+'–'+k(S.bklg27[1])
+      + ' of 2027 backlog already booked, leaves '+k(gapLo)+' to '+k(gapHi)+' to find. '
+      + 'Coverage runs on the net-new half only, because reorders book without ever appearing '
+      + 'as pipeline. Read it as an early signal: the 2027 goal is not set.'),
+
+    disc(how, setHow, 'How these figures are built',
+      [h('p',{key:1,style:{margin:'0 0 9px'}},
+        h('b',null,'The weights. '),'Measured from 63 weekly archive snapshots between June 2025 '
+        + 'and November 2026, as conversion within 120 days of entering the category among deals '
+        + 'observed a full 120 days. Commit holds at 41–43% either side of the May 2026 flow '
+        + 'deployment, so its history is usable. Pipeline is the weakest of the three: the flow '
+        + 'moved its record count from 63 to 395, so the bucket is broader than the history that '
+        + 'measured it, and it is due for re-measurement in Q1 2027.'),
+       h('p',{key:2,style:{margin:'0 0 9px'}},
+        h('b',null,'The category. '),'Set by a Podio flow from stage and status, not typed by a '
+        + 'person, so it is the most reliable field available. '+S.noProb+' of '+S.n+' forward '
+        + 'records carry no probability at all, which is why the category drives the weighting '
+        + 'and the probability field does not.'),
+       h('p',{key:3,style:{margin:'0 0 9px'}},
+        h('b',null,'Age. '),'Days in the current unbroken spell in the category, read from the '
+        + 'weekly snapshot series rather than the Podio Commit Entered field, which is re-stamped. '
+        + 'Commit conversion falls from 48% at entry to 15% once a deal has been there 90 days, so '
+        + 'the bands are not cosmetic. A "+" means the deal was already in the category when the '
+        + 'archive begins on 23 June 2025, so its age is a floor. Age known for '+S.ageKnown+' of '
+        + S.n+' records ('+S.ageCensored+' left-censored); the remaining '+S.ageNew+' changed '
+        + 'category since the last archived export and are counted as new.'),
+       (S.recatN ? h('p',{key:4,style:{margin:'0 0 9px'}},
+        h('b',null,'The 4 November relabel. '),'The Podio rule that forced every paused project '
+        + 'into Pipeline was removed, so a paused project now keeps the category its stage earned. '
+        + S.recatN+' records worth '+money(S.recatV)+' moved category that day without the work '
+        + 'itself changing, and their age carries across rather than resetting.') : null),
+       h('p',{key:5,style:{margin:0}},
+        h('b',null,'What is excluded. '),'The '+S.exclN+' excluded records are projects whose '
+        + 'Sales Confirmation # is corroborated in NetSuite, so their '+money(S.exclV)+' is '
+        + 'already counted in Open Orders, plus any outside the PTA division. Won is excluded on '
+        + 'the same principle: '+S.won.poPct+'% of its '+S.won.n+' records already carry a '
+        + 'Purchase Order.')]),
 
     drill ? h(DrillModal, {title:drill.title, subtitle:drill.subtitle,
       rows:drill.rows, onClose:()=>setDrill(null)}) : null,
-    h('div',{style:{marginTop:'30px',fontSize:'12px',color:_M,borderTop:'1px solid '+_L,paddingTop:'14px'}},
-      'Every count and dollar figure above is a link: it opens the records behind it and '
-      + 'offers them as a spreadsheet. ',
-      'Source: Podio .Projects export '+S.asof+', Division = PTA, statuses In Progress / On Hold / Opportunity. Weights and the age-decay curve measured from 63 archived weekly exports, 23 Jun 2025 to 3 Nov 2026; see PAC_TEAM_Pipeline_Category_History_Findings_Nov3_2026. Age is the current unbroken category spell from that series, not the Podio Commit Entered field, which is re-stamped. Age known for '+S.ageKnown+' of '+S.n+' records ('+S.ageCensored+' left-censored at the archive start); the remaining '+S.ageNew+' changed category since the last archived export and are counted as new.')
+    h('div',{style:{marginTop:'26px',fontSize:'12px',color:_M,borderTop:'1px solid '+_L,paddingTop:'14px'}},
+      'Every count and dollar figure above is a link: it opens the records behind it and offers '
+      + 'them as a spreadsheet. Source: Podio .Projects export '+S.asof+', Division = PTA, '
+      + 'statuses In Progress / On Hold / Opportunity.')
   );
 }
 
@@ -2595,7 +2627,14 @@ function BoardPanel({ board, act, meta, onTab }) {
   // neither colour; a project that dropped out of the export is a data
   // question, and giving it a commercial colour would be a quiet fiction.
   const mbox = k => {
-    const sp = MVSPEC[k], lab = sp[0], tone = sp[1], def = sp[2], n = mv[k].n;
+    // A movement reason absent from the seed reads as nil, not as a crash. The
+    // board took the whole page down with "mv[k] is undefined" when a build
+    // produced a BOARD_SEED without one of these seven keys, which is a seed
+    // shape question and not a reason for a CEO to get a blank screen. Every
+    // figure on this page is a roll-up of something that may legitimately be
+    // empty in a given week.
+    const sp = MVSPEC[k], lab = sp[0], tone = sp[1], def = sp[2];
+    const d = (mv && mv[k]) || {n: 0, v: 0}, n = d.n || 0;
     return h('div', { key: k,
         onClick: n ? (() => openMoves(k, lab)) : null,
         title: def + (n ? '  Click to open the ' + n + ' project' + (n === 1 ? '' : 's') + '.' : ''),
@@ -2606,12 +2645,12 @@ function BoardPanel({ board, act, meta, onTab }) {
           cursor: n ? 'pointer' : null } },
       h('div', { style: { fontSize: '16px', fontWeight: 600,
           color: !n ? _M : tone === 'good' ? _GRN : tone === 'bad' ? _RED
-            : tone === 'warn' ? _AMB : tone === 'flat' ? _INK : col(mv[k].v) } },
+            : tone === 'warn' ? _AMB : tone === 'flat' ? _INK : col(d.v) } },
         // A win is shown unsigned. It does reduce the book, but a green minus
         // sign reads as a contradiction and the label already says what
         // happened.
         n ? ((k === 'lost' || k === 'gone' || k === 'held' ? '\u2212' : '')
-          + money(Math.abs(mv[k].v))) : 'none'),
+          + money(Math.abs(d.v))) : 'none'),
       h('div', { style: { fontSize: '11px', color: _M, lineHeight: 1.35,
           textDecoration: n ? 'underline' : null,
           textDecorationStyle: 'dotted', textUnderlineOffset: '3px' } }, lab),
@@ -2640,7 +2679,7 @@ function BoardPanel({ board, act, meta, onTab }) {
       h('div', { style: { width: '2px', background: _M, opacity: .45, borderRadius: '1px',
         alignSelf: 'stretch', margin: '14px 0 0' } }),
       mgroup('Also this week', ['recat', 'held'])),
-    B.moves.recat.n > 20 ? h('div', { style: { fontSize: '11.5px', color: _M,
+    ((B.moves && B.moves.recat && B.moves.recat.n) || 0) > 20 ? h('div', { style: { fontSize: '11.5px', color: _M,
         marginTop: '10px', lineHeight: 1.5 } },
       B.moves.recat.n + ' projects changed category this week, almost all of them the '
       + '4 November Podio change that stopped forcing paused projects into Pipeline.') : null);
@@ -2717,11 +2756,15 @@ function BoardPanel({ board, act, meta, onTab }) {
   const band = (v, floor, target) => v >= target ? _GRN : v >= floor ? _AMB : _RED;
   const verdict = (v, floor, target) => v >= target ? 'on target' : v >= floor ? 'above floor' : 'below floor';
   const activity = h('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
-    stat('Quotes sent this week', Q.curN + ' · ' + money(Q.curV),
-      'floor ' + Q.floorN + ' / target ' + Q.targetN + ' · ' + verdict(Q.curN, Q.floorN, Q.targetN),
+    stat('Quotes sent this week', Q.curN + ' \u00b7 ' + money(Q.curV),
+      (Q.curProjN != null && Q.curProjN !== Q.curN
+         ? 'to ' + Q.curProjN + ' projects \u00b7 '
+         : 'to ' + (Q.curProjN != null ? Q.curProjN : Q.curN) + ' projects \u00b7 ')
+      + 'floor ' + Q.floorN + ' / target ' + Q.targetN + ' \u00b7 ' + verdict(Q.curN, Q.floorN, Q.targetN),
       null, () => onTab('pipe'), band(Q.curN, Q.floorN, Q.targetN)),
     stat('Quote book past its close window', money(Q.overdueV),
-      Q.overdueN + ' of ' + Q.liveN + ' live quotes are past the ' + Q.lagMed + '-day median lag',
+      Q.overdueN + ' of ' + Q.liveN + ' live-quoted projects are past the ' + Q.lagMed
+      + '-day median lag',
       null, null, _RED),
     stat('Meetings held or booked this week', String(M.heldThisWeek),
       M.bookedNextWeek + ' booked for next week · ' + M.booked + ' booked, ' + M.pursuing + ' pursuing in all',
@@ -2741,6 +2784,17 @@ function BoardPanel({ board, act, meta, onTab }) {
         h('td', { style: { padding: '5px 0', textAlign: 'right', width: '130px',
             fontWeight: b.late ? 600 : 400, color: b.late ? _RED : _INK } }, full(b.v)))))),
     h('div', { style: { fontSize: '11.5px', color: _M, marginTop: '8px', lineHeight: 1.5 } },
+      (Q.liveRecN != null
+        ? [h('b', { key: 'q0', style: { color: _INK } },
+             'One quote per project. '),
+           Q.liveN + ' projects from ' + Q.liveRecN + ' live quote records'
+           + (Q.multiQuoteN
+              ? '; ' + Q.multiQuoteN + ' project' + (Q.multiQuoteN === 1 ? '' : 's')
+                + ' carry more than one, and the lowest is taken because that is the quote the '
+                + 'business expects to win on margin. Counting every record instead would read '
+                + money(Q.liveHigh) + '. '
+              : ', none of them quoted twice. ')]
+        : null),
       'Median quote to PO is ', Q.lagMed, ' days and the slowest tenth take ', Q.lagP90,
       '. The ', h('b', { style: { color: _RED } }, '61 to ' + Q.lagP90 + ' day band'),
       ' is the one to work: those quotes are four to eight times past the normal close window and '
