@@ -21,13 +21,13 @@
  "awaO": 132,
  "clientTrailing": 71,
  "clientFY": 67,
- "cycle": "11/11",
- "cycleLabel": "Nov 11, 2026",
+ "cycle": "11/16",
+ "cycleLabel": "Nov 16, 2026",
  "nsAsof": "2026-11-09",
- "podioAsof": "2026-11-11",
- "quotesAsof": "2026-11-11",
- "poAsof": "2026-11-11",
- "shipAsof": "2026-11-11",
+ "podioAsof": "2026-11-16",
+ "quotesAsof": "2026-11-16",
+ "poAsof": "2026-11-16",
+ "shipAsof": "2026-11-16",
  "svelAsof": "2026-11-04",
  "ttm": 20465591,
  "runRate": 393569,
@@ -61,9 +61,9 @@
  "pipeScoreV": 6973917,
  "pipeExclN": 45,
  "pipeExclV": 1978041,
- "pipeAged": 1764820,
- "stalledCommitN": 19,
- "stalledCommitV": 1548775,
+ "pipeAged": 1631376,
+ "stalledCommitN": 20,
+ "stalledCommitV": 1558775,
  "noProb": 62,
  "recN": 65,
  "recV": 3011904,
@@ -126,7 +126,7 @@
   "ceo",
   "dq"
  ],
- "builtAt": "2026-11-11",
+ "builtAt": "2026-11-16",
  "heldN": 39,
  "heldV": 1459238,
  "onHoldRule": "On Hold carries HOLD_FACTOR 0.5 of its category weight. Podio halves the stage probability on pause and lets the category follow Stage (Master Reference v1.9 4.3/4.4), so the pause is discounted once. Replaces the 4 Nov zero rule, which double-discounted it. Chosen by JM 5 Nov 2026.",
@@ -187,5 +187,5 @@
   ],
   "seedsMerged": "COVERAGE_SEED and CONC_SEED now derive from one METRICS object; the four CEO display strings are expressions, not literals"
  },
- "heldAsof": "2026-11-11"
+ "heldAsof": "2026-11-16"
 }
