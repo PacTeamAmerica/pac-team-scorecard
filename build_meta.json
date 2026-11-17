@@ -21,13 +21,13 @@
  "awaO": 122,
  "clientTrailing": 70,
  "clientFY": 67,
- "cycle": "11/16",
- "cycleLabel": "Nov 16, 2026",
+ "cycle": "11/17",
+ "cycleLabel": "Nov 17, 2026",
  "nsAsof": "2026-11-16",
- "podioAsof": "2026-11-16",
- "quotesAsof": "2026-11-16",
- "poAsof": "2026-11-16",
- "shipAsof": "2026-11-16",
+ "podioAsof": "2026-11-17",
+ "quotesAsof": "2026-11-17",
+ "poAsof": "2026-11-17",
+ "shipAsof": "2026-11-17",
  "svelAsof": "2026-11-04",
  "ttm": 20537593,
  "runRate": 394954,
@@ -127,12 +127,13 @@
   "ceo",
   "dq"
  ],
- "builtAt": "2026-11-16",
+ "builtAt": "2026-11-17",
  "heldN": 39,
  "heldV": 1461238,
  "onHoldRule": "On Hold carries HOLD_FACTOR 0.5 of its category weight. Podio halves the stage probability on pause and lets the category follow Stage (Master Reference v1.9 4.3/4.4), so the pause is discounted once. Replaces the 4 Nov zero rule, which double-discounted it. Chosen by JM 5 Nov 2026.",
  "sourcesBehind": {
-  "svelAsof": "the matched-pair population needs the Jobs & Opportunities export, which is not one of the weekly files"
+  "svelAsof": "the matched-pair population needs the Jobs & Opportunities export, which is not one of the weekly files",
+  "nsAsof": "no NetSuite pull was dropped in data/ for this cycle, so the revenue and open-order figures are the ones from the last pull that was"
  },
  "heldW": 271066,
  "heldWFull": 542132,
@@ -187,5 +188,5 @@
   ],
   "seedsMerged": "COVERAGE_SEED and CONC_SEED now derive from one METRICS object; the four CEO display strings are expressions, not literals"
  },
- "heldAsof": "2026-11-16"
+ "heldAsof": "2026-11-17"
 }
