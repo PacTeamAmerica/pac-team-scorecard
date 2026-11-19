@@ -16,6 +16,12 @@ h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
 .upload-panel{background:#fff;border-radius:12px;border:1px solid #e5e3dc;padding:24px;margin-bottom:20px}
 .upload-panel h2{font-size:14px;font-weight:600;color:#444;margin:0}
 .upload-head{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none;margin-bottom:14px}
+/* Collapsed, this panel is a one-line provenance strip, and 24px of padding
+   either side of it pushed the Board's first figure well down the page. The
+   open state is untouched: the upload zones still need the room. */
+.upload-panel.is-closed{padding:11px 18px;margin-bottom:14px}
+.upload-panel.is-closed .upload-head{margin-bottom:0}
+.upload-panel.is-closed h2{font-size:13px}
 .upload-head:hover h2{color:#1a1a18}
 .upload-meta{display:flex;align-items:center;gap:9px;flex:0 0 auto}
 .upload-count{font-size:10px;color:#aaa;white-space:nowrap}
@@ -389,7 +395,6 @@ table.rtbl tbody tr:hover{background:#faf9f6}
     <button class="tabbtn" data-tab="accounts" onclick="window.__scSetTab&&window.__scSetTab('accounts')">Accounts</button>
     <button class="tabbtn" data-tab="pipe" onclick="window.__scSetTab&&window.__scSetTab('pipe')">Pipeline &amp; Demand</button>
     <button class="tabbtn" data-tab="revenue" onclick="window.__scSetTab&&window.__scSetTab('revenue')">Revenue &amp; Close</button>
-    <button class="tabbtn" data-tab="ceo" onclick="window.__scSetTab&&window.__scSetTab('ceo')">CEO Scorecard</button>
     <button class="tabbtn" data-tab="dq" onclick="window.__scSetTab&&window.__scSetTab('dq')">Data Integrity</button>
   </div>
 
@@ -407,8 +412,9 @@ table.rtbl tbody tr:hover{background:#faf9f6}
       </ul>
       <p>Each account's <strong>score</strong> is the sum of the three. I added the small bar under each account name to show that score against the account's full 2025 revenue: green means last year is already covered.</p>
       <p><strong>Revenue projection has moved to Finance.</strong> This scorecard no longer publishes a projected full-year revenue figure or a seasonally adjusted range. Finance owns the forecast; what this file owns is the pipeline that becomes revenue, the backlog of work already won, and the handoff that tells Finance what is ready to bill. <b>2027 booked backlog</b>, on the Revenue &amp; Close tab, is real orders already won whose invoicing falls next year, shown as a range because two annual packaging programs release monthly across the year end.</p>
-      <p><strong>How I keep it current.</strong> The four Podio exports go into a private repository each week and a build rebuilds this page from them, runs five checks, and publishes only if all five pass. A build that fails any of them publishes nothing and leaves the page exactly as it was. NetSuite refreshes on its own cadence, not with the weekly build. The upload panel below is still there, but it is now a mid-week override in your own browser rather than the way the page gets its numbers. I keep accounts in three tiers: Key, Strategic Growth, and Strategic Targets. Everything else rolls up under Other active accounts. The active client count tracks concentration; fewer, deeper relationships is the goal.</p>
-      <p class="about-foot">Fine print: revenue is P&amp;L recognized revenue (income accounts, net of credit memos). Gross billings run higher because they include freight and duty pass-throughs. About &minus;$0.4M of factory and intercompany adjustments sits in the company total but not in any account row, so the rows sum slightly higher than the total.</p>
+      <p><strong>Where things live.</strong> Each tab owns one subject, so a figure is derived in one place and read everywhere else. The Board is this week&rsquo;s position and what to do about it. Accounts is the tiers and the account scores. Pipeline &amp; Demand is the forward book, its ageing, and the quote mechanics behind it. Revenue &amp; Close is the CEO revenue measures, attainment against the band, and concentration. Data Integrity is what is missing. Where the Board shows a figure another tab owns, it states it and points rather than re-deriving it.</p>
+      <p><strong>How I keep it current.</strong> The five Podio exports go into a private repository each week and a build rebuilds this page from them, runs five checks, and publishes only if all five pass. A build that fails any of them publishes nothing and leaves the page exactly as it was. NetSuite refreshes on its own cadence, not with the weekly build. The upload panel below is still there, but it is now a mid-week override in your own browser rather than the way the page gets its numbers. I keep accounts in three tiers: Key, Strategic Growth, and Strategic Targets. Everything else rolls up under Other active accounts. The active client count tracks concentration; fewer, deeper relationships is the goal.</p>
+      <p class="about-foot">Fine print: revenue is P&amp;L recognized revenue (income accounts, net of credit memos). Gross billings run higher because they include freight and duty pass-throughs. About &minus;$0.63M of factory and intercompany adjustments sits in the company total but not in any account row, so the rows sum slightly higher than the total. On the year to date that is Tianzhi &minus;$481,841, PTM &minus;$122,506, an LVMH parent-level entry &minus;$16,745 and Dongguan Ruisheng &minus;$8,025.</p>
     </div>
   </details>
 
@@ -891,6 +897,12 @@ function deltaNote(d) {
   return note;
 }
 
+// UNREFERENCED as of 19 Nov 2026. Both buttons that called it are gone: the
+// build writes snapshot-history.json as its final step, so handing someone a
+// copy to commit by hand pointed them at a path the build owns. Kept rather
+// than deleted because it is the only way to produce that file outside the
+// build, which is worth having if the workflow ever has to be bypassed. It is
+// wired to nothing; anyone reconnecting it should ask why first.
 function downloadSnapshot(history, entry) {
   const out = (history||[]).filter(h=>h.date!==entry.date).concat([entry])
     .sort((a,b)=> a.date < b.date ? -1 : 1).slice(-SNAPSHOT_KEEP);
@@ -1820,11 +1832,23 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
   const [open, setOpen] = useState(false);
   if (history === null) return null;                     // still fetching
   if (!wow) {
+    // Rewritten 19 Nov 2026. The old text told the reader to commit
+    // snapshot-history.json beside index.html by hand and gave them a download
+    // button to do it with. That was true when the page was hand-built. The
+    // build now writes the reduced public history as its last step, so the
+    // file arriving is not a thing anyone does - which makes this banner a
+    // BUILD alarm rather than an instruction, and the instruction would have
+    // sent someone to commit a file the next build overwrites.
+    //
+    // The condition stays. If the publish step ever stops running, this is the
+    // only place the page says so.
     return h('div',{className:'wow-bar wow-empty'},
       h('span',null, histErr
-        ? `No snapshot history yet (${histErr}). Commit snapshot-history.json beside index.html to start tracking week-over-week.`
-        : 'No prior snapshot to compare against. Download this week\u2019s snapshot below and commit it to start the series.'),
-      h('button',{className:'wow-dl',onClick:()=>downloadSnapshot(history||[],snapshotFromParse(podioData,PODIO_ASOF))},'Download snapshot')
+        ? `Week-over-week is unavailable: snapshot-history.json did not load (${histErr}). `
+          + 'The build publishes that file as its final step, so this means the publish '
+          + 'did not run or did not complete. The figures above are unaffected; only the '
+          + 'comparison against last week is missing.'
+        : 'No prior snapshot to compare against yet. The series starts with the next build.')
     );
   }
   const up = wow.deltaWtd >= 0;
@@ -1864,7 +1888,6 @@ function WowPanel({wow, history, histErr, podioData, poMeta}) {
             '(',(up?'+':'\u2212'),fmtShort(Math.abs(wow.deltaWtd)),')')
         )
       ),
-      h('button',{className:'wow-dl',onClick:()=>downloadSnapshot(history,snapshotFromParse(podioData,PODIO_ASOF))},'Download snapshot')
     ),
     h('div',{className:'wow-note'},deltaNote(wow)),
     ranked.length ? h('div',{className:'wow-more',onClick:()=>setOpen(o=>!o)},
@@ -2314,7 +2337,10 @@ function PipelinePanel({seed}) {
     _sub('Podio .Projects, PTA division, active work · snapshot '+S.asof),
 
     h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'8px'}},
-      _kpi(money(S.unwtd), S.n+' records in the forward book', _GRN),
+      // Named for what it is. The Board's card is every forward record; this
+      // is the subset the Score can use. Calling both 'the forward book' is
+      // what made two correct numbers look like one wrong one.
+      _kpi(money(S.unwtd), S.n+' records in the Score-eligible book', _GRN),
       _kpi(money(S.flat), 'Weighted on measured category rates', _GRN),
       _kpi(money(ovd.v), ovd.n+' past their own projected PO date', _RED),
       _kpi(money(S.stalledV), S.stalledN+' in Commit 90+ days with no PO', _RED)),
@@ -2602,8 +2628,12 @@ function BoardPanel({ board, act, meta, onTab }) {
 
   // ── block 1 · the number ─────────────────────────────────────────────
   const numbers = h('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
-    stat('Total pipeline, PTA forward book', money(last.v),
-      last.n + ' live projects · opens the record list',
+    // 'PTA forward book' used to label this card AND the Pipeline tab's
+    // headline, which are different populations: this one is every forward
+    // record, that one is the Score-eligible subset. One phrase, two numbers,
+    // and the Board is the page a CEO reads.
+    stat('Total pipeline, all forward records', money(last.v),
+      last.n + ' records · ' + (meta.pipeScoreN || 0) + ' of them in the Score · opens the record list',
       [{ k: 'vs last week', v: delta(last.v, wk1.v) }, { k: 'vs 4 weeks', v: delta(last.v, wk4.v) }],
       () => openDrill('Forward book', 'Every project in the PTA forward book', () => true), _GRN,
       () => openMoves()),
@@ -2728,16 +2758,17 @@ function BoardPanel({ board, act, meta, onTab }) {
           + 'is invisible to the close forecast in both houses.'))),
     h('div', { style: { fontSize: '11.5px', color: _M, marginTop: '11px',
         borderTop: '1px solid ' + _L, paddingTop: '9px', lineHeight: 1.55 } },
-      h('b', { style: { color: _INK } }, 'Why 2027 is a band and not a number. '),
-      'Most of it is two annual packaging programs, ',
-      ((_rt.programs || []).map(p => p.name).join(' and ') || 'the live multi-release programs'),
-      ', worth ', money((_rt.programs || []).reduce((s, p) => s + p.val, 0)),
-      ' between them. Each is one sales order covering over a million boxes that releases in '
-      + 'monthly call-offs over roughly eight to eleven months, and neither NetSuite nor Podio '
-      + 'holds a release schedule. The split across the year end is estimated from the '
-      + 'prior-year analogue of the same program, so it is published as a range. The remaining ',
-      money(_rt.dated27Other || 0), ' is ordinary orders carrying 2027 invoicing dates. ',
-      'Full detail on the Revenue & Close tab.')) : null;
+      // Shortened 19 Nov 2026. The full derivation - the two programmes, their
+      // call-off schedules, the prior-year analogue - is the subject of the
+      // 2027 backlog block on Revenue & Close, and was being restated here in
+      // full. The Board states the figure and why it is a range.
+      h('b', { style: { color: _INK } }, 'Why 2027 is a band. '),
+      'Most of it is the two annual packaging programmes, worth ',
+      money((_rt.programs || []).reduce((s, p) => s + p.val, 0)),
+      ' between them, which release in monthly call-offs across the year end. No '
+      + 'system holds their release schedule, so the split is estimated from the '
+      + 'prior year and published as a range. Revenue & Close carries the '
+      + 'derivation.')) : null;
 
   // ── block 2 · what moved and why ─────────────────────────────────────
   const mv = B.moves;
@@ -3025,6 +3056,8 @@ function BoardPanel({ board, act, meta, onTab }) {
   // nag and nobody, including the person sending it, can tell whether it
   // worked.
   const _fx = (PIPE_SEED && PIPE_SEED.gaps && PIPE_SEED.gaps.fixed) || null;
+  const _ncr = (DRILL_RECS || []).filter(r => !r.c);
+  const _nc = {n: _ncr.length, v: _ncr.reduce((t, r) => t + (r.e || 0), 0)};
 
   const actions = [
     { who: 'AM', what: full(Q.aged[3].v) + ' of quotes sitting 61 to ' + Q.lagP90 + ' days',
@@ -3046,6 +3079,13 @@ function BoardPanel({ board, act, meta, onTab }) {
             // habit, and the two want different conversations.
             + (_gp.never ? '. ' + _gp.never + ' of them have never carried one since the '
                + 'record was created, a median of ' + Math.round(_gp.med / 7) + ' weeks ago'
+               : '')
+            // The uncoded records. Small money, but they are the reason the
+            // Board and the Pipeline tab count differently, so they are worth
+            // naming on the page rather than only in the export.
+            + (_nc.n ? '. A further ' + _nc.n + ' forward record' + (_nc.n === 1 ? '' : 's')
+               + ' worth ' + full(_nc.v) + ' carry no job code at all, which is why this '
+               + 'card counts ' + last.n + ' and the Pipeline tab counts every row'
                : ''),
       cta: 'PM list', fn: () => onTab('dq') },
     { who: 'Finance', what: full(meta.billable) + ' billable and not yet invoiced',
@@ -3096,6 +3136,21 @@ function BoardPanel({ board, act, meta, onTab }) {
     _sub('Podio pipeline as of ' + B.asof + ' · NetSuite as of ' + B.nsAsof
        + ' · every figure below opens the records behind it'),
     numbers,
+    // The reconciliation between the two pipeline figures, which until now
+    // appeared only on the Pipeline tab. A reader who saw 216 here and 182
+    // there had no way to know the difference was deliberate.
+    (function(){
+      var P = (typeof PIPE_SEED !== 'undefined' && PIPE_SEED) || {};
+      if (!P.exclN) return null;
+      return h('div', { style: { fontSize: '11.5px', color: _M, margin: '10px 0 0',
+          lineHeight: 1.55 } },
+        'Of the ', last.n, ' forward records, ', h('b', { style: { color: _INK } },
+          (meta.pipeScoreN || 0) + ' are eligible for the Score'), '. The other ',
+        P.exclN, ' worth ', money(P.exclV), ' are already counted in open orders, '
+        + 'or sit outside PTA, so counting them again would inflate the Score. The '
+        + 'Pipeline & Demand tab leads with the eligible book; this card leads with '
+        + 'the whole one.');
+    })(),
     backlogTiming,
     backlogSplit,
     _head('The trend'),
@@ -3187,13 +3242,19 @@ function boardExport(which) {
     };
     const rows = DRILL_RECS.map(r => {
       const miss = [];
+      // A record with no parseable job code is on this list whatever else it
+      // carries. It is the one gap that cannot be seen from the page: the
+      // Board counts coded records and the Pipeline tab counts all rows, so
+      // these are the whole reason the two tabs report different totals, and
+      // nothing matches them to a NetSuite order either.
+      if (!r.c) miss.push('no job code');
       if (!r.d) miss.push('no estimated invoicing date');
       if (!r.e) miss.push('no estimate value');
       if (!r.p) miss.push('no probability');
       return Object.assign({}, r, { _m: miss });
     }).filter(r => r._m.length).sort((a, b) => (b.e || 0) - (a.e || 0));
     sheet(wb, 'PM fixes', [
-      { h: 'Job code', w: 24, get: r => r.c || '' },
+      { h: 'Job code', w: 24, get: r => r.c || '(none in Podio)' },
       { h: 'Client', w: 26, get: r => r.n || '' },
       { h: 'Project', w: 34, get: r => r.nm || '' },
       { h: 'Lead PM', w: 20, get: r => r.pm || 'UNASSIGNED' },
@@ -3208,7 +3269,9 @@ function boardExport(which) {
       { h: 'Weeks open', w: 12, get: r => Math.round(gapWorst(r) / 7) },
       { h: 'How long each gap has been open', w: 62, get: r => gapAge(r) },
       { h: 'Why it matters', w: 56, get: r =>
-          !r.d ? 'cannot be timed into a revenue month, so it is invisible to the close forecast'
+          !r.c ? 'no job code, so it cannot be matched to a NetSuite order and is '
+               + 'counted on one tab but not the other'
+          : !r.d ? 'cannot be timed into a revenue month, so it is invisible to the close forecast'
           : !r.e ? 'carries no value, so it cannot be weighted into the pipeline'
           : 'excluded from the probability basis the CEO document still references' },
     ], rows);
@@ -3813,9 +3876,14 @@ function CoveragePanel({seed}){const S=seed||COVERAGE_SEED;
     _bar('Open-order backlog', S.openUnb, fM(S.openUnb), mx, '#2FA98A', covB.toFixed(2)+'x the gap'),
     _bar('Weighted pipeline', S.wtd, fM(S.wtd), mx, '#b4b2a9', '+'+covP.toFixed(2)+'x cushion'),
     _head('Read'),
-    _note('Earned revenue plus open-order backlog is '+fM(won)+' \u2014 which is also the commit figure, since confirmed plus awaiting-invoice is the whole open book. With backlog at '+covB.toFixed(2)+'x the calendar gap, the binding constraint is how much of it invoices before Dec 31, a billing-velocity question owned with Ops and Finance, not a demand question. The Revenue Close Radar tab carries that analysis.'),
-    _head('Why gross margin is not on this tab'),
-    _note(['Booked gross margin at PO level is '+S.gmBookedPO.toFixed(1)+'%. That is ',h('b',{key:'b'},'not'),' CEO #1. CEO #1 is underlying operating margin excluding one-offs on a TTM basis, target ≥ 5% floor building toward 8%, fed by Ops GM plus Finance opex, and it carries overhead and one-off exclusions this file cannot see. Quoting the PO-level number against a 10% goal invites a false green, so it is reported here as reference only and the CEO cell stays Finance-fed.']));
+    _note('Earned revenue plus open-order backlog is '+fM(won)+' \u2014 which is also the commit figure, since confirmed plus awaiting-invoice is the whole open book. With backlog at '+covB.toFixed(2)+'x the calendar gap, the binding constraint is how much of it invoices before Dec 31, a billing-velocity question owned with Ops and Finance, not a demand question. Backlog to Cash, below, carries that analysis.'),
+    // The 'Why gross margin is not on this tab' block was removed 19 Nov
+    // 2026. It was a good answer to a question a reader has once and then
+    // re-reads every week: booked GM at PO level is not CEO #1, which is
+    // underlying operating margin on a TTM basis and is Finance-fed. That
+    // reasoning belongs in the About disclosure, not above the fold of a
+    // weekly tab.
+    null);
 }
 
 // CONCENTRATION, re-cut 26 Oct 2026 to the COO's definitions. The official
@@ -3847,8 +3915,10 @@ function ConcentrationPanel({seed}){const S=seed||CONC_SEED; const mx=S.holdings
     h('div',{style:{display:'flex',alignItems:'center',gap:'10px',margin:'14px 0 0',padding:'12px 14px',border:'1px solid '+_L,borderRadius:'10px',background:'#fafbfa'}},
       h('div',{style:{fontSize:'22px',fontWeight:700,color:_RED}},S.top5Share.toFixed(1)+'%'),
       h('div',{style:{fontSize:'13px',color:_M}},'now · baseline '+S.top5Base+'% · ',h('b',{key:'t',style:{color:_GRN}},'target ≤'+S.top5Target+'% by '+S.top5TargetBy),', an '+(S.top5Share-S.top5Target).toFixed(1)+'-point gap to close over roughly five quarters')),
-    _head('CEO #5: Weeks of Work in Hand'),
-    _note(['WWiH = open-order backlog ÷ weekly revenue run rate = '+fM(S.backlog)+' ÷ $'+Math.round(S.wkRunRate).toLocaleString()+' = ',h('b',{key:'b'},S.wwih.toFixed(1)+' weeks'),'. The band is '+S.wwihLo+'–'+S.wwihHi+', so we are '+(S.wwih-S.wwihHi).toFixed(1)+' weeks above it. Above-band is not a demand problem: it means work is arriving faster than it is being converted to revenue, which is the same billing-and-throughput finding the Revenue Close Radar shows from the cash side. Run rate is TTM revenue ÷ 52.']),
+    // The CEO #5 heading and its derivation were removed 19 Nov 2026. The
+    // measure itself stays in the tile above - 22.5 weeks against the 14-22
+    // band, flagged above-band - which is what a reader needs. The formula
+    // and the reasoning behind it are a methodology answer, read once.
     _head('CEO #7: backlog composition, % non-Citizen of the forward book'),
     _note(['Of '+fM(S.backlog)+' in open orders, '+fM(S.bkNonCit)+' ('+S.bkNonCitPct.toFixed(1)+'%) is non-Citizen and '+S.bkCitPct.toFixed(1)+'% is Citizen. The COO notes this metric ',h('b',{key:'b'},'leads #4 by 6–12 months'),': today’s backlog mix is next year’s revenue mix. At 30% non-Citizen the forward book is still more concentrated than the 38% non-Citizen share of TTM revenue, so on current bookings concentration gets slightly worse before it gets better. Weighted pipeline at '+(100-S.citPipeShare)+'% non-Citizen is the leading indicator ahead of that.']),
     h('div',{style:{display:'flex',gap:'0',height:'34px',borderRadius:'8px',overflow:'hidden',margin:'4px 0 10px',border:'1px solid '+_L}},
@@ -3868,13 +3938,55 @@ function ConcentrationPanel({seed}){const S=seed||CONC_SEED; const mx=S.holdings
 }
 
 const VELO_SEED={"asof":"2026-11-16","openTot":8561466,"billable":1591829,"motion":283149,"production":6295357,"uncovered":391131,"wavgAge":48,"oldest":307,"ageBuckets":[["0\u201330 days",588498],["31\u201360 days",366410],["61\u201390 days",183795],["90+ days",173096],["Ready-to-bill, no dated trigger",280031]],"offenders":[["HEXA24-3064-7349",283348,41,"Ready to Bill"],["CITI22-2464-7739",230655,22,"Completed"],["CITI26-4166-7610",185500,22,"Completed"],["CASI16-343-7517",183795,83,"Completed"],["DIAD25-368-6392",171661,120,"Completed"],["CITI20-1515-7583",147284,null,"Completed"],["BEN18-024-7193",128422,16,"Ready to Bill"]]};
-function VelocityPanel({seed}){const S=seed||VELO_SEED;
+// One live computation of the billing picture, used by every panel that shows
+// it. Until 19 Nov 2026 there were two, and they disagreed in public.
+//
+// VELO_SEED is baked by ns_derived.js at build time, so its day counts are as
+// at the build. billingRows calls shipBuckets in the browser, so its counts are
+// as at the reader's clock. Both were on the page at once: the Velocity panel
+// said CITI22-2464-7739 was 8 days old while the Radar said 22, and the gap
+// grew by one every day between builds.
+//
+// The figures are now computed from the page's own shipBuckets at render, from
+// the same records the export uses. The seed stays as the fallback for a page
+// whose shipping records failed to parse, and because ns_apply.py patches it by
+// name on every pull.
+function liveVelo() {
+  try {
+    const recs = (typeof SHIP_SEED_RECS !== 'undefined' && SHIP_SEED_RECS) || [];
+    if (!recs.length || typeof shipBuckets !== 'function') return VELO_SEED;
+    const b = shipBuckets(recs, NS_OPEN_BY_CODE);
+    const dated = b.billable.filter(x => x.age !== null);
+    const datedV = dated.reduce((t, x) => t + x.unb, 0);
+    const band = f => Math.round(b.billable.filter(f).reduce((t, x) => t + x.unb, 0));
+    return {
+      asof: 'today',
+      openTot: Math.round(Object.keys(NS_OPEN_BY_CODE)
+        .reduce((t, c) => t + NS_OPEN_BY_CODE[c], 0)),
+      billable: Math.round(b.vals.billable), motion: Math.round(b.vals.transit),
+      production: Math.round(b.vals.pre), uncovered: Math.round(b.vals.none),
+      wavgAge: datedV ? Math.round(dated.reduce((t, x) => t + x.unb * x.age, 0) / datedV) : 0,
+      oldest: dated.length ? Math.max.apply(null, dated.map(x => x.age)) : 0,
+      ageBuckets: [
+        ['0\u201330 days', band(x => x.age !== null && x.age <= 30)],
+        ['31\u201360 days', band(x => x.age !== null && x.age > 30 && x.age <= 60)],
+        ['61\u201390 days', band(x => x.age !== null && x.age > 60 && x.age <= 90)],
+        ['90+ days', band(x => x.age !== null && x.age > 90)],
+        ['Ready-to-bill, no dated trigger', band(x => x.age === null)]],
+      offenders: b.billable.slice(0, 7).map(x => [x.c, Math.round(x.unb), x.age, x.stage]),
+      n: b.billable.length,
+    };
+  } catch (e) { return VELO_SEED; }
+}
+
+function VelocityPanel({seed, onQueue}){const S=seed||liveVelo();
   const stages=[['Billable now',S.billable,_GRN],['Shipping in motion',S.motion,'#2FA98A'],['Still in production',S.production,'#b4b2a9'],['No shipping record',S.uncovered,_AMB]];
   const abmax=Math.max.apply(null,S.ageBuckets.map(x=>x[1]));
   return h('div',{style:{maxWidth:'1000px',margin:'0 auto',padding:'8px 4px 40px'}},
     _eyebrow('Cash \u00b7 Backlog to cash & plan coverage'), _title('Backlog to Cash'),
-    _sub('Reframes open orders by how close each unbilled dollar is to invoiceable · snapshot '+S.asof),
-    (function(){var C=COVERAGE_SEED,K=CONC_SEED,g=C.plan-C.revYTD;return h('div',{style:{border:'1px solid '+_L,borderRadius:'12px',padding:'14px 16px',margin:'4px 0 18px',background:'#fafbfa'}},h('div',{style:{fontSize:'13px',letterSpacing:'.06em',textTransform:'uppercase',color:_M,fontWeight:600,marginBottom:'8px'}},'Why this sits under the Radar'),h('div',{style:{fontSize:'13.5px',lineHeight:'1.55'}},'Weeks of work in hand is ',h('b',null,K.wwih.toFixed(1)+' weeks'),' against a '+K.wwihLo+'\u2013'+K.wwihHi+' band (CEO #5), which says the forward book is large and slow rather than small. This is the same fact from the cash side: open-order backlog of ',h('b',null,fM(S.openTot)),' is ',h('b',null,(S.openTot/g).toFixed(2)+'x'),' the gap to the internal '+fMw(C.plan)+' calendar plan, yet only ',h('b',null,fM(S.billable)),' (',Math.round(100*S.billable/S.openTot),'%) is billable today. Closing the calendar year is a question of how much of this invoices before Dec 31, not whether demand exists. The aging below is the watch list.'));})(),
+    _sub('Reframes open orders by how close each unbilled dollar is to invoiceable · '
+       + (S.asof === 'today' ? 'ages measured as you read this' : 'snapshot ' + S.asof)),
+    (function(){var C=COVERAGE_SEED,K=CONC_SEED,g=C.plan-C.revYTD;return h('div',{style:{border:'1px solid '+_L,borderRadius:'12px',padding:'14px 16px',margin:'4px 0 18px',background:'#fafbfa'}},h('div',{style:{fontSize:'13px',letterSpacing:'.06em',textTransform:'uppercase',color:_M,fontWeight:600,marginBottom:'8px'}},'What this tab is asking'),h('div',{style:{fontSize:'13.5px',lineHeight:'1.55'}},'Weeks of work in hand is ',h('b',null,K.wwih.toFixed(1)+' weeks'),' against a '+K.wwihLo+'\u2013'+K.wwihHi+' band (CEO #5), which says the forward book is large and slow rather than small. This is the same fact from the cash side: open-order backlog of ',h('b',null,fM(S.openTot)),' is ',h('b',null,(S.openTot/g).toFixed(2)+'x'),' the gap to the internal '+fMw(C.plan)+' calendar plan, yet only ',h('b',null,fM(S.billable)),' (',Math.round(100*S.billable/S.openTot),'%) is billable today. Closing the calendar year is a question of how much of this invoices before Dec 31, not whether demand exists. The aging below is the watch list.'));})(),
     h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'6px'}},
       _kpi(fM(S.billable),'Billable now (invoice-ready)', S.billable>900000?_AMB:_GRN),
       _kpi(S.wavgAge+' d','Dollar-weighted age of billable', S.wavgAge>60?_RED:_AMB),
@@ -3893,7 +4005,10 @@ function VelocityPanel({seed}){const S=seed||VELO_SEED;
         h('td',{style:{padding:'6px 2px',borderBottom:'1px solid '+_L,textAlign:'right',fontVariantNumeric:'tabular-nums'}},fM(o[1])),
         h('td',{style:{padding:'6px 2px',borderBottom:'1px solid '+_L,textAlign:'right',color:(o[2]&&o[2]>60)?_RED:_M}},o[2]!=null?o[2]+' d':'–'),
         h('td',{style:{padding:'6px 2px',borderBottom:'1px solid '+_L,color:_M}},o[3]))))),
-    _note('Source: NetSuite open orders joined to the Podio Shipping Status evidence by project code. Billing trigger follows contract terms (EXW/FOB/DDP). Per-code, not per-SO: a parent code with many small orders can read billable while some orders are genuinely open.'));
+    onQueue ? h('div',{style:{marginTop:'10px'}},
+      h('button',{className:'fb-chip',onClick:onQueue},
+        'Open the full queue \u00b7 ' + (S.n || 0) + ' orders \u2197')) : null,
+    _note('Ages are measured as you read this, from the billing trigger on the shipping record, so they agree with the billing queue on the Board and with the export. Source: NetSuite open orders joined to the Podio Shipping Status evidence by project code. Billing trigger follows contract terms (EXW/FOB/DDP). Per-code, not per-SO: a parent code with many small orders can read billable while some orders are genuinely open.'));
 }
 
 
@@ -4114,10 +4229,10 @@ function ExecStrip(){
       _kpi(fM(C.ttm),'#2 TTM revenue · band '+fMw(C.ttmLo)+'–'+fMw(C.ttmHi)+' · '+(ttmIn?'in band':'out of band'), ttmIn?_GRN:_RED),
       _kpi(K.top5Share.toFixed(1)+'%','#4 Top-5 parent share of TTM · target ≤'+K.top5Target+'% by '+K.top5TargetBy, K.top5Share>K.top5Base?_RED:_AMB),
       _kpi(K.wwih.toFixed(1)+' wk','#5 Weeks of work in hand · band '+K.wwihLo+'–'+K.wwihHi+' · '+(wIn?'in band':'above band'), wIn?_GRN:_RED)),
-    h('div',{style:{marginTop:'11px',paddingTop:'10px',borderTop:'1px solid '+_L,fontSize:'12.5px',color:_M,lineHeight:'1.55'}},
-      'Internal context, not a CEO metric: calendar-2026 revenue is ',h('b',null,fM(C.revYTD)),' against the ',
-      h('b',null,fMw(C.plan)),' internal calendar plan (',(100*attain).toFixed(0),'%), with ',h('b',null,fM(K.backlog)),
-      ' of backlog behind it. Full detail on the Coverage & Attainment and Concentration Risk tabs; the CEO Scorecard tab shows all eight metrics with status.'));
+    // The internal-context paragraph was removed 19 Nov 2026 on review. It put
+    // the internal plan on a strip whose whole point is the CEO's own metrics,
+    // and it is the Coverage tab's subject.
+    null);
 }
 
 
@@ -4198,10 +4313,7 @@ const REVTIMING_SEED = {
 //
 // `asof` is the guard. The modals open only when it equals NS_ASOF, so a pull
 // that moves the book without carrying new rows leaves the figures plain text
-// rather than opening last month's orders under this month's number. That is
-// the whole defect class this file keeps rediscovering: a figure rebuilt
-// weekly, and the records beneath it rebuilt by hand whenever someone
-// remembered.
+// rather than opening last month's orders under this month's number.
 //
 // ns_apply.py replaces this wholesale when the pull supplies ns['RT_ROWS'].
 // Each row: {c: job code, cl: client, v: unbilled, d: estimated invoicing
@@ -4257,6 +4369,11 @@ function App() {
   // closed by default: this is an operator control on a page the whole
   // leadership team now opens first
   const [upOpen, setUpOpen]     = useState(false);
+  // The billing picture, computed once per render and shared. Every panel
+  // that shows a billable figure or a day count reads this one object.
+  const _LV = liveVelo();
+  // The billing queue, opened from the Velocity panel as well as the Board.
+  const [billQ, setBillQ] = useState(null);
 
   // Pull the committed snapshot history. Fails quietly when opened from disk
   // (file:// blocks fetch) or before the first history file is committed.
@@ -4494,7 +4611,9 @@ function App() {
     // The six sources and their dates, on every tab. Collapsed it is the
     // provenance line; open it is the Monday upload tool. It used to sit
     // inside one tab, so refreshing the Board meant leaving the Board.
-    h('div',{className:'upload-panel'},
+    billQ ? h(BillableModal, {rows: billQ, asof: NS_ASOF,
+      onClose: () => setBillQ(null)}) : null,
+    h('div',{className:'upload-panel' + (upOpen ? '' : ' is-closed')},
       h('div',{className:'upload-head',onClick:()=>setUpOpen(o=>!o)},
         h('h2',null,'Data sources \u00b7 rebuilt weekly, upload only to override'),
         h('div',{className:'upload-meta'},
@@ -4569,21 +4688,59 @@ function App() {
              totalO: NS_SEED.totalOrders, net: COVERAGE_SEED.revYTD,
              top5Share: CONC_SEED.top5Share, noProb: PIPE_SEED.noProb,
              pipeScoreN: PIPE_SEED.n, undated: PIPE_SEED.undated.v,
-             undatedCodes: PIPE_SEED.undated.n, billable: VELO_SEED.billable,
-             billableAge: VELO_SEED.wavgAge,
-             billableOldest: (VELO_SEED.oldest != null ? VELO_SEED.oldest : 0)},
+             // From liveVelo, not VELO_SEED: the Board's attention row, the
+             // Velocity panel and the billing queue now all read one
+             // computation, so none of them can quote a different age for the
+             // same order.
+             undatedCodes: PIPE_SEED.undated.n, billable: _LV.billable,
+             billableAge: _LV.wavgAge,
+             billableOldest: (_LV.oldest != null ? _LV.oldest : 0)},
       onTab: setTab}),
 
     // Pipeline & Demand: where demand comes from, how fast it moves, what is
     // in the book now. These were three tabs telling one story out of order.
     tab==='pipe' && h(PipelinePanel,{seed: PIPE_SEED}),
+    tab==='pipe' && h(QuotePanel,{coverage, totalPipe, quoteMeta}),
     tab==='pipe' && h(SalesVelocityPanel,{seed: SVEL_SEED}),
+    tab==='pipe' && h(WowPanel,{wow, history, histErr, podioData, poMeta}),
     // Revenue & Close: the official revenue measure, then what lands in 2026,
     // then what is billable today. Coverage was a tab of its own reading the
     // same seed as the CEO tab.
     tab==='revenue' && h(CoveragePanel,{seed: COVERAGE_SEED}),
-    tab==='revenue' && h(RadarPanel,{recs: shipData ? shipData.recs : SHIP_SEED_RECS, shipMeta, poMap: poDates || RDR_PO_BY_CODE}),
-    tab==='revenue' && h(VelocityPanel,{seed: VELO_SEED}),
+    // RadarPanel was retired from this tab 19 Nov 2026.
+    //
+    // It classified the same open book as the Velocity panel directly below
+    // it, on a different basis, and published a different answer: $2,576,844
+    // 'ready to bill / overdue' against $1,276,820 'billable now'. A reader
+    // had no way to tell which to work, and the Board's billing queue and the
+    // controller's export both used the second.
+    //
+    // The second is also the better number. radarClassify counts an order as
+    // ready when a PLANNED purchase-order date has passed, with no shipping
+    // evidence behind it; shipBuckets requires the evidence. For a list handed
+    // to a controller to invoice from, a plan that slipped is not a signal.
+    // Finance's own hand-built billing list of 16 Nov came to 14 jobs and
+    // $1,347,561, which corroborates shipBuckets and not the Radar.
+    //
+    // Retiring it also removed the tab's two other collisions: a 30-row table
+    // whose Stage and Trigger columns were empty on every row by definition,
+    // and a 'Slips to 2027: $1.72M' figure sitting six inches above the 2027
+    // booked backlog band of $4.93M-$5.42M.
+    //
+    // RadarPanel and radarClassify are still defined and still fed. Before
+    // anything is rendered from them again, settle RDR_PO_BY_CODE: it holds 69
+    // codes while parsePO returns 996, and ns_derived.js has been printing both
+    // at every build as a diagnostic since 5 Nov.
+    // Backlog to Cash was removed from this tab 19 Nov 2026 at Joseph's call:
+    // billing velocity and cash conversion are Finance's to report, not
+    // Sales'. What stays is the HANDOFF, on the Board: one Finance row naming
+    // what is billable and not yet invoiced, with the queue behind a click.
+    // Flagging work that is ready to bill is this file's job; analysing cash
+    // conversion in front of the CEO is not.
+    //
+    // liveVelo() still runs - the Board's row and the queue both read it - so
+    // nothing about the figures changed, only who publishes the analysis.
+    // VelocityPanel is unrendered, not deleted.
     // Moved here from the Accounts forecast bubble on 5 Nov. Orders already
     // won that invoice next year are backlog, not a projection, and the COO
     // asked for them by name.
@@ -4602,66 +4759,59 @@ function App() {
           NUM(REVTIMING_SEED.undated),' of open orders across ',REVTIMING_SEED.undatedCodes,
           ' codes carry no invoicing date at all and cannot be placed in either year.'))),
 
-    // CEO Scorecard: Concentration Risk was metrics #4, #5 and #7 on a tab of
-    // their own, which is a subsection, not a scorecard.
-    tab==='ceo' && h(CeoScorecardPanel,{seed: CEO_SEED}),
-    tab==='ceo' && h(ConcentrationPanel,{seed: CONC_SEED}),
+    // Concentration Risk, moved here 19 Nov 2026 when the CEO Scorecard tab
+    // was removed. It carries CEO metrics #4, #5 and #7 - top-5 parent share,
+    // weeks of work in hand, and the non-Citizen share of the forward book -
+    // which exist nowhere else in this file, so the tab going away would
+    // otherwise have retired three measures rather than moved a page.
+    //
+    // This tab is the right home for them. #5 is backlog divided by the weekly
+    // revenue run rate and #7 is the mix of that same backlog, so both are
+    // questions about the open book, which is what every other panel here is
+    // about. On the old tab they sat beside a scorecard summary; here they sit
+    // beside the book they are computed from.
+    tab==='revenue' && h(ConcentrationPanel,{seed: CONC_SEED}),
+
+    // The CEO Scorecard tab was removed 19 Nov 2026 on review.
+    //
+    // ConcentrationPanel moved to Revenue & Close, just above. What is left
+    // unrendered is CeoScorecardPanel, the summary of the eight CEO measures,
+    // which is the part that was genuinely duplicating what the other tabs
+    // already say.
+    //
+    // It is kept rather than deleted, and CEO_SEED with it: ns_apply.py
+    // patches CEO_SEED by name on every NetSuite pull, so removing the
+    // constant would fail the pull with a missing anchor. Putting the panel
+    // back is one line.
     tab==='dq' && h(DataQualityPanel,{seed: DQ_SEED}),
     tab==='dq' && h(CalibrationPanel,{seed: CALIB_SEED}),
     h('div',{style:{display: tab==='accounts' ? null : 'none'}},
-    h(ExecStrip,{}),
-    // Both bases, from one parse, so a change of basis is never invisible.
-    h('div',{style:{fontSize:'12px',color:'#5c6b63',margin:'10px 0 0',
-        padding:'9px 12px',border:'1px solid #e4e9e6',borderRadius:'8px',
-        background:'rgba(19,105,78,.04)',lineHeight:1.55}},
-      h('b',{style:{color:'#17201c'}},'Weighted pipeline basis: '),
-      SCORE_BASIS === 'category'
-        ? h(React.Fragment,null,
-            'forecast category (Commit 0.43, Best Case 0.28, Pipeline 0.08), giving ',
-            h('b',{style:{color:'#17201c'}},NUM(totalPipe)),
-            '. The CEO document\u2019s probability step function would give ',
-            h('b',null,NUM(totalPipeProb)),
-            ' on the same book, a difference of ',
-            NUM(Math.abs(totalPipe-totalPipeProb)),
-            '. The category rates are measured from 63 weekly Podio exports; the probability field is blank on more than a third of the book. ',
-            h('b',null,'This basis change still needs the CEO\u2019s sign-off.'))
-        : h(React.Fragment,null,
-            'probability step function per the CEO document, giving ',
-            h('b',{style:{color:'#17201c'}},NUM(totalPipe)),
-            '. Measured forecast-category rates would give ',
-            h('b',null,NUM(Object.values(podioData?.byId||{})
-              .reduce((s,v)=>s+(v.wtd||0),0))),
-            ' on the same book.')),
-
-
+    // ExecStrip, the 'CEO scorecard: the three metrics this file feeds' strip,
+    // was removed from Accounts 19 Nov 2026. All three of its measures now
+    // live on Revenue & Close: CEO #2 in CoveragePanel, CEO #4 and #5 in
+    // ConcentrationPanel. It was restating them above a list of accounts,
+    // which is a different subject. The component is unrendered, not deleted.
+    // The weighted-pipeline basis note was removed 19 Nov 2026 on review.
+    // It restated a methodology decision at the top of every visit; the
+    // Pipeline tab carries the rates and their cohort sizes where someone
+    // asking the question will be.
 
     // ── Summary bar ──
-    filesLoaded && h('div',{className:'summary-bar'},
-      podioMeta && h('span',{className:'sum-tag'},
-        h('strong',null,'Pipeline: '), podioMeta.totalActive,' projects not yet in NetSuite'
-      ),
-      nsMeta && h('span',{className:'sum-tag'},
-        h('strong',null,'Open Orders: '),
-        NUM(Object.values(nsData?.byId||{}).reduce((s,v)=>s+v.total,0)),
-        ' across ',nsMeta.totalOrders,' SOs'
-      ),
-      invMeta && h('span',{className:'sum-tag'},
-        h('strong',null,'Revenue YTD: '), NUM(invMeta.net),' · ',invMeta.period
-      ),
-      invFallback && h('span',{className:'sum-tag',style:{borderColor:'#f5dfa0',color:'#854f0b'}},
+    // The three source tags (pipeline count, open orders, revenue YTD) were
+    // removed 19 Nov 2026 on review: each restated a headline figure from the
+    // board, and two of them read from upload state rather than from a seed,
+    // so they drifted. The placeholder warning stays, because it is the one
+    // thing in this bar that was never a duplicate.
+    (filesLoaded && invFallback) ? h('div',{className:'summary-bar'},
+      h('span',{className:'sum-tag',style:{borderColor:'#f5dfa0',color:'#854f0b'}},
         '⚠ Revenue YTD is placeholder data. Upload the NetSuite revenue export to replace it'
       )
-    ),
+    ) : null,
 
-    // ── 2026 projection bubble (booked + landing  vs  2027 backlog) ──
-    h('div',{style:{display:'flex',gap:'10px',alignItems:'center',flexWrap:'wrap',
-        margin:'16px 0 6px'}},
-      h('span',{style:{fontSize:'12px',color:'#5c6b63',letterSpacing:'.04em',
-        textTransform:'uppercase'}},'Charts'),
-      h('button',{className:'fb-chip',onClick:()=>setShowYtd(true),
-        title:'Cumulative revenue, 2025 against 2026'},'Pace \u00b7 25 vs 26 \u2197'),
-      h('button',{className:'fb-chip',onClick:()=>setShowFunnel(true),
-        title:'Pipeline to open orders to revenue'},'Funnel \u00b7 pipe \u2192 rev \u2197')),
+    // The Charts row (Pace 25 vs 26, Funnel) was removed 19 Nov 2026 on
+    // review. Both modals restate what the Board's trend and the funnel
+    // figures already carry, and neither was the reason anyone opened this
+    // page. YtdModal and FunnelModal are unrendered, not deleted.
 
     // ── Data-integrity banners ──
     nsStale ? h('div',{className:'ns-stale'},
@@ -4677,17 +4827,22 @@ function App() {
       ', but NetSuite has no matching order or invoice. These stay in pipeline on purpose: removing them on the Podio entry alone would make their value vanish from the Score instead of moving into Open Orders. Either confirm the booking in NetSuite or correct the number in Podio.'
     ) : null,
 
-    // ── Quote coverage of pipeline ──
-    h(QuotePanel,{coverage, totalPipe, quoteMeta}),
+    // Quote coverage moved to Pipeline & Demand 19 Nov 2026. It measures what
+    // share of the WEIGHTED PIPELINE has our price sitting with the client,
+    // which is a question about the forward book, not about an account list.
+    // It now sits beside Sales Velocity, so the quote-to-order mechanics are
+    // on one tab instead of two.
 
-    // ── Shipping reconciliation ──
-    h('div',{className:'shp-note'},
-      'Open-order billing timing now lives on the ',
-      h('a',{onClick:()=>setTab('revenue')},'Revenue & Close'),
-      ' tab: what can bill in 2026 by incoterm trigger, the overdue billing watchlist, and what is still in production.'),
+    // The pointer to the Revenue & Close tab was removed 19 Nov 2026: the tab
+    // is in the tab bar, and a line of prose telling a reader a tab exists is
+    // not navigation.
 
-    // ── Week-over-week ──
-    h(WowPanel,{wow, history, histErr, podioData, poMeta}),
+    // Week-over-week moved to Pipeline & Demand 19 Nov 2026. It diffs the
+    // weighted pipeline against the last snapshot, which is the same quantity
+    // the Board's 'What moved this week' breaks into five named reasons with
+    // drill-downs. Two movement numbers on one page is one too many, and the
+    // Board's is the better instrument; this one keeps the detail next to the
+    // book it describes, and carries the snapshot-history build alarm.
 
     // ── Score tiles ──
     h('div',{className:'tiles'},
