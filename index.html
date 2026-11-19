@@ -2549,6 +2549,12 @@ function BoardPanel({ board, act, meta, onTab }) {
   // states which week that was. "This week" on a Monday build is a window one
   // day old, and a reader cannot tell a quiet week from an early one.
   const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // '2026-11-05' -> '5 Nov'. An ISO date in prose reads like a database value.
+  const pretty = d => {
+    if (!d || d.length < 10) return d || '';
+    const dt = new Date(d + 'T12:00:00');
+    return dt.getDate() + ' ' + MON[dt.getMonth()];
+  };
   const span = (a, b) => {
     if (!a || !b) return '';
     const d1 = new Date(a + 'T12:00:00'), d2 = new Date(b + 'T12:00:00');
@@ -2748,12 +2754,13 @@ function BoardPanel({ board, act, meta, onTab }) {
     // often, so when they differ the page says which pull the split came from
     // rather than implying both are today's. An old figure declared as old is
     // honest; the same figure presented as current is not.
+    // Shortened 19 Nov 2026. This said the same thing as the "Why 2027 is a
+    // band" note four lines below it, in a caveat box, in ISO dates. One
+    // sentence is enough: the two figures carry different dates, and why.
     (_rt.bandAsof && _rt.bandAsof !== _rt.asof) ? h('div', { style: { fontSize: '11.5px',
         color: _AMB, marginBottom: '10px', lineHeight: 1.5 } },
-      'The split below was computed on ', _rt.bandAsof, ' and the open book above was '
-      + 'pulled on ', _rt.asof, '. The 2027 band rests on the two packaging programmes '
-      + 'and their prior-year analogues, which is a judgement rather than a query, so it '
-      + 'only moves when a pull carries a new one.') : null,
+      'Split computed ', pretty(_rt.bandAsof), ', open book pulled ', pretty(_rt.asof),
+      '. The split moves only when a NetSuite pull carries a new one.') : null,
     // one bar, three segments, drawn on the midpoint of each band
     h('div', { style: { display: 'flex', height: '9px', borderRadius: '5px',
         overflow: 'hidden', background: _L, marginBottom: '12px' } },
