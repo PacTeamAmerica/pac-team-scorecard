@@ -2748,8 +2748,12 @@ function BoardPanel({ board, act, meta, onTab }) {
 
   const backlogTiming = (bk27Hi > 0 && bkDrift <= 1000) ? h('div', { style: { border: '1px solid ' + _L,
       borderRadius: '12px', padding: '13px 16px', margin: '12px 0 0', background: '#fff' } },
+    // Retitled 19 Nov 2026. 'Of that $8.79M backlog, when it invoices' made
+    // the reader carry a figure down from the card above and parse a clause
+    // before reaching the subject. The card already shows the dollars; this
+    // block answers one question about them, so it asks it plainly.
     h('div', { style: { fontSize: '12.5px', color: _INK, fontWeight: 600, marginBottom: '10px' } },
-      'Of that ', money(meta.openTot), ' backlog, when it invoices'),
+      'When these orders become revenue'),
     // The band and the book carry separate dates and the band moves less
     // often, so when they differ the page says which pull the split came from
     // rather than implying both are today's. An old figure declared as old is
