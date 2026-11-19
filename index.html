@@ -2563,7 +2563,33 @@ function BoardPanel({ board, act, meta, onTab }) {
   // to seven days back", and when they disagreed the headline contradicted the
   // boxes underneath it.
   const wk1 = S.filter(p => p.d === B.prevDate)[0] || at(1);
-  const wk4 = at(4);
+  // wk4 is chosen by DATE, not by counting series points.
+  //
+  // It used to be at(4), four entries back, which was the same thing while the
+  // archive was weekly. It is not any more: the build now runs more than once
+  // a week, so on 18 Nov 2026 the last four entries were 11/11, 11/16, 11/17
+  // and 11/18, and "vs 4 weeks" was reaching back nine days. It also landed on
+  // a point carrying the same value as the week-ago point, so both boxes read
+  // +$1.68M and looked like a rendering fault rather than a measurement one.
+  const dayms = 86400000;
+  const tOf = d => new Date(d + 'T12:00:00').getTime();
+  const nearest = backDays => {
+    const want = tOf(last.d) - backDays * dayms;
+    let best = null, bd = Infinity;
+    S.forEach(p => { const g = Math.abs(tOf(p.d) - want); if (g < bd) { bd = g; best = p; } });
+    return best || S[0];
+  };
+  const wk4 = nearest(28);
+  // Every comparison states the distance it actually measured. A box that says
+  // "4 weeks" over a nine-day gap is worse than one that says "9 days".
+  const gapOf = p => Math.round((tOf(last.d) - tOf(p.d)) / dayms);
+  const gapLabel = p => {
+    const g = gapOf(p);
+    if (g <= 0) return 'vs the same build';
+    return g >= 21 ? 'vs ' + Math.round(g / 7) + ' weeks'
+         : g >= 12 ? 'vs ' + Math.round(g / 7) + ' weeks'
+         : 'vs ' + g + ' day' + (g === 1 ? '' : 's');
+  };
   const delta = (a, b) => a - b;
   const arrow = v => v > 0 ? '▲' : v < 0 ? '▼' : '–';
   const col = (v, good) => v === 0 ? _M : ((v > 0) === (good !== false) ? _GRN : _RED);
@@ -2634,12 +2660,13 @@ function BoardPanel({ board, act, meta, onTab }) {
     // and the Board is the page a CEO reads.
     stat('Total pipeline, all forward records', money(last.v),
       last.n + ' records · ' + (meta.pipeScoreN || 0) + ' of them in the Score · opens the record list',
-      [{ k: 'vs last week', v: delta(last.v, wk1.v) }, { k: 'vs 4 weeks', v: delta(last.v, wk4.v) }],
+      [{ k: gapLabel(wk1), v: delta(last.v, wk1.v) },
+       { k: gapLabel(wk4), v: delta(last.v, wk4.v) }],
       () => openDrill('Forward book', 'Every project in the PTA forward book', () => true), _GRN,
       () => openMoves()),
     stat('Weighted pipeline, in the Score', money(B.scoreW),
       'measured category rates · Commit .43, Best .28, Pipeline .08',
-      [{ k: 'vs last week', v: delta(last.w, wk1.w) }], () => onTab('pipe'), _GRN),
+      [{ k: gapLabel(wk1), v: delta(last.w, wk1.w) }], () => onTab('pipe'), _GRN),
     stat('All Open Orders', money(meta.openTot),
       meta.totalO + ' sales orders · NetSuite ' + NS_ASOF,
       [{ k: 'vs last build', v: delta(B.backlog[B.backlog.length - 1].v, B.backlog[B.backlog.length - 2].v) }],
