@@ -2611,7 +2611,7 @@ function BoardPanel({ board, act, meta, onTab }) {
       'measured category rates · Commit .43, Best .28, Pipeline .08',
       [{ k: 'vs last week', v: delta(last.w, wk1.w) }], () => onTab('pipe'), _GRN),
     stat('Backlog, all open orders', money(meta.openTot),
-      meta.totalO + ' sales orders · NetSuite ' + B.nsAsof,
+      meta.totalO + ' sales orders · NetSuite ' + NS_ASOF,
       [{ k: 'vs last build', v: delta(B.backlog[B.backlog.length - 1].v, B.backlog[B.backlog.length - 2].v) }],
       () => onTab('revenue'), '#1D9E75'),
     stat('On Hold, the hedge', money(B.series[B.series.length - 1].hv),
@@ -2643,7 +2643,12 @@ function BoardPanel({ board, act, meta, onTab }) {
   // The rows open only when the pull that produced them is the pull the book
   // came from. RT_ROWS.asof is set by ns_apply.py in the same step that writes
   // NS_ASOF, so a stale row set cannot be opened under a fresh figure.
-  const bkLive = RT_ROWS && RT_ROWS.asof && RT_ROWS.asof === B.nsAsof;
+  // Compared against NS_ASOF, the constant ns_apply.py writes in the same
+  // step as RT_ROWS, NOT against BOARD_SEED.nsAsof. The board seed is written
+  // by the weekly Podio build and lags the pull between the two steps, so
+  // keying on it made the figures go dark on a page whose rows were perfectly
+  // current. One step writes both; one constant guards both.
+  const bkLive = RT_ROWS && RT_ROWS.asof && RT_ROWS.asof === NS_ASOF;
   const bkOpen = (which, title, sub, note) => {
     if (!bkLive) return null;
     const rows = (RT_ROWS[which] || []);
@@ -2703,14 +2708,14 @@ function BoardPanel({ board, act, meta, onTab }) {
         'What is left of this year. Of it, ' + money(_rt.overdue || 0) + ' across '
         + (_rt.overdueCodes || 0) + ' codes is already past its own estimated invoicing date.',
         bkOpen('y26', 'Backlog invoicing in 2026',
-          'Open orders whose estimated invoicing date falls this year · NetSuite ' + B.nsAsof,
+          'Open orders whose estimated invoicing date falls this year · NetSuite ' + NS_ASOF,
           'A row dated before today has already missed its own invoicing date. Those are '
           + 'the ones to work: the order is won and the date was set by the project, not '
           + 'by this page.')),
       bkCell('Invoices in 2027', bk27Lo, bk27Hi, _AMB,
         'Orders already won whose revenue lands next year.',
         bkOpen('y27', 'Backlog invoicing in 2027',
-          'Open orders whose estimated invoicing date falls next year · NetSuite ' + B.nsAsof,
+          'Open orders whose estimated invoicing date falls next year · NetSuite ' + NS_ASOF,
           'The two packaging programmes are not in this list as single rows, because '
           + 'neither invoices on one date. Their split across the year end is estimated '
           + 'from the prior-year analogue and is what makes the headline a band.')),
@@ -2718,7 +2723,7 @@ function BoardPanel({ board, act, meta, onTab }) {
         (_rt.undatedCodes || 0) + ' codes with no date in Podio, NetSuite or the PO export. '
         + 'A data gap, not a forecast.',
         bkOpen('und', 'Open orders with no invoicing date',
-          'Won work that cannot be timed into a revenue month · NetSuite ' + B.nsAsof,
+          'Won work that cannot be timed into a revenue month · NetSuite ' + NS_ASOF,
           'Every one of these is a field a PM can fill in. Until it is filled, this money '
           + 'is invisible to the close forecast in both houses.'))),
     h('div', { style: { fontSize: '11.5px', color: _M, marginTop: '11px',
@@ -3436,9 +3441,31 @@ function BillableModal({rows, onClose, asof}) {
           + 'the delivery date otherwise.'))));
 }
 
+// The Podio project behind a NetSuite job code.
+//
+// The pull knows the code, the client and the dollars; it does not know what
+// the project is called or who owns it, because those live in Podio. The page
+// already carries that join in OWNER_SEED, refreshed by the weekly build, so
+// the rows are enriched here at render time rather than being carried twice
+// and allowed to disagree. Same normalisation billingRows uses.
+const RT_CODE = /([A-Za-z]+[0-9]{2})-([0-9]+)-([0-9]+)/;
+function rtOwner(code) {
+  const m = RT_CODE.exec(code || '');
+  return (typeof OWNER_SEED !== 'undefined' && OWNER_SEED
+          ? (OWNER_SEED[m ? m[0].toUpperCase() : String(code || '').toUpperCase()] || {})
+          : {});
+}
+function rtRow(r) {
+  const o = rtOwner(r.c);
+  return {c: r.c, v: r.v, d: r.d || '',
+          cl: r.cl || o.cl || '', nm: r.nm || o.nm || '',
+          am: r.am || o.am || '', pm: r.pm || o.pm || ''};
+}
+
 const RT_COLS = [
   {h:'Job code',        w:24, get:r=>r.c || ''},
   {h:'Client',          w:30, get:r=>r.cl || ''},
+  {h:'Podio project',   w:40, get:r=>r.nm || ''},
   {h:'Unbilled',        w:15, get:r=>Math.round(r.v || 0)},
   {h:'Est. invoicing',  w:15, get:r=>r.d || 'none on record'},
   {h:'Account manager', w:22, get:r=>r.am || ''},
@@ -3447,11 +3474,11 @@ const RT_COLS = [
 
 // The orders behind one of the three backlog timing figures.
 function RevTimingModal({title, subtitle, rows, onClose, note}) {
-  const live = rows.slice().sort((a, b) => (b.v || 0) - (a.v || 0));
+  const live = rows.map(rtRow).sort((a, b) => (b.v || 0) - (a.v || 0));
   const tot = live.reduce((t, r) => t + (r.v || 0), 0);
   const m = v => '$' + Math.round(v).toLocaleString();
   const safe = (title || 'backlog').replace(/[^A-Za-z0-9]+/g, '_').slice(0, 60);
-  const cols = ['job code', 'client', 'unbilled', 'est. invoicing',
+  const cols = ['job code', 'client', 'podio project', 'unbilled', 'est. invoicing',
                 'account manager', 'lead PM'];
   const th = c => h('th', {key:c, style:{position:'sticky', top:0, background:'#fff',
     textAlign:(c === 'unbilled') ? 'right' : 'left', padding:'7px 6px',
@@ -3474,6 +3501,10 @@ function RevTimingModal({title, subtitle, rows, onClose, note}) {
               h('tbody', null, live.map((r, i) => h('tr', {key:i},
                 td(r.c, {fontFamily:'ui-monospace,monospace', fontSize:'11.5px'}),
                 td(r.cl, {fontWeight:600}),
+                // The Podio project, so a reader can recognise the work rather
+                // than looking up a job code.
+                td(r.nm || h('span', {style:{color:_AMB}}, 'not in Podio'),
+                   {color:r.nm ? _M : null, fontSize:'11.5px'}),
                 td(m(r.v), {textAlign:'right', fontWeight:600}),
                 // A missing date is the finding, not a blank cell to skim past.
                 td(r.d || h('span', {style:{color:_AMB}}, 'none on record'),
